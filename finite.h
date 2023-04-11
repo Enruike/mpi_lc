@@ -22,7 +22,9 @@ double iRx, iRy, iRz; //aquí está agregado el segundo radio.
 // ************************ // 
 
 //int pdegenerate, pinfinite;
-int seed, rand_seed; 
+int seed;
+int rand_seed;
+
 double tmin, tmax, dt; 
 int increment; 
 double accuracy; 

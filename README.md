@@ -1,2 +1,2 @@
-# openMPI_lc
+# openMPI_LC
 MPI Code for solving Landau - de Gennes formalism

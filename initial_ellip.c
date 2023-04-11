@@ -6,12 +6,18 @@ bool initial_ellip(){
 	int i, j, k, n, m;
 	double dis, x, y, z;
 	double x1, y1, z1;
-	int rx = lrint(Nx / 2);
-	int ry = lrint(Ny / 2);
-	int rz = lrint(Nz / 2);
-	double Rx = rx - 2;
-	double Ry = ry - 2;
-	double Rz = rz - 2;
+
+	//Center of the grid
+	int rx = lrint(Nx / 2) - 1;
+	int ry = lrint(Ny / 2) - 1;
+	int rz = lrint(Nz / 2) - 1;
+
+
+	double Rx = Lx / 2. - 2.;
+	double Ry = Ly / 2. - 2.;
+	double Rz = Lz / 2. - 2.;
+
+
 	int xm, xp, ym, yp, zm, zp;
 	int nsurf;
 	bool *ndrop;
@@ -211,15 +217,18 @@ bool initial_ellip(){
 			}
 		}
 	}
-	dV = (4.0 / 3 * M_PI * Rx * Ry * Rz - 4.0 / 3. * M_PI * Rp * Rp * Rp * Np * 0.5) / bulk; 
+
+	dV = (((4. / 3.) * M_PI * (Rx * Ry * Rz)) - (4.0 / 3.) * M_PI * Rp * Rp * Rp * Np) / bulk; 
 	if(DoubleU){
 		dVi = (4.0 / 3 * M_PI * iRx * iRy * iRz) / bulkin; 
 		dVo = (4.0 / 3 * M_PI * ((Rx * Ry * Rz) - (iRx * iRy * iRz))) / (bulkout - surf);
 	}
-	dAdrop = (4 * M_PI * pow((pow(Rx * Ry, 1.6) + pow(Rx * Rz, 1.6) + pow(Ry * Rz, 1.6)) / 3.0, 1.0/1.6) - M_PI * Rp * Rp * Np) / (surf -  nsurf);
+
+	dAdrop = (4. * M_PI * pow((pow(Rx * Ry, 1.6075) + pow(Rx * Rz, 1.6075) + pow(Ry * Rz, 1.6075)) / 3.0, 1.0/1.6075) - M_PI * Rp * Rp * Np) / (surf -  nsurf);
 	if(nsurf > 0){
 		dApart = (2 * M_PI * Rp * Rp * Np) / nsurf ;
 	}
+
 	else{
 		dApart = 0;
 	}
@@ -321,9 +330,10 @@ bool initial_ellip(){
 				}
 				if(boundary[l] || nboundary[l]){
 					if(boundary[l]){
-						x = (i-rx)*dx;
-						y = (j-ry)*dy;
-						z = (k-rz)*dz;
+						x = (i - rx) * dx;
+						y = (j - ry) * dy;
+						z = (k - rz) * dz;
+						
 						dis = sqrt(x*x+y*y+z*z);
 						
 						//define nu
@@ -332,9 +342,9 @@ bool initial_ellip(){
 							return false;
 						}
 						
-						nu[nb * 3 + 0] = -2. * x / (Rx * Rx); // / Rx / Rx;
-						nu[nb * 3 + 1] = -2. * y / (Ry * Ry); // / Ry / Ry;
-						nu[nb * 3 + 2] = -2. * z / (Rz * Rz); // / Rz / Rz;
+						nu[nb * 3 + 0] = -2. * x / (Rx * Rx);
+						nu[nb * 3 + 1] = -2. * y / (Ry * Ry);
+						nu[nb * 3 + 2] = -2. * z / (Rz * Rz);
 						norm_v(&nu[nb * 3]);
 						
 						if(DoubleU){

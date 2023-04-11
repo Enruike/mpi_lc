@@ -15,7 +15,6 @@ int geo;
 int degenerate, infinite; 
 int Np;
 
-
 double Rp, Wp; 
 
 // ************************ // 
@@ -59,6 +58,10 @@ double en_el[5], en_surf[2];
 
 //New variables for backup and saving
 int save_every, check_every;
+int stopat;
+
+//Redshift
+double redshift;
 
 //Volúmenes de las regiones
 double dVi, dVo;

@@ -8,6 +8,7 @@ bool read_param() {
 		printf("File param.in not found.\n");
 		return false;
 	}
+	else{
         fscanf(param, "Nx %d\n", &Nx);
         fscanf(param, "Ny %d\n", &Ny);
         fscanf(param, "Nz %d\n", &Nz);
@@ -48,6 +49,7 @@ bool read_param() {
         fscanf(param, "Save Every %d\n", &save_every);
         fscanf(param, "Check Every %d\n", &check_every);
 		fscanf(param, "Stop At %d #For non-stop condition use 0.\n", &stopat);
+	}
 
 	if(myid == root){
 

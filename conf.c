@@ -16,6 +16,7 @@ bool conf(double **pos){
 	double Qini[6] = {0};
 	double dir[3] = {0};
 	int flag = 0;
+	bool ideal = false;
 
 	//uniform initial configuration
 	if(seed == 0){

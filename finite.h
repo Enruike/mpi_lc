@@ -23,7 +23,7 @@ double iRx, iRy, iRz; //aquí está agregado el segundo radio.
 
 //int pdegenerate, pinfinite;
 int rand_seed;
-int seed;
+int seed = 0;
 
 double tmin, tmax, dt; 
 int increment; 
@@ -35,13 +35,12 @@ bool uppersurf, lowersurf, DoubleU; //Variables introducidas para nuevo código.
 Cuando sea 0, significa que las superficies degenerarán de diferentes formas.
 Por ejemplo, la superficie superior no degenerará y la inferior sí.
 Por ahora se mantiene como estándar la superficie de arriba no degenerada.*/
-bool surfdegen; 
+bool surfdegen;
 
-bool ideal;
+int dataseed;
 
 int bulk, surf, tot, droplet;
 double S, S2;
-double qch;
 double dV, dAdrop, dApart;
 double idx, idy, idz, iddx, iddy, iddz;
 double *nu;

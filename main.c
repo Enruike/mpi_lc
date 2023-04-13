@@ -2,6 +2,9 @@
 #include "finite.h"
 
 int main(int argc, char *argv[]){
+
+	read_param();
+	
         MPI_Init(&argc, &argv);
         MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, &shmcomm);
         MPI_Comm_size(MPI_COMM_WORLD, &numprocs);

@@ -19,7 +19,7 @@ bool conf(double **pos){
 	bool ideal = false;
 
 	//uniform initial configuration
-	if(seed == 0){
+	if(nseed == 0){
 
 		printf("Uniform configuration.\n");
 		nd = 0;
@@ -135,7 +135,7 @@ bool conf(double **pos){
 
 	}
 
-	else if(seed == 1){
+	else if(nseed == 1){
 		srand(rand_seed);
 		nd = 0;
 		double norm = 0.0;
@@ -265,7 +265,7 @@ bool conf(double **pos){
 	}
 
 	//random near particle
-	else if(seed == 10){
+	else if(nseed == 10){
 		l = 0;
 		nd = 0;
 		srand(rand_seed);
@@ -315,7 +315,7 @@ bool conf(double **pos){
 	}
 
 	//DSS or RSS initial configuration
-	else if(seed == 2 || seed == 3){
+	else if(nseed == 2 || nseed == 3){
 		l = 0;
 		nd = 0;
 		for(k = 0; k < Nz; k++){
@@ -328,7 +328,7 @@ bool conf(double **pos){
 						z = (k-rz)*dz;
 						dis = sqrt(x*x+y*y+z*z);
 
-						if(seed == 2){
+						if(nseed == 2){
 							omega = dis * qch;
 						}   
 						
@@ -369,7 +369,7 @@ bool conf(double **pos){
     }
 
     //initial configuration read from Qtensor_ini.out file
-    else if(seed == -1){
+    else if(nseed == -1){
         if(!norm_v(init_dir)){
 			return false;
 		}
@@ -427,15 +427,15 @@ bool conf(double **pos){
 		fclose(grid);
 }
 
-	//BPI (seed = 4) and BPII (seed = 5)
-	else if(seed == 4 || seed == 5){
+	//BPI (nseed = 4) and BPII (nseed = 5)
+	else if(nseed == 4 || nseed == 5){
 
     double A = 0.2;
     double cst;
     double isq2 = 1.0 / sqrt(2);
     double sq2 = sqrt(2);
                 
-	if(seed == 4){
+	if(nseed == 4){
         cst = 2 * qch * 0.71;
     }        
 	else{
@@ -450,7 +450,7 @@ bool conf(double **pos){
             for (int i = 0; i < Nx; i++){
                 
 				if(drop[l] || boundary[l] || nboundary[l]){
-                	if(seed == 4){
+                	if(nseed == 4){
 
 						if(geo == -2){
 							x = (i - Nx * 0.5) * cst * isq2;
@@ -476,7 +476,7 @@ bool conf(double **pos){
                         Qold[nd * 6 + 4] = A * (- sq2 * sin(y) * sin(x) - sq2 * cos(z) * cos(x) + sin(y) * cos(z));
                     }
 
-                    else if(seed == 5){
+                    else if(nseed == 5){
                                 
 						if(geo == -2){
 
@@ -518,8 +518,8 @@ bool conf(double **pos){
 		              
 }
 	
-	//seed=6; [110] BPI; 7: [110] BPII; 8: [111] BPI; 9: [111] BPII
-	else if(seed == 6 || seed == 7 || seed==8 || seed==9){
+	//nseed=6; [110] BPI; 7: [110] BPII; 8: [111] BPI; 9: [111] BPII
+	else if(nseed == 6 || nseed == 7 || nseed==8 || nseed==9){
                 double A = 0.2;
                 double cst,phi;
                 double theta = 45 / 180.0 * M_PI;
@@ -528,7 +528,7 @@ bool conf(double **pos){
                 double isq2 = 1.0 / sqrt(2);
                 double sq2 = sqrt(2);
 
-                if(seed == 6 || seed==8){
+                if(nseed == 6 || nseed==8){
                         cst = 2 * qch * 0.71;
                 }
                 else{
@@ -542,7 +542,7 @@ bool conf(double **pos){
                         for (j = 0; j < Ny; j++){
                                 for (i = 0; i < Nx; i++){
                                         if(drop[l] || boundary[l] || nboundary[l]){
-                                                if(seed == 6){
+                                                if(nseed == 6){
 
 													if(geo == -2){
 														xi = (i - Nx * 0.5) * cst * isq2;
@@ -578,7 +578,7 @@ bool conf(double **pos){
                                                     Qold[nd * 6 + 4] = A * (- sq2 * sin(y) * sin(x) - sq2 * cos(z) * cos(x) + sin(y) * cos(z));
                                                 }
                                                 
-												else if(seed == 7){
+												else if(nseed == 7){
                                                         xi = i - Nx * 0.5;
                                                         yi = j - Ny * 0.5;
                                                         zi = k - Nz * 0.5;
@@ -595,7 +595,7 @@ bool conf(double **pos){
 						
 
 						
-                                                else if(seed == 8){    //8 and 9, (111) planes oriented
+                                                else if(nseed == 8){    //8 and 9, (111) planes oriented
 
                                                         xi = (i - Nx * 0.5) * cst * isq2;
                                                         yi = (j - Ny * 0.5) * cst * isq2;
@@ -625,7 +625,7 @@ bool conf(double **pos){
                                                         Qold[nd * 6 + 2] = A * (- sq2 * sin(z) * sin(y) - sq2 * cos(x) * cos(y) + sin(z) * cos(x));
                                                         Qold[nd * 6 + 4] = A * (- sq2 * sin(y) * sin(x) - sq2 * cos(z) * cos(x) + sin(y) * cos(z));
                                                 }
-                                                else if(seed == 9){
+                                                else if(nseed == 9){
 
 													if(geo == -2){
 														xi = i - Nx * 0.5;
@@ -680,7 +680,7 @@ bool conf(double **pos){
         }
 
 	//twist bipolar particle
-	else if(seed == 12){
+	else if(nseed == 12){
 		l = 0;
 		nd = 0;
 		if(!norm_v(init_dir))   return false;
@@ -733,7 +733,7 @@ bool conf(double **pos){
         }
 	
 	//twist bipolar particle
-	else if(seed == 22){
+	else if(nseed == 22){
 		l = 0;
 		nd = 0;
 		if(!norm_v(init_dir))   return false;
@@ -786,7 +786,7 @@ bool conf(double **pos){
         }
 	
 	//twist bipolar particle
-	else if(seed == 13){
+	else if(nseed == 13){
 		l = 0;
 		nd = 0;
 		if(!norm_v(init_dir))   return false;
@@ -833,7 +833,7 @@ bool conf(double **pos){
         }
 	
 	//twist bipolar particle
-	else if(seed == 23){
+	else if(nseed == 23){
 		l = 0;
 		nd = 0;
 		if(!norm_v(init_dir))   return false;
@@ -880,7 +880,7 @@ bool conf(double **pos){
         }
 	
 	//twist bipolar particle
-	else if(seed == 14){
+	else if(nseed == 14){
 		l = 0;
 		nd = 0;
 		if(!norm_v(init_dir))   return false;
@@ -931,7 +931,7 @@ bool conf(double **pos){
 		//geometría axial mientras que para la gota y la media gota, adquiere una geometría inicial radial.
 
 		//Axial and Radial configurations.
-    else if(seed == 11){
+    else if(nseed == 11){
         	l = 0;
 			nd = 0;
 			double mod = 0;
@@ -1315,7 +1315,7 @@ bool conf(double **pos){
 		}
 
 	//escaped cylinder
-	else if(seed == 21){
+	else if(nseed == 21){
 		l = 0;
 		nd = 0;
 		double Rx = rx - 2;
@@ -1346,7 +1346,7 @@ bool conf(double **pos){
 		}
         }
 	//helical along z
-    else if(seed == 87){
+    else if(nseed == 87){
                 l = 0;
 		nd = 0;
                 for(k = 0; k < Nz; k++){
@@ -1366,7 +1366,7 @@ bool conf(double **pos){
                 }
     }
 	//helical along x
-    else if(seed == 88){
+    else if(nseed == 88){
                 l = 0;
 		nd = 0;
                 for(k = 0; k < Nz; k++){
@@ -1386,7 +1386,7 @@ bool conf(double **pos){
                 }
         }
 	//helical along y
-    else if(seed == 89){
+    else if(nseed == 89){
         l = 0;
 		nd = 0;
 			for(k = 0; k < Nz; k++){
@@ -1408,16 +1408,16 @@ bool conf(double **pos){
 
 	
 	// ********** 11 + x = condición radial + condición BP *********** //////////////
-	// ***** For BPI seed = 114 and 116 with [110]; and for BPII seed = 115 and 119 with [111] ***** //////////
-	// ***** Seeds 124, 126, 125, 129 and so on are combinations (with a 1 at the beginning) of seed 2 o 3 (cholesteric)
-	// ***** and BPI's seeds 4 & 6, and BPII's seeds 5 & 9.
-	// *** for seed 141, 142, 143 BPII 100, 110, 111 outter shells with BPIII random inner core //
+	// ***** For BPI nseed = 114 and 116 with [110]; and for BPII nseed = 115 and 119 with [111] ***** //////////
+	// ***** nseeds 124, 126, 125, 129 and so on are combinations (with a 1 at the beginning) of nseed 2 o 3 (cholesteric)
+	// ***** and BPI's nseeds 4 & 6, and BPII's nseeds 5 & 9.
+	// *** for nseed 141, 142, 143 BPII 100, 110, 111 outter shells with BPIII random inner core //
 
-	else if(seed == 114 || seed == 116 || seed == 115 || seed == 119 ||	
-			seed == 124 || seed == 126 || seed == 125 || seed == 129 ||
-			seed == 134 || seed == 136 || seed == 135 || seed == 139 || 
-			seed == 141 || seed == 142 || seed == 143 || 
-			seed == 874 || seed == 875 || seed == 876 || seed == 879)
+	else if(nseed == 114 || nseed == 116 || nseed == 115 || nseed == 119 ||	
+			nseed == 124 || nseed == 126 || nseed == 125 || nseed == 129 ||
+			nseed == 134 || nseed == 136 || nseed == 135 || nseed == 139 || 
+			nseed == 141 || nseed == 142 || nseed == 143 || 
+			nseed == 874 || nseed == 875 || nseed == 876 || nseed == 879)
 			{
 
 		double A = 0.2;
@@ -1431,9 +1431,9 @@ bool conf(double **pos){
 		double norm = 0.0;
 		double dirvec1[3] = {0};
 
-		if( seed == 114 || seed == 116 || seed == 124 || seed == 126 || seed == 134 || seed == 136 || 
-			seed == 141 || seed == 142 || seed == 143 ||
-			seed == 874 || seed == 876){
+		if( nseed == 114 || nseed == 116 || nseed == 124 || nseed == 126 || nseed == 134 || nseed == 136 || 
+			nseed == 141 || nseed == 142 || nseed == 143 ||
+			nseed == 874 || nseed == 876){
 			cst = 2 * qch * 0.71;
 		}        
 		else{
@@ -1449,7 +1449,7 @@ bool conf(double **pos){
 
 					if(init_bulktype[l] == 1){
 						if(drop[l] || boundary[l] || nboundary[l]){
-							if(seed == 114 || seed == 116 || seed == 115 || seed == 119){
+							if(nseed == 114 || nseed == 116 || nseed == 115 || nseed == 119){
 								
 								
 								x = (i - rx) * dx;
@@ -1481,7 +1481,7 @@ bool conf(double **pos){
 								nd ++;
 							
 							}
-							else if(seed == 141 || seed == 142 || seed == 143){
+							else if(nseed == 141 || nseed == 142 || nseed == 143){
 								
 									for(n = 0; n < 3; n ++){
 										dir[n] = (double)rand() / (double)RAND_MAX * 2 - 1;
@@ -1497,15 +1497,15 @@ bool conf(double **pos){
 									}            
 								 nd ++;
 							}
-							else if(seed == 124 || seed == 126 || seed == 125 || seed == 129 ||
-									seed == 134 || seed == 136 || seed == 135 || seed == 139){
+							else if(nseed == 124 || nseed == 126 || nseed == 125 || nseed == 129 ||
+									nseed == 134 || nseed == 136 || nseed == 135 || nseed == 139){
 					
 								x = (i-rx)*dx;
 								y = (j-ry)*dy;
 								z = (k-rz)*dz;
 								dis = sqrt(x*x+y*y+z*z);
 
-								if(seed == 124 || seed == 126 || seed == 125 || seed == 129){
+								if(nseed == 124 || nseed == 126 || nseed == 125 || nseed == 129){
 									omega = dis * qch;
 								}   
 								
@@ -1539,7 +1539,7 @@ bool conf(double **pos){
 						
 								nd ++;
 							}
-							else if(seed == 874 || seed == 875 || seed == 876 || seed == 879){
+							else if(nseed == 874 || nseed == 875 || nseed == 876 || nseed == 879){
 								
 								dir[0] = cos(qch * (k - rz));
 								dir[1] = sin(qch * (k - rz));
@@ -1555,7 +1555,7 @@ bool conf(double **pos){
 					else if(init_bulktype[l] == 2){
 					
 						if(drop[l] || boundary[l] || nboundary[l]){
-							if(seed == 114 || seed == 124 || seed == 134 || seed == 874){
+							if(nseed == 114 || nseed == 124 || nseed == 134 || nseed == 874){
 
 								x = (i - Nx * 0.5) * cst * isq2;
 								y = (j - Ny * 0.5) * cst * isq2;
@@ -1569,7 +1569,7 @@ bool conf(double **pos){
 								Qold[nd * 6 + 4] = A * (- sq2 * sin(y) * sin(x) - sq2 * cos(z) * cos(x) + sin(y) * cos(z));
 							}
 
-							else if(seed == 115 || seed == 125 || seed == 135 || seed == 141 || seed == 875){
+							else if(nseed == 115 || nseed == 125 || nseed == 135 || nseed == 141 || nseed == 875){
 										
 								x = i - Nx * 0.5;
 								y = j - Ny * 0.5;
@@ -1583,7 +1583,7 @@ bool conf(double **pos){
 								Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));
 							}
 
-							else if(seed == 116  || seed == 126 || seed == 136 || seed == 876){
+							else if(nseed == 116  || nseed == 126 || nseed == 136 || nseed == 876){
 
 								xi = (i - Nx * 0.5) * cst * isq2;
 								yi = (j - Ny * 0.5) * cst * isq2;
@@ -1601,7 +1601,7 @@ bool conf(double **pos){
 								Qold[nd * 6 + 4] = A * (- sq2 * sin(y) * sin(x) - sq2 * cos(z) * cos(x) + sin(y) * cos(z));
 							}
 													
-							else if (seed == 142){
+							else if (nseed == 142){
 							
 								xi = i - Nx * 0.5;
                         		yi = j - Ny * 0.5;
@@ -1618,7 +1618,7 @@ bool conf(double **pos){
 								Qold[nd * 6 + 4] = A * sin(cst * x);
 								Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));}
 
-							else if(seed == 119  || seed == 129 || seed == 139 || seed == 143 || seed == 879){
+							else if(nseed == 119  || nseed == 129 || nseed == 139 || nseed == 143 || nseed == 879){
 
 								xi = i - Nx * 0.5;
 								yi = j - Ny * 0.5;

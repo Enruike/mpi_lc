@@ -4,7 +4,7 @@
 bool read_param() {
     FILE *param;
 	param = fopen("param.in","r");
-	if(param == (FILE*)NULL){
+	if(param == (FILE*)NULL && myid == root){
 		printf("File param.in not found.\n");
 		return false;
 	}

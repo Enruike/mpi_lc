@@ -99,15 +99,21 @@ bool initial(){
 	printf("\nS is %lf.\n\n", S);
 	printf("S2 is %lf.\n\n", S2);
 
+	if(DoubleU){
+		FILE* energy2;
+		energy2 = fopen("separated_energy.out", "w");
+
+		fprintf(energy,"cycle\tEnergy_diff\tEnergy_ldg\tEnergy_ldg_in\tEnergy_ldg_out\tEnergy_l1\tEnergy_l1_in\tEnergy_l1_out\tEnergy_chiral\tEnergy_chiral_in\tEnergy_chiral_out\tEnergy_surf\tEnergy_tot\n");
+
+		fclose(energy2)
+	}
+
 	FILE* energy;
 	FILE* grid;
 	energy = fopen("energy.out", "w");
-	if(DoubleU){
-		fprintf(energy,"cycle\tEnergy_diff\tEnergy_ldg\tEnergy_ldg_in\tEnergy_ldg_out\tEnergy_l1\tEnergy_l1_in\tEnergy_l1_out\tEnergy_chiral\tEnergy_chiral_in\tEnergy_chiral_out\tEnergy_surf\tEnergy_tot\n");
-	}
-	else{
-		fprintf(energy,"cycle\tEnergy_diff\tEnergy_ldg\tEnergy_l1\tEnergy_l2\tEnergy_l3\tEnergy_l4\tEnergy_chiral\tEnergy_surf\tEnergy_surf\tEnergy_tot\n");
-	}
+	
+	fprintf(energy,"cycle\tEnergy_diff\tEnergy_ldg\tEnergy_l1\tEnergy_l2\tEnergy_l3\tEnergy_l4\tEnergy_chiral\tEnergy_surf\tEnergy_surf\tEnergy_tot\n");
+	
 	fclose(energy);
 
 	grid = fopen("grid.bin", "wb");

@@ -5,39 +5,35 @@
 #include <stdbool.h>
 #define root 0
 
-int Nx, Ny, Nz; 
-double Lx, Ly, Lz; 
-double W, U, U2; 
-double L1, L2, L3, L4; 
-int chiral; 
-double qch;
-int geo; 
-int degenerate, infinite; 
-int Np;
+extern int Nx, Ny, Nz; 
+extern double Lx, Ly, Lz; 
+extern double W, U, U2; 
+extern double L1, L2, L3, L4; 
+extern int chiral; 
+extern double qch;
+extern int geo, degenerate, infinite; 
+extern int Np;
 
-double Rp, Wp; 
+extern double Rp, Wp; 
 
 // ************************ // 
-double iRx, iRy, iRz; //aquí está agregado el segundo radio.
+extern double iRx, iRy, iRz; //aquí está agregado el segundo radio.
 // ************************ // 
 
 //int pdegenerate, pinfinite;
-int rand_seed;
-int nseed;
+extern int rand_seed, vseed;
 
 double tmin, tmax, dt; 
-int increment; 
-double accuracy; 
-double init_dir[3], dir1[3], dir2[3]; 
-bool uppersurf, lowersurf, DoubleU; //Variables introducidas para nuevo código.
+extern int increment; 
+extern double accuracy; 
+extern double init_dir[3], dir1[3], dir2[3]; 
+extern bool uppersurf, lowersurf, DoubleU; //Variables introducidas para nuevo código.
 
 /*SurfDegen por defecto debe ser 1. Es el flag para que comience a trabajar de manera regular. 
 Cuando sea 0, significa que las superficies degenerarán de diferentes formas.
 Por ejemplo, la superficie superior no degenerará y la inferior sí.
 Por ahora se mantiene como estándar la superficie de arriba no degenerada.*/
-bool surfdegen;
-
-int dataseed;
+extern bool surfdegen;
 
 int bulk, surf, tot, droplet;
 double S, S2;

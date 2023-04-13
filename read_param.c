@@ -1,6 +1,4 @@
-#include "finite.h"
-
-
+#include "read_param.h"
 
 bool read_param() {
 
@@ -28,14 +26,14 @@ bool read_param() {
         fscanf(param, "L4 %lf\n", &L4);
         fscanf(param, "chiral %d\n", &chiral);
         fscanf(param, "qch %lf\n", &qch);
-		//fscanf(param, "redshift %lf #Default values BPI = 0.71 & BPII = 0.86.\n", &redshift);
+		fscanf(param, "redshift %lf #Default values BPI = 0.71 & BPII = 0.86.\n", &redshift);
         fscanf(param, "geo %d\n", &geo);
         fscanf(param, "degenerate %d\n", &degenerate);
         fscanf(param, "infinite %d\n", &infinite);
         fscanf(param, "Np %d\n", &Np);
         fscanf(param, "Rp %lf\n", &Rp);
         fscanf(param, "Wp %lf\n", &Wp);
-        fscanf(param, "seed %d\n", &nseed);
+        fscanf(param, "seed %d\n", &vseed);
         fscanf(param, "rand_seed %d\n", &rand_seed);
         fscanf(param, "tmin tmax %lf %lf\n", &tmin, &tmax);
         fscanf(param, "increment %lf\n", &increment);
@@ -80,7 +78,7 @@ bool read_param() {
 			printf("Wp %lf\n", Wp);
 			//	printf("pdegenerate %d\n", pdegenerate);
 			//	printf("pinfinite %d\n", pinfinite);
-			printf("seed %d\n", nseed);
+			printf("seed %d\n", vseed);
 			printf("rand_seed %d\n", rand_seed);
 			printf("tmin tmax %lf %lf\n", tmin, tmax);
 			printf("increment %lf\n", increment);

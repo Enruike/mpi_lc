@@ -105,7 +105,7 @@ bool initial(){
 
 		fprintf(energy,"cycle\tEnergy_diff\tEnergy_ldg\tEnergy_ldg_in\tEnergy_ldg_out\tEnergy_l1\tEnergy_l1_in\tEnergy_l1_out\tEnergy_chiral\tEnergy_chiral_in\tEnergy_chiral_out\tEnergy_surf\tEnergy_tot\n");
 
-		fclose(energy2)
+		fclose(energy2);
 	}
 
 	FILE* energy;

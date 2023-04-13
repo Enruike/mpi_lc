@@ -225,12 +225,14 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 			if(chiral == 1){
 				//Chiral elastic energy
 				ans[4] += Qin[0] * dQ[1][2] + Qin[1] * dQ[1][4] + Qin[2] * dQ[1][5] + Qin[1] * dQ[2][0] + Qin[3] * dQ[2][1] + Qin[4] * dQ[2][2]  + Qin[2] * dQ[0][1] + Qin[4] * dQ[0][3] + Qin[5] * dQ[0][4]  - Qin[0] * dQ[2][1] - Qin[1] * dQ[2][3] - Qin[2] * dQ[2][4]  - Qin[2] * dQ[1][0] - Qin[4] * dQ[1][1] - Qin[5] * dQ[1][2] - Qin[1] * dQ[0][2] - Qin[3] * dQ[0][4] - Qin[4] * dQ[0][5];
+				
 				if(DoubleU){
 					if(bulktype_MPI[i] == 1){
 						ans_in[4] += Qin[0] * dQ[1][2] + Qin[1] * dQ[1][4] + Qin[2] * dQ[1][5] + Qin[1] * dQ[2][0] + Qin[3] * dQ[2][1] + Qin[4] * dQ[2][2]  + Qin[2] * dQ[0][1] + Qin[4] * dQ[0][3] + Qin[5] * dQ[0][4]  - Qin[0] * dQ[2][1] - Qin[1] * dQ[2][3] - Qin[2] * dQ[2][4]  - Qin[2] * dQ[1][0] - Qin[4] * dQ[1][1] - Qin[5] * dQ[1][2] - Qin[1] * dQ[0][2] - Qin[3] * dQ[0][4] - Qin[4] * dQ[0][5];					}
 					else if(bulktype_MPI[i] == 2){
 						ans_out[4] += Qin[0] * dQ[1][2] + Qin[1] * dQ[1][4] + Qin[2] * dQ[1][5] + Qin[1] * dQ[2][0] + Qin[3] * dQ[2][1] + Qin[4] * dQ[2][2]  + Qin[2] * dQ[0][1] + Qin[4] * dQ[0][3] + Qin[5] * dQ[0][4]  - Qin[0] * dQ[2][1] - Qin[1] * dQ[2][3] - Qin[2] * dQ[2][4]  - Qin[2] * dQ[1][0] - Qin[4] * dQ[1][1] - Qin[5] * dQ[1][2] - Qin[1] * dQ[0][2] - Qin[3] * dQ[0][4] - Qin[4] * dQ[0][5];					}
 				}
+
 			}
 		}
 	}
@@ -239,13 +241,13 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 		ans_in[1] *= 0.5 * dVi * L2;
 		ans_in[2] *= 0.5 * dVi * L3;
 		ans_in[3] *= 0.5 * dVi * L4;
-		ans_in[4] *= dVi * chiral * 2. * L1 * qch;
+		ans_in[4] *= dVi * (double)chiral * 2. * L1 * qch;
 
 		ans_out[0] *= 0.5 * dVo * L1;
 		ans_out[1] *= 0.5 * dVo * L2;
 		ans_out[2] *= 0.5 * dVo * L3;
 		ans_out[3] *= 0.5 * dVo * L4;
-		ans_out[4] *= dVo * chiral * 2. * L1 * qch;
+		ans_out[4] *= dVo * (double)chiral * 2. * L1 * qch;
 	}
 	ans[0] *= 0.5 * dV * L1;
 	ans[1] *= 0.5 * dV * L2;

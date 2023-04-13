@@ -23,7 +23,7 @@ double iRx, iRy, iRz; //aquí está agregado el segundo radio.
 
 //int pdegenerate, pinfinite;
 int rand_seed;
-int seed = 0;
+int nseed;
 
 double tmin, tmax, dt; 
 int increment; 

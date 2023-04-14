@@ -24,7 +24,7 @@ bool read_param() {
         fscanf(param, "L2 %lf\n", &L2);
         fscanf(param, "L3 %lf\n", &L3);
         fscanf(param, "L4 %lf\n", &L4);
-        fscanf(param, "chiral %d\n", &chiral);
+        fscanf(param, "chiral %d\n", &vchiral);
         fscanf(param, "qch %lf\n", &qch);
 		fscanf(param, "redshift %lf #Default values BPI = 0.71 & BPII = 0.86.\n", &redshift);
         fscanf(param, "geo %d\n", &geo);
@@ -67,7 +67,7 @@ bool read_param() {
 			printf("L2 %lf\n", L2);
 			printf("L3 %lf\n", L3);
 			printf("L4 %lf\n", L4);
-			printf("chiral %d\n", chiral);
+			printf("chiral %d\n", vchiral);
 			printf("qch %lf\n", qch);
 			printf("redshift %lf\n", redshift);
 			printf("geo %d\n", geo);
@@ -88,7 +88,7 @@ bool read_param() {
 			printf("dir2 is %lf,%lf,%lf\n", dir2[0], dir2[1], dir2[2]);
 			printf("Upper Surface is %d\n", uppersurf);
 			printf("Lower Surface is %d\n", lowersurf);
-
+			chiral = vchiral;
 			//My new variables for dynamic savings.
 			printf("Checkpoint every %d!\n", save_every);
 			printf("Energy will be compared every %d!\n", check_every);

@@ -9,7 +9,8 @@ extern int Nx, Ny, Nz;
 extern double Lx, Ly, Lz; 
 extern double W, U, U2; 
 extern double L1, L2, L3, L4; 
-extern int chiral; 
+extern int vchiral; 
+int chiral;
 extern double qch;
 extern int geo, degenerate, infinite; 
 extern int Np;
@@ -23,7 +24,17 @@ extern double iRx, iRy, iRz; //aquí está agregado el segundo radio.
 //int pdegenerate, pinfinite;
 extern int rand_seed, vseed;
 
-double tmin, tmax, dt; 
+//New variables for backup and saving
+int save_every, check_every;
+int stopat;
+
+//Redshift
+extern double redshift;
+
+//Volúmenes de las regiones
+double dVi, dVo;
+
+extern double tmin, tmax, dt; 
 extern int increment; 
 extern double accuracy; 
 extern double init_dir[3], dir1[3], dir2[3]; 
@@ -52,16 +63,6 @@ double en_ldg[3];
 double en_tot, dE, el_old;
 int cycle;
 double en_el[5], en_surf[2];
-
-//New variables for backup and saving
-int save_every, check_every;
-int stopat;
-
-//Redshift
-double redshift;
-
-//Volúmenes de las regiones
-double dVi, dVo;
 double en_el_in[5], en_el_out[5];
 
 int myid, numprocs;

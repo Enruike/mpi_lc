@@ -11,7 +11,7 @@ void free_energy(){
 	double p_en_el_in[5] = {0.};
 	//Region externa
 	double p_en_el_out[5] = {0.};
-	
+
 	energy_ldg(p_en_ldg);                                                                      
 	energy_el(p_en_el, p_en_el_in, p_en_el_out);                                                                           
 	energy_surf(p_en_surf);                                                                    
@@ -34,6 +34,7 @@ void free_energy(){
 		if(myid == root && cycle % check_every == 0){
 			printf("En_LDG: %lf, En_LDG_in: %lf, En_LDG_out: %lf, En_L1: %lf, En_L1_in: %lf, En_L1_out: %lf, En_Chiral: %lf, En_Chiral_in: %lf, En_Chiral_out: %lf, En_Surf1: %lf, Cycle = %d\n", en_ldg[0], en_ldg[1], en_ldg[2], en_el[0], en_el_in[0], en_el_out[0], en_el[4],\
 			en_el_in[4], en_el_out[4], en_surf[0], cycle);
+			printf("Chiral is %d\n", chiral);
 			printf("la energia total es: %lf \n", en_tot);		
 			printf("dE vale %lf \n", dE);		
 		}
@@ -126,7 +127,7 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 			dQ[i][j] = 0;
 		}
 	}
-	for(i = 0; i < 5; i ++)	ans[i] = 0;
+	//for(i = 0; i < 5; i ++)	ans[i] = 0;
 
 	for (i = 0; i < length; i ++){
 		if(sign[i] == 0 || sign[i] == 1){
@@ -253,7 +254,7 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 	ans[1] *= 0.5 * dV * L2;
 	ans[2] *= 0.5 * dV * L3;
 	ans[3] *= 0.5 * dV * L4;
-	ans[4] *= dV * chiral * 2 * L1 * qch;
+	ans[4] *= dV * (double)chiral * 2 * L1 * qch;
 }
 
 void energy_surf(double* ans){

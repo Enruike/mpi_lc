@@ -9,8 +9,8 @@ extern int Nx, Ny, Nz;
 extern double Lx, Ly, Lz; 
 extern double W, U, U2; 
 extern double L1, L2, L3, L4; 
-extern int vchiral; 
-int chiral;
+extern int chiral; 
+//int chiral;
 extern double qch;
 extern int geo, degenerate, infinite; 
 extern int Np;
@@ -22,7 +22,8 @@ extern double iRx, iRy, iRz; //aquí está agregado el segundo radio.
 // ************************ // 
 
 //int pdegenerate, pinfinite;
-extern int rand_seed, vseed;
+extern int rand_seed;
+extern int seed;
 
 //New variables for backup and saving
 int save_every, check_every;

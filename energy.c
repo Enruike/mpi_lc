@@ -1,16 +1,26 @@
 #include "finite.h"
 
-void free_energy(){
-	//Cambiaremos la dimensión de la variable a 3 por ser 2 regiones y una total.
+//Cambiaremos la dimensión de la variable a 3 por ser 2 regiones y una total.
 	//double p_en_ldg = 0;
-	double p_en_ldg[3] = {0.};
-	double p_en_surf[2] = {0.};
-    double p_en_el[5] = {0.};
+	double p_en_ldg[3];
+	double p_en_surf[2];
+    double p_en_el[5];
 
 	//Region interna
-	double p_en_el_in[5] = {0.};
+	double p_en_el_in[5];
 	//Region externa
-	double p_en_el_out[5] = {0.};
+	double p_en_el_out[5];
+
+void free_energy(){
+	
+	p_en_ldg[3] = 0.;
+	p_en_surf[2] = 0.;
+    p_en_el[5] = 0.;
+
+	//Region interna
+	p_en_el_in[5] = 0.;
+	//Region externa
+	p_en_el_out[5] = 0.;
 
 	energy_ldg(p_en_ldg);                                                                      
 	energy_el(p_en_el, p_en_el_in, p_en_el_out);                                                                           
@@ -34,7 +44,6 @@ void free_energy(){
 		if(myid == root && cycle % check_every == 0){
 			printf("En_LDG: %lf, En_LDG_in: %lf, En_LDG_out: %lf, En_L1: %lf, En_L1_in: %lf, En_L1_out: %lf, En_Chiral: %lf, En_Chiral_in: %lf, En_Chiral_out: %lf, En_Surf1: %lf, Cycle = %d\n", en_ldg[0], en_ldg[1], en_ldg[2], en_el[0], en_el_in[0], en_el_out[0], en_el[4],\
 			en_el_in[4], en_el_out[4], en_surf[0], cycle);
-			printf("Chiral is %d\n", chiral);
 			printf("la energia total es: %lf \n", en_tot);		
 			printf("dE vale %lf \n", dE);		
 		}

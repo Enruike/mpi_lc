@@ -1,26 +1,17 @@
 #include "finite.h"
 
-//Cambiaremos la dimensión de la variable a 3 por ser 2 regiones y una total.
-	//double p_en_ldg = 0;
-	double p_en_ldg[3];
-	double p_en_surf[2];
-    double p_en_el[5];
-
-	//Region interna
-	double p_en_el_in[5];
-	//Region externa
-	double p_en_el_out[5];
-
 void free_energy(){
-	
-	p_en_ldg[3] = 0.;
-	p_en_surf[2] = 0.;
-    p_en_el[5] = 0.;
+
+	//Cambiaremos la dimensión de la variable a 3 por ser 2 regiones y una total.
+	//double p_en_ldg = 0;
+	double p_en_ldg[3]  = { 0. };
+	double p_en_surf[2] = { 0. };
+    double p_en_el[5] = { 0. };
 
 	//Region interna
-	p_en_el_in[5] = 0.;
+	double p_en_el_in[5] = { 0. };
 	//Region externa
-	p_en_el_out[5] = 0.;
+	double p_en_el_out[5] = { 0. };
 
 	energy_ldg(p_en_ldg);                                                                      
 	energy_el(p_en_el, p_en_el_in, p_en_el_out);                                                                           
@@ -62,8 +53,8 @@ void free_energy(){
 //Landau de-Gennes energy for bulk points.
 void energy_ldg(double* ans){
 	int i, n;
-	double traceqq = 0;
-	double Qin[6] = {0};
+	double traceqq = 0.;
+	double Qin[6] = { 0. };
 
 	if(DoubleU){
 		for (i = 0; i < length; i ++){				
@@ -127,8 +118,8 @@ void energy_ldg(double* ans){
 void energy_el(double* ans, double* ans_in, double* ans_out){
 	int i, n, j, k, l;
 	double dQ[3][6];
-	double Qin[6] = {0};
-	double vec[3] = {0};
+	double Qin[6] = { 0. };
+	double vec[3] = { 0. };
 	int ref = length * myid;
 	int xm, xp, ym, yp, zm, zp;
 	for (i = 0; i < 3; i ++){

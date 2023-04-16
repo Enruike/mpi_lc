@@ -109,7 +109,7 @@ bool initial_ellip(){
 					x = (i-rx)*dx;
 					y = (j-ry)*dy;
 					z = (k-rz)*dz;
-					if ((x * x) / (Rx * Rx) + (y * y) / (Ry * Ry) + (z * z) / (Rz * Rz) <= 1){
+					if(( (x * x) / ((Rx + 0.5) * (Rx + 0.5)) + (y * y) / ((Ry + 0.5) * (Ry + 0.5)) + (z * z) / ((Rz + 0.5) * (Rz + 0.5)) ) <= 1){
 						drop[l] = true;
 						bulk ++;
 					}
@@ -220,8 +220,8 @@ bool initial_ellip(){
 
 	dV = (((4. / 3.) * M_PI * (Rx * Ry * Rz)) - (4.0 / 3.) * M_PI * Rp * Rp * Rp * Np) / bulk; 
 	if(DoubleU){
-		dVi = (4.0 / 3 * M_PI * iRx * iRy * iRz) / bulkin; 
-		dVo = (4.0 / 3 * M_PI * ((Rx * Ry * Rz) - (iRx * iRy * iRz))) / (bulkout - surf);
+		dVi = (4.0 / 3. * M_PI * (iRx * iRy * iRz)) / bulkin; 
+		dVo = (4.0 / 3. * M_PI * ((Rx * Ry * Rz) - (iRx * iRy * iRz))) / (bulkout - surf);
 	}
 
 	dAdrop = (4. * M_PI * pow((pow(Rx * Ry, 1.6075) + pow(Rx * Rz, 1.6075) + pow(Ry * Rz, 1.6075)) / 3.0, 1.0/1.6075) - M_PI * Rp * Rp * Np) / (surf -  nsurf);

@@ -8,7 +8,7 @@ HEADERS = finite.h
 
 OBJS = read_param.o
 
-#WARNS = -diag-disable=10441
+WARNS = -diag-disable=10441
 
 lc_mpi.x: $(FILES) $(HEADERS) read_param.o
 	mpiicc -O2 $(FILES) $(OBJS) $(HEADERS) -o lc_mpi.x $(WARNS)
@@ -18,6 +18,6 @@ read_param.o: read_param.c read_param.h
 
 move: 
 	mv lc_mpi.x ~/mpi_test/
-	
+
 clean:
 	rm -f $(OBJS) lc_mpi.x

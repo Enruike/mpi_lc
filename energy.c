@@ -52,16 +52,15 @@ void free_energy(){
 
 //Landau de-Gennes energy for bulk points.
 void energy_ldg(double* ans){
-	int i, n;
 	double traceqq = 0.;
 	double Qin[6] = { 0. };
 
 	if(DoubleU){
-		for (i = 0; i < length; i ++){				
+		for (int i = 0; i < length; i ++){				
 
 			if(sign[i] == 0 || sign[i] == 1){
 					
-				for (n = 0; n < 6; n ++){
+				for (int n = 0; n < 6; n ++){
 					Qin[n] = q[i * 6 + n];
 				
 				}	
@@ -83,11 +82,11 @@ void energy_ldg(double* ans){
 
 	else{
 
-		for (i = 0; i < length; i ++){				
+		for (int i = 0; i < length; i ++){				
 
 			if(sign[i] == 0 || sign[i] == 1){
 				
-				for (n = 0; n < 6; n ++){
+				for(int n = 0; n < 6; n ++){
 				Qin[n] = q[i * 6 + n];
 				//if (i % 10 == 0 && cycle % 50 == 0 && sign[i] == 1) printf("Qin[%d] = %lf ", n, Qin[n]);
 				}	
@@ -110,8 +109,6 @@ void energy_ldg(double* ans){
 	else{
 		dV * ans[0];
 	}
-	
-
 }
 
 //Elastic energy for bulk points
@@ -254,7 +251,7 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 	ans[1] *= 0.5 * dV * L2;
 	ans[2] *= 0.5 * dV * L3;
 	ans[3] *= 0.5 * dV * L4;
-	ans[4] *= dV * (double)chiral * 2 * L1 * qch;
+	ans[4] *= dV * (double)chiral * 2. * L1 * qch;
 }
 
 void energy_surf(double* ans){

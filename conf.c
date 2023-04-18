@@ -5,9 +5,9 @@ bool conf(double **pos){
 	int nb, nd;
 	int i, j, k, n;
 	double dis, x = 0.0, y = 0.0, z = 0.0, xi, yi, zi;
-	int rx = lrint(Nx *0.5);
-	int ry = lrint(Ny *0.5);
-	int rz = lrint(Nz *0.5);
+	int rx = lrint(Nx / 2) - 1;
+	int ry = lrint(Ny / 2) - 1;
+	int rz = lrint(Nz / 2) - 1;
 	double dx = Lx/(Nx-1);
 	double dy = Ly/(Ny-1);
 	double dz = Lz/(Nz-1);

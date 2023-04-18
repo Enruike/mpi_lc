@@ -56,6 +56,8 @@ void energy_ldg(double* ans){
 	double trace3 = 0.;
 	double Qin[6] = { 0. };
 	int contador = 0;
+	int counter_in = 0;
+	int counter_out = 0;
 
 	if(DoubleU){
 		for (int i = 0; i < length; i ++){				
@@ -75,10 +77,12 @@ void energy_ldg(double* ans){
 				if(bulktype_MPI[i] == 1){
 					ans[0] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
 					ans[1] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
+					counter_in++;
 				}
 				else if(bulktype_MPI[i] == 2){
 					ans[0] += 0.5 * (1. - U2 / 3.) * trace2 - U2 / 3. * trace3 + U2 * 0.25 * trace2 * trace2;
 					ans[2] += 0.5 * (1. - U2 / 3.) * trace2 - U2 / 3. * trace3 + U2 * 0.25 * trace2 * trace2;
+					counter_out++;
 				}
 			}
 		}
@@ -105,6 +109,8 @@ void energy_ldg(double* ans){
 			}
 		}
 		printf("El contador es igual a %d\n", contador);
+		printf("El contador in es igual a %d\n", counter_in);
+		printf("El contador es out igual a %d\n", counter_out);
 	}
 	
 	if(DoubleU){

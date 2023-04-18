@@ -82,7 +82,7 @@ void energy_ldg(double* ans){
 			}
 		}
 	}
-
+	int contador = 0;
 	else{
 
 		for (int i = 0; i < length; i ++){				
@@ -101,9 +101,10 @@ void energy_ldg(double* ans){
 
 				ans[0] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
 				//if (i % 10 == 0 && cycle % 50 == 0 && sign[i] == 1) printf("traceqq = %lf  trqqq = %lf i = %d sign[%d] = %d \n", trqq(Qin), trqqq(Qin), i, i, sign[i]);
+				contador++;
 			}
-			
 		}
+		printf("El contador es igual a %d\n", contador);
 	}
 	
 	if(DoubleU){

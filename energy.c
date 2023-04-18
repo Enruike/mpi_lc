@@ -108,10 +108,11 @@ void energy_ldg(double* ans){
 				contador++;
 			}
 		}
-		printf("El contador es igual a %d\n", contador);
-		printf("El contador in es igual a %d\n", counter_in);
-		printf("El contador es out igual a %d\n", counter_out);
 	}
+
+	printf("El contador es igual a %d\n", contador);
+	printf("El contador in es igual a %d\n", counter_in);
+	printf("El contador es out igual a %d\n", counter_out);
 	
 	if(DoubleU){
 		dV * ans[0];

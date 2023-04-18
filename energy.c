@@ -55,6 +55,7 @@ void energy_ldg(double* ans){
 	double trace2 = 0.;
 	double trace3 = 0.;
 	double Qin[6] = { 0. };
+	int contador = 0;
 
 	if(DoubleU){
 		for (int i = 0; i < length; i ++){				
@@ -82,7 +83,6 @@ void energy_ldg(double* ans){
 			}
 		}
 	}
-	int contador = 0;
 	else{
 
 		for (int i = 0; i < length; i ++){				

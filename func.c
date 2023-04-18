@@ -60,14 +60,14 @@ double dir2ten(double *vec, int n, double Sin){
 double trqqq(double* Q){
 	double ans = 0;
 	ans = Q[0] * Q[0] * Q[0] + Q[3] * Q[3] * Q[3] +Q[5] * Q[5] * Q[5]\
-		 + 6 * Q[1] * Q[2] * Q[4] + 3 * Q[0] * (Q[1] * Q[1] + Q[2] * Q[2])\
-		 + 3 * Q[3] * (Q[1] * Q[1] + Q[4] * Q[4]) + 3 * Q[5] * (Q[4] * Q[4] + Q[2] * Q[2]);
+		 + 6. * Q[1] * Q[2] * Q[4] + 3 * Q[0] * (Q[1] * Q[1] + Q[2] * Q[2])\
+		 + 3. * Q[3] * (Q[1] * Q[1] + Q[4] * Q[4]) + 3. * Q[5] * (Q[4] * Q[4] + Q[2] * Q[2]);
 	return ans;
 }
 
 double trqq(double* Q){
 	double ans = 0;
-	ans = Q[0] * Q[0] + Q[3] * Q[3] + Q[5] * Q[5] + 2 * (Q[1] * Q[1] + Q[2] * Q[2] + Q[4] * Q[4]);
+	ans = Q[0] * Q[0] + Q[3] * Q[3] + Q[5] * Q[5] + 2. * (Q[1] * Q[1] + Q[2] * Q[2] + Q[4] * Q[4]);
 	return ans;
 }
 

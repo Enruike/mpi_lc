@@ -52,29 +52,34 @@ void free_energy(){
 
 //Landau de-Gennes energy for bulk points.
 void energy_ldg(double* ans){
-	double traceqq = 0.;
+	double trace2 = 0.;
+	double trace3 = 0.;
 	double Qin[6] = { 0. };
 
 	if(DoubleU){
 		for (int i = 0; i < length; i ++){				
 
 			if(sign[i] == 0 || sign[i] == 1){
-					
-				for (int n = 0; n < 6; n ++){
-					Qin[n] = q[i * 6 + n];
 				
-				}	
+				Qin[0] = q[i * 6 + 0];
+				Qin[1] = q[i * 6 + 1];
+				Qin[2] = q[i * 6 + 2];
+				Qin[3] = q[i * 6 + 3];
+				Qin[4] = q[i * 6 + 4];
+				Qin[5] = q[i * 6 + 5];
+
+				trace2 = trqq(Qin);
+				trace3 = trqqq(Qin);
 
 				if(bulktype_MPI[i] == 1){
-					traceqq = trqq(Qin);
-					ans[0] += 0.5 * (1. - U / 3.) * traceqq - U / 3. * trqqq(Qin) + U * 0.25 * traceqq * traceqq;
-					ans[1] += 0.5 * (1. - U / 3.) * traceqq - U / 3. * trqqq(Qin) + U * 0.25 * traceqq * traceqq;
+					ans[0] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
+					ans[1] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
 				}
 				else if(bulktype_MPI[i] == 2){
 
 					traceqq = trqq(Qin);
-					ans[0] += 0.5 * (1. - U2 / 3.) * traceqq - U2 / 3. * trqqq(Qin) + U2 * 0.25 * traceqq * traceqq;
-					ans[2] += 0.5 * (1. - U2 / 3.) * traceqq - U2 / 3. * trqqq(Qin) + U2 * 0.25 * traceqq * traceqq;
+					ans[0] += 0.5 * (1. - U2 / 3.) * trace2 - U2 / 3. * trace3 + U2 * 0.25 * trace2 * trace2;
+					ans[2] += 0.5 * (1. - U2 / 3.) * trace2 - U2 / 3. * trace3 + U2 * 0.25 * trace2 * trace2;
 				}
 			}
 		}
@@ -85,16 +90,18 @@ void energy_ldg(double* ans){
 		for (int i = 0; i < length; i ++){				
 
 			if(sign[i] == 0 || sign[i] == 1){
-				
-				for(int n = 0; n < 6; n ++){
-				Qin[n] = q[i * 6 + n];
-				//if (i % 10 == 0 && cycle % 50 == 0 && sign[i] == 1) printf("Qin[%d] = %lf ", n, Qin[n]);
-				}	
 
-				//if (i % 10 == 0 && cycle % 50 == 0 && sign[i] == 1) printf("\n");
+				Qin[0] = q[i * 6 + 0];
+				Qin[1] = q[i * 6 + 1];
+				Qin[2] = q[i * 6 + 2];
+				Qin[3] = q[i * 6 + 3];
+				Qin[4] = q[i * 6 + 4];
+				Qin[5] = q[i * 6 + 5];	
+			
+				trace2 = trqq(Qin);
+				trace3 = trqqq(Qin);
 
-				traceqq = trqq(Qin);
-				ans[0] += 0.5 * (1. - U / 3.) * traceqq - U / 3. * trqqq(Qin) + U * 0.25 * traceqq * traceqq;
+				ans[0] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
 				//if (i % 10 == 0 && cycle % 50 == 0 && sign[i] == 1) printf("traceqq = %lf  trqqq = %lf i = %d sign[%d] = %d \n", trqq(Qin), trqqq(Qin), i, i, sign[i]);
 			}
 			

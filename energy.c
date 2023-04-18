@@ -67,14 +67,14 @@ void energy_ldg(double* ans){
 
 				if(bulktype_MPI[i] == 1){
 					traceqq = trqq(Qin);
-					ans[0] += 0.5 * (1 - U / 3) * traceqq - U / 3 * trqqq(Qin) + U * 0.25 * traceqq * traceqq;
-					ans[1] += 0.5 * (1 - U / 3) * traceqq - U / 3 * trqqq(Qin) + U * 0.25 * traceqq * traceqq;
+					ans[0] += 0.5 * (1. - U / 3.) * traceqq - U / 3. * trqqq(Qin) + U * 0.25 * traceqq * traceqq;
+					ans[1] += 0.5 * (1. - U / 3.) * traceqq - U / 3. * trqqq(Qin) + U * 0.25 * traceqq * traceqq;
 				}
 				else if(bulktype_MPI[i] == 2){
 
 					traceqq = trqq(Qin);
-					ans[0] += 0.5 * (1 - U2 / 3) * traceqq - U2 / 3 * trqqq(Qin) + U2 * 0.25 * traceqq * traceqq;
-					ans[2] += 0.5 * (1 - U2 / 3) * traceqq - U2 / 3 * trqqq(Qin) + U2 * 0.25 * traceqq * traceqq;
+					ans[0] += 0.5 * (1. - U2 / 3.) * traceqq - U2 / 3. * trqqq(Qin) + U2 * 0.25 * traceqq * traceqq;
+					ans[2] += 0.5 * (1. - U2 / 3.) * traceqq - U2 / 3. * trqqq(Qin) + U2 * 0.25 * traceqq * traceqq;
 				}
 			}
 		}
@@ -94,7 +94,7 @@ void energy_ldg(double* ans){
 				//if (i % 10 == 0 && cycle % 50 == 0 && sign[i] == 1) printf("\n");
 
 				traceqq = trqq(Qin);
-				ans[0] += 0.5 * (1 - U / 3) * traceqq - U / 3 * trqqq(Qin) + U * 0.25 * traceqq * traceqq;
+				ans[0] += 0.5 * (1. - U / 3.) * traceqq - U / 3. * trqqq(Qin) + U * 0.25 * traceqq * traceqq;
 				//if (i % 10 == 0 && cycle % 50 == 0 && sign[i] == 1) printf("traceqq = %lf  trqqq = %lf i = %d sign[%d] = %d \n", trqq(Qin), trqqq(Qin), i, i, sign[i]);
 			}
 			

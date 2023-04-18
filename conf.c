@@ -453,19 +453,19 @@ bool conf(double **pos){
                 	if(seed == 4){
 
 						if(geo == -2){
-							x = (i - Nx * 0.5) * cst * isq2;
+							x = (i - rx) * cst * isq2;
                         	y = (j - 2) * cst * isq2;
                         	z = (k) * cst * isq2;
 						}
 						else if(geo == -3){
-							x = (i - Nx * 0.5) * cst * isq2;
+							x = (i - rx) * cst * isq2;
                         	y = (j - 2) * cst * isq2;
-                        	z = (k - Nz * 0.5) * cst * isq2;
+                        	z = (k - rz) * cst * isq2;
 						}
 						else{
-							x = (i - Nx * 0.5) * cst * isq2;
-                        	y = (j - Ny * 0.5) * cst * isq2;
-                        	z = (k - Nz * 0.5) * cst * isq2;
+							x = (i - rx) * cst * isq2;
+                        	y = (j - ry) * cst * isq2;
+                        	z = (k - rz) * cst * isq2;
 						}
                                     
 						Qold[nd * 6 + 0] = A * (- sin(y) * cos(x) - sin(x) * cos(z) + 2 * sin(z) * cos(y));
@@ -480,23 +480,23 @@ bool conf(double **pos){
                                 
 						if(geo == -2){
 
-							x = i - Nx * 0.5;
+							x = i - rx;
                     		y = j - 2;
                    			z = k;
 
 						}
 						else if(geo == -3){
 
-							x = i - Nx * 0.5;
+							x = i - rx;
                     		y = j - 2;
-                   			z = k - Nz * 0.5;
+                   			z = k - rz;
 
 						}
 						else{
 
-							x = i - Nx * 0.5;
-                    		y = j - Ny * 0.5;
-                   			z = k - Nz * 0.5;
+							x = i - rx;
+                    		y = j - ry;
+                   			z = k - rz;
 							   
 						}
 

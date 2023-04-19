@@ -33,18 +33,21 @@ void free_energy(){
 	
 	if(DoubleU){
 		if(myid == root && cycle % check_every == 0){
-			printf("En_LDG: %lf, En_LDG_in: %lf, En_LDG_out: %lf, En_L1: %lf, En_L1_in: %lf, En_L1_out: %lf, En_Chiral: %lf, En_Chiral_in: %lf, En_Chiral_out: %lf, En_Surf1: %lf, Cycle = %d\n", en_ldg[0], en_ldg[1], en_ldg[2], en_el[0], en_el_in[0], en_el_out[0], en_el[4],\
-			en_el_in[4], en_el_out[4], en_surf[0], cycle);
-			printf("la energia total es: %lf \n", en_tot);		
-			printf("dE vale %lf \n", dE);		
+			printf("En_LDG: %lf, En_L1: %lf, En_Chiral: %lf, En_Surf1: %lf, Cycle: %d\n", en_ldg[0], en_el[0], en_el[4], en_surf[0], cycle);
+			printf("\t\t ~Inner Region Energy~\n");
+			printf("LdG: %lf, L1: %lf, Chiral: %lf\n", en_ldg[1], en_el_in[0], en_el_in[4]);
+			printf("\t\t ~Outer Region Energy~\n");
+			printf("LdG: %lf, L1: %lf, Chiral: %lf\n", en_ldg[2], en_el_out[0], en_el_out[4]);
+			printf("Total Energy: %lf \n", en_tot);		
+			printf("dE: %lf \n", dE);		
 		}
 	}
 	else{
 		if(myid == root && cycle % check_every == 0){
-			printf("En_LDG: %lf, En_L1: %lf, En_L2: %lf, En_L3: %lf, En_L4: %lf, En_Chiral: %lf, En_Surf1: %lf, En_Surf2: %lf Cycle = %d\n", \
+			printf("En_LDG: %lf, En_L1: %lf, En_L2: %lf, En_L3: %lf, En_L4: %lf, En_Chiral: %lf, En_Surf1: %lf, En_Surf2: %lf Cycle: %d\n", \
 			en_ldg[0], en_el[0], en_el[1], en_el[2], en_el[3], en_el[4], en_surf[0], en_surf[1], cycle);
-			printf("la energia total es: %lf \n", en_tot);		
-			printf("dE vale %lf \n", dE);		
+			printf("Total Energy: %lf \n", en_tot);		
+			printf("dE: %lf \n", dE);		
 		}
 	}
 
@@ -55,9 +58,6 @@ void energy_ldg(double* ans){
 	double trace2 = 0.;
 	double trace3 = 0.;
 	double Qin[6] = { 0. };
-	int contador = 0;
-	int counter_in = 0;
-	int counter_out = 0;
 
 	if(DoubleU){
 		for (int i = 0; i < length; i ++){				
@@ -77,12 +77,10 @@ void energy_ldg(double* ans){
 				if(bulktype_MPI[i] == 1){
 					ans[0] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
 					ans[1] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
-					counter_in++;
 				}
 				else if(bulktype_MPI[i] == 2){
 					ans[0] += 0.5 * (1. - U2 / 3.) * trace2 - U2 / 3. * trace3 + U2 * 0.25 * trace2 * trace2;
 					ans[2] += 0.5 * (1. - U2 / 3.) * trace2 - U2 / 3. * trace3 + U2 * 0.25 * trace2 * trace2;
-					counter_out++;
 				}
 			}
 		}
@@ -105,22 +103,17 @@ void energy_ldg(double* ans){
 
 				ans[0] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
 				//if (i % 10 == 0 && cycle % 50 == 0 && sign[i] == 1) printf("traceqq = %lf  trqqq = %lf i = %d sign[%d] = %d \n", trqq(Qin), trqqq(Qin), i, i, sign[i]);
-				contador++;
 			}
 		}
 	}
-
-	printf("El contador es igual a %d\n", contador);
-	printf("El contador in es igual a %d\n", counter_in);
-	printf("El contador es out igual a %d\n", counter_out);
 	
 	if(DoubleU){
-		dV * ans[0];
-		dVi * ans[1];
-		dVo * ans[2];
+		ans[0] *= dV;
+		ans[1] *= dVi;
+		ans[2] *= dVo;
 	}
 	else{
-		dV * ans[0];
+		ans[0] *= dV;
 	}
 }
 

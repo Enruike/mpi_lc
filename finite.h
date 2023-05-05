@@ -56,7 +56,14 @@ double  *Qold, *Qo;
 int *neighbor;
 bool *drop, *boundary;
 bool *nboundary;
-int *share;
+/*Estas variables definen el tipo de nodo
+-1 para nodo indefinido o que no pertenece al sistema
+0 para 
+
+*/
+char *share;
+char *sign;
+
 int *bulktype_MPI, *bulktype, *init_bulktype;
 bool AnchNInf;
 
@@ -69,7 +76,8 @@ double en_el_in[5], en_el_out[5];
 int myid, numprocs;
 double *q, *qn, *qo_p;
 double *nu_p;
-int *neigb, *sign;
+int *neigb;
+
 int length;
 MPI_Win win, win2;
 MPI_Comm shmcomm; 
@@ -88,6 +96,8 @@ bool initial_drop();
 bool initial_halfdrop();
 bool initial_quarterdrop();
 bool initial_ellip();
+bool initial_nano_channel();
+
 int peri(int node, int dir);
 bool conf(double** pos);
 void free_q();

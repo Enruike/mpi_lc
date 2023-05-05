@@ -35,7 +35,7 @@ bool scatter(){
     MPI_Win_allocate_shared(6 * length * sizeof(int), 1, MPI_INFO_NULL, shmcomm, &neigb, &win2);
     MPI_Scatter(neighbor, 6 * length, MPI_INT, neigb, 6 * length, MPI_INT, root, MPI_COMM_WORLD);
 
-	sign = (int*)malloc(length * sizeof(int));
+	sign = (char*)malloc(length * sizeof(char));
 	for(int i = 0; i < length; i ++){
 		sign[i] = -1;
 	}

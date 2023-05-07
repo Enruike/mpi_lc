@@ -1,4 +1,3 @@
-#include <time.h>
 #include "finite.h"
 
 int main(int argc, char *argv[]){

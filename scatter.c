@@ -39,7 +39,7 @@ bool scatter(){
 	for(int i = 0; i < length; i ++){
 		sign[i] = -1;
 	}
-	MPI_Scatter(share, length, MPI_INT, sign, length, MPI_INT, root, MPI_COMM_WORLD);
+	MPI_Scatter(share, length, MPI_CHAR, sign, length, MPI_CHAR, root, MPI_COMM_WORLD);
 	
 	//Ahora checaremos que los bultype sean los mismos que los repartidos por MPI.
 	if(DoubleU){

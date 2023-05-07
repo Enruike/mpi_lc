@@ -3,6 +3,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <time.h>
 #define root 0
 
 extern int Nx, Ny, Nz; 

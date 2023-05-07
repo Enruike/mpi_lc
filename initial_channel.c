@@ -334,20 +334,6 @@ bool initial_channel(){
 								}
 							}
 						}
-/*
-						else if(degenerate = 1){
-							if(k == 0){
-								for(n = 0; n < 6; n ++){
-									Qold[nd * 6 + n] = dir2ten(dir, n, S);
-								}	
-							}	
-							else{
-								for(n = 0; n < 6; n ++){
-									Qold[nd * 6 + n] = dir2ten(dir, n, S);
-								}	
-							}
-						}
-*/
 					}
 					else{
 						for(m = 0; m < Np; m ++){

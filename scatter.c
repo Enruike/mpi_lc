@@ -58,23 +58,25 @@ bool scatter(){
 		MPI_Barrier(MPI_COMM_WORLD);
 		if(myid == root){
 			for(int i = 0; i < length * numprocs; i++){
-				if(bulktype[i] == 1 || bulktype[i] == 2){
+				//0: null 1:U1 2:U2 3:U2 interface 4:Channel surface 5:Nanoparticle 6:Nanoparticle Surface
+				if(bulktype[i] == 1 || bulktype[i] == 2 || bulktype[i] == 3 || bulktype[i] == 4 || bulktype[i] == 6){
 					icount++;
 				}
 				else if(bulktype[i] == 0){
 					zerocount++;
 				}
 			}
-			printf("Bulktype elementes = %d Nontype = %d Total = %d\n", icount, zerocount, icount + zerocount);
+			printf("Bulktype elements = %d Nontype = %d Total = %d\n", icount, zerocount, icount + zerocount);
 			if(zerocount + icount != length * numprocs){
 				printf("Mismatch in data lenght!\n");
+				return false;
 			}
 		}
 
 		int mpizerocount = 0;
 		for (int i = 0; i < length; i++){
 			
-			if(bulktype_MPI[i] == 1 || bulktype_MPI[i] == 2){
+			if(bulktype_MPI[i] >= 1 && bulktype_MPI[i] <= 6){
 				mpicount++;
 			}
 			else{

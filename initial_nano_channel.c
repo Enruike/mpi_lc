@@ -1,9 +1,8 @@
 #include"finite.h"
 
-int pRx, pRy, pRz;
 double pU;
 double alpha, beta, gama;
-int interface;
+
 int anchoring;
 
 bool read_nano(){
@@ -96,19 +95,23 @@ bool initial_nano_channel(){
 	init_bulktype = (int*)malloc(tot * sizeof(int));
 	for(l = 0; l < tot; l ++){
 		drop[l] = true;
+        init_bulktype[l] = 1;
 		boundary[l] = false;
 		ndrop[l] = false;
 		nboundary[l] = false;
 		indx[l] = -1;
 	}
 
+    int channel_surf = 0;
     //define the channel surface 
 	for (int j = 0; j < Ny; j++){
 		for (int i = 0; i < Nx; i++){
 			for(int k = 0; k <= Nz - 1; k += Nz - 1){
 				l = i + j * Nx + k * Nx * Ny;
 				drop[l] = false;
+                init_bulktype[l] = 4;
 				boundary[l] = true;
+                channel_surf ++;
 			}
 		}
 	}
@@ -157,6 +160,7 @@ bool initial_nano_channel(){
                 if(distance <= 1){
                     ndrop[l] = true;
                     drop[l] = false;
+                    init_bulktype[l] = 5;
                     bulk--;
                 }
 
@@ -189,6 +193,7 @@ bool initial_nano_channel(){
                     if(ndrop[xm] || ndrop[xp] || ndrop[ym] || ndrop[yp] || ndrop[zm] || ndrop[zp]){
 						nboundary[l] = true;
 						drop[l] = false;
+                        init_bulktype[l] = 6;
 						bulk--;
 						nsurf++;	
 						surf++;
@@ -205,27 +210,26 @@ bool initial_nano_channel(){
     */
 
     l = 0;
+    int interbulk = 0;
     if(interface != 0){
         for(int node = 0; node < interface; node++){
             for(int k = 0; k < Nz; k++){
                 for(int j = 0; j < Ny; j++){
                     for(int i = 0; i < Nx; i++){
                         if(drop[l]){
-                        xm = peri(i - (node + 1), 0) + j * Nx + k * Nx * Ny;
-                        xp = peri(i + (node + 1), 0) + j * Nx + k * Nx * Ny;
-                        ym = i + peri(j - (node + 1), 1) * Nx + k * Nx * Ny;
-                        yp = i + peri(j + (node + 1), 1) * Nx + k * Nx * Ny;
-                        zm = i + j * Nx + (k - (node + 1)) * Nx * Ny;
-                        zp = i + j * Nx + (k + (node + 1)) * Nx * Ny;
-                        
-                        if(nboundary[xm] || nboundary[xp] || nboundary[ym]
-                            || nboundary[yp] || nboundary[zm] || nboundary[zp]){
-                            drop[l] = false;
-                            bulk--;
-                            surf++;
-                            nsurf++;
+                            xm = peri(i - (node + 1), 0) + j * Nx + k * Nx * Ny;
+                            xp = peri(i + (node + 1), 0) + j * Nx + k * Nx * Ny;
+                            ym = i + peri(j - (node + 1), 1) * Nx + k * Nx * Ny;
+                            yp = i + peri(j + (node + 1), 1) * Nx + k * Nx * Ny;
+                            zm = i + j * Nx + peri(k - (node + 1), 2) * Nx * Ny;
+                            zp = i + j * Nx + peri(k + (node + 1), 2) * Nx * Ny;
+                            
+                            if(nboundary[xm] || nboundary[xp] || nboundary[ym]
+                                || nboundary[yp] || nboundary[zm] || nboundary[zp]){
+                                init_bulktype[l] = 3;
+                                interbulk++;
+                            }
                         }
-                    }
                     l++;
                     }
                 }
@@ -234,12 +238,15 @@ bool initial_nano_channel(){
     }
     
     dV = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / bulk;
+    dVi = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / (bulk - interbulk);
+    dVo = (4 / 3 * M_PI * ((pRx + interface) * (pRy + interface) * (pRz + interface) - (pRx) * (pRy) * (pRz))) / interbulk ;
     dAdrop = (2 * Lx * Ly) / (surf - nsurf);
     dApart = 4. * M_PI * pow((pow(pRx * pRy, 1.6075) + pow(pRx * pRz, 1.6075) + pow(pRy * pRz, 1.6075)) / 3.0, 1.0/1.6075) / nsurf;
 
     int dAinterface;
 
     printf("\ndV is %lf\ndA of droplet is %lf\ndA of nanoparticle is %lf\n", dV, dAdrop, dApart); 
+    printf("dVi = %lf\ndVo = %lf\n", dVi, dVo);
     droplet = bulk + surf;
 	printf("\nDroplet nodes number is %d.\nBulk nodes number is %d.\nDroplet surface nodes number is %d. \nParticle surface nodes number is %d.\n", droplet, bulk, surf, nsurf); 
     
@@ -269,6 +276,7 @@ bool initial_nano_channel(){
 
     int num_node = 0;
     int num_boundary = 0;
+    int nb_counter = 0;
 
     for(int i = 0; i < tot; i++){
         if(!ndrop[i]){
@@ -285,7 +293,7 @@ bool initial_nano_channel(){
             }
             else if(nboundary[i]){
                 share[num_node] = 4;
-                num_boundary++;
+                nb_counter++;
             }
             num_node++;
         }
@@ -296,8 +304,9 @@ bool initial_nano_channel(){
 		printf("Problem in initialization of qtensor. nd is %d not equal to droplet %d.\n", num_node, droplet);
 		return false;
 	}
-	if (num_boundary != surf){
+	if (num_boundary + nb_counter != surf){
 		printf("Problem in initialization of qtensor. nb is %d not equal to surf %d.\n", num_boundary, surf);
+        printf("Channel surface nodes: %d; Nanoparticle surface nodes %d; Nanoboundary counter: %d\n", channel_surf, nsurf, nb_counter);
 		return false;
 	}
 
@@ -444,6 +453,52 @@ bool initial_nano_channel(){
 	}
     int count1;
 
+    if(DoubleU){
+
+		bulktype = (int*)malloc(length * numprocs * sizeof(int));
+		for(int i = 0; i < length * numprocs; i++){
+			bulktype[i]=0;
+		}
+
+		int bt1 = 0, bt2 = 0;
+		nd = 0;
+		for(int i = 0; i < tot; i++){
+			if(init_bulktype[i] == 1 ){
+				bulktype[nd] = 1;
+				bt1++;
+				nd++;
+               
+			}
+			else if(init_bulktype[i] == 2){
+				bulktype[nd] = 2;
+				bt2++;
+				nd++;
+             
+			}
+            else if(init_bulktype[i] == 3){
+                bulktype[nd] = 3;
+                bt2++;
+                nd++;
+               
+            }
+            else if(init_bulktype[i] == 4 || init_bulktype[i] == 6){
+                bulktype[nd] = init_bulktype[i];
+                bt2++;
+                nd++;
+            }       
+		}
+
+		if ((bt1 + bt2) != droplet) {
+			printf("Error in transfer data to droplet bulktype!\n");
+            printf("bt1 is %d bt2 is %d\n", bt1, bt2);
+			printf("droplet size is %d\n", droplet);
+			return false;
+		}
+		else{
+			printf("Data transfer to droplet bulktype successfully!\n");
+		}
+	}
+
     for(nd = 0; nd < droplet; nd ++){
 		//for all Bulk point, if one of the neighbor is surface point
 		count1 = 0;
@@ -473,6 +528,7 @@ bool initial_nano_channel(){
 
 	free(ndrop);
 	free(indx);
+    free(init_bulktype);
 
 	printf("Initialization of ellipse successful.\n");
 	return true;

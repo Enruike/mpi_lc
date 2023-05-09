@@ -68,6 +68,10 @@ char *sign;
 int *bulktype_MPI, *bulktype, *init_bulktype;
 bool AnchNInf;
 
+//Nano variables
+int interface;
+int pRx, pRy, pRz;
+
 double en_ldg[3];
 double en_tot, dE, el_old;
 int cycle;

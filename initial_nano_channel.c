@@ -205,7 +205,16 @@ bool initial_nano_channel(){
     */
 
     l = 0;
+    
     if(interface != 0){
+        int interface_counter = 0;
+        bool* interface_vector = (bool*)malloc(tot * sizeof(bool));
+        int rebulker = bulk;
+
+        for(int i = 0; i < tot; i++){
+            interface_vector[i] = false;
+        }
+
         for(int node = 0; node < interface; node++){
             for(int k = 0; k < Nz; k++){
                 for(int j = 0; j < Ny; j++){
@@ -220,10 +229,13 @@ bool initial_nano_channel(){
                         
                         if(nboundary[xm] || nboundary[xp] || nboundary[ym]
                             || nboundary[yp] || nboundary[zm] || nboundary[zp]){
-                            drop[l] = false;
-                            bulk--;
-                            surf++;
-                            nsurf++;
+                            //drop[l] = false;
+                            interface_vector[l] = true;
+                            interface_counter++;
+                            rebulker --;
+                            //bulk--;
+                            //surf++;
+                            //nsurf++;
                         }
                     }
                     l++;
@@ -231,7 +243,14 @@ bool initial_nano_channel(){
                 }
             }
         }
+
+        if(bulk != (rebulker + interface_counter)){
+            printf("Problems with interface nodes\n");
+            return false;
+        }
     }
+
+    
     
     dV = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / bulk;
     dAdrop = (2 * Lx * Ly) / (surf - nsurf);
@@ -267,33 +286,34 @@ bool initial_nano_channel(){
 		neighbor[i] = -1;
 	}
 
-    int num_node = 0;
+    int nd = 0;
     int num_boundary = 0;
 
     for(int i = 0; i < tot; i++){
         if(!ndrop[i]){
-            indx[i] = num_node;
+            indx[i] = nd;
             //bulto: share/sign = 0
             //superficie del canal: share/sign = 2
             //superficie de la nanopartícula: share/sign = 4
             if(drop[i]){
-                share[num_node] = 0;
+                share[nd] = 0;
             }
             else if(boundary[i]){
-                share[num_node] = 2;
+                share[nd] = 2;
                 num_boundary++;
             }
             else if(nboundary[i]){
-                share[num_node] = 4;
+                share[nd] = 4;
                 num_boundary++;
             }
-            num_node++;
+            else if()
+            nd++;
         }
 
     }
 
-    if (num_node != droplet){
-		printf("Problem in initialization of qtensor. nd is %d not equal to droplet %d.\n", num_node, droplet);
+    if (nd != droplet){
+		printf("Problem in initialization of qtensor. nd is %d not equal to droplet %d.\n", nd, droplet);
 		return false;
 	}
 	if (num_boundary != surf){
@@ -470,6 +490,10 @@ bool initial_nano_channel(){
 		}
 		//for all nodes with problem, share +1
 	}
+
+    if(interface != 0){
+        free(interface_vector);
+    }
 
 	free(ndrop);
 	free(indx);

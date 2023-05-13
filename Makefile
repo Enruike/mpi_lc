@@ -17,7 +17,7 @@ read_param.o: read_param.c read_param.h
 	icc -c read_param.c
 
 move: 
-	mv lc_mpi.x ~/mpi_test/
+	mv lc_mpi.x ~/Oblates/nanochannel/
 
 clean:
 	rm -f $(OBJS) lc_mpi.x

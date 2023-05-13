@@ -30,6 +30,10 @@ void relax_bulk(){
 	for (int i = 0; i < length; i++){
 			if(sign[i] == 0 || sign[i] == 1){
 
+				if(bulktype_MPI[i] == 3){
+					continue;
+				}
+
 				Qin[0] = q[i * 6 + 0];
 				Qin[1] = q[i * 6 + 1];
 				Qin[2] = q[i * 6 + 2];

@@ -33,13 +33,35 @@ void free_energy(){
 	
 	if(DoubleU){
 		if(myid == root && cycle % check_every == 0){
-			printf("En_LDG: %lf, En_L1: %lf, En_Chiral: %lf, En_Surf1: %lf, Cycle: %d\n", en_ldg[0], en_el[0], en_el[4], en_surf[0], cycle);
-			printf("\t\t ~Inner Region Energy~\n");
-			printf("LdG: %lf, L1: %lf, Chiral: %lf\n", en_ldg[1], en_el_in[0], en_el_in[4]);
-			printf("\t\t ~Outer Region Energy~\n");
-			printf("LdG: %lf, L1: %lf, Chiral: %lf\n", en_ldg[2], en_el_out[0], en_el_out[4]);
+			printf("En_LDG: %lf, En_L1: %lf, ", en_ldg[0], en_el[0]);
+			if(L2 != 0){
+				printf("L2: %lf, ", en_el[1]);
+			}
+			printf("En_Chiral: %lf, En_Surf1: %lf, Cycle: %d\n", en_el[4], en_surf[0], cycle);
+			if(geo != 10){
+				printf("\t\t ~Inner Region Energy~\n");
+			}
+			else{
+				printf("\t\t ~Energy~\n");
+			}
+			printf("LdG: %lf, L1: %lf, ", en_ldg[1], en_el_in[0]);
+			if(L2 != 0){
+				printf("L2: %lf, ", en_el_in[1]);
+			}
+			printf("Chiral: %lf\n", en_el_in[4]);
+			if(geo != 10){
+				printf("\t\t ~Outer Region Energy~\n");
+			}
+			else{
+				printf("\t ~Energy Around the Interface~\n");
+			}
+			printf("LdG: %lf, L1: %lf, ", en_ldg[2], en_el_out[0]);
+			if(L2 != 0){
+				printf("L2: %lf, ", en_el_out[1]);
+			}
+			printf("Chiral: %lf\n", en_el_out[4]);
 			printf("Total Energy: %lf \n", en_tot);		
-			printf("dE: %lf \n", dE);		
+			printf("dE: %lf \n\n", dE);		
 		}
 	}
 	else{
@@ -47,7 +69,7 @@ void free_energy(){
 			printf("En_LDG: %lf, En_L1: %lf, En_L2: %lf, En_L3: %lf, En_L4: %lf, En_Chiral: %lf, En_Surf1: %lf, En_Surf2: %lf Cycle: %d\n", \
 			en_ldg[0], en_el[0], en_el[1], en_el[2], en_el[3], en_el[4], en_surf[0], en_surf[1], cycle);
 			printf("Total Energy: %lf \n", en_tot);		
-			printf("dE: %lf \n", dE);		
+			printf("dE: %lf \n\n", dE);		
 		}
 	}
 
@@ -78,7 +100,7 @@ void energy_ldg(double* ans){
 					ans[0] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
 					ans[1] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
 				}
-				else if(bulktype_MPI[i] == 2){
+				else if(bulktype_MPI[i] == 2 || bulktype_MPI[i] == 3){
 					ans[0] += 0.5 * (1. - U2 / 3.) * trace2 - U2 / 3. * trace3 + U2 * 0.25 * trace2 * trace2;
 					ans[2] += 0.5 * (1. - U2 / 3.) * trace2 - U2 / 3. * trace3 + U2 * 0.25 * trace2 * trace2;
 				}
@@ -154,7 +176,7 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 				if(bulktype_MPI[i] == 1){
 					ans_in[0] += trqq(dQ[0])+trqq(dQ[1])+trqq(dQ[2]);
 				}
-				else if(bulktype_MPI[i] == 2){
+				else if(bulktype_MPI[i] == 2 || bulktype_MPI[i] == 3){
 					ans_out[0] += trqq(dQ[0])+trqq(dQ[1])+trqq(dQ[2]);
 				}
 			}
@@ -168,7 +190,7 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 					if(bulktype_MPI[i] == 1){
 						ans_in[1] += matr_mult(vec);
 					}
-					else if(bulktype_MPI[i] == 2){
+					else if(bulktype_MPI[i] == 2 || bulktype_MPI[i] == 3){
 						ans_out[1] += matr_mult(vec);
 					}
 				}
@@ -182,7 +204,7 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 					if(bulktype_MPI[i] == 1){
 						ans_in[1] += matr_mult(vec);
 					}
-					else if(bulktype_MPI[i] == 2){
+					else if(bulktype_MPI[i] == 2 || bulktype_MPI[i] == 3){
 						ans_out[1] += matr_mult(vec);
 					}
 				}
@@ -196,7 +218,7 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 					if(bulktype_MPI[i] == 1){
 						ans_in[1] += matr_mult(vec);
 					}
-					else if(bulktype_MPI[i]== 2){
+					else if(bulktype_MPI[i] == 2 || bulktype_MPI[i] == 3){
 						ans_out[1] += matr_mult(vec);
 					}
 				}
@@ -208,7 +230,7 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 					if(bulktype_MPI[i] == 1){
 						ans_in[2] += Qin[0] * trqq(dQ[0]) + Qin[3] * trqq(dQ[1]) + Qin[5] * trqq(dQ[2]) + 2 * Qin[1] * q_mult(dQ[0], dQ[1]) + 2 * Qin[2] * q_mult(dQ[0], dQ[2]) + 2 * Qin[4] * q_mult(dQ[1], dQ[2]);
 					}
-					else if(bulktype_MPI[i]== 2){
+					else if(bulktype_MPI[i] == 2 || bulktype_MPI[i] == 3){
 						ans_out[2] += Qin[0] * trqq(dQ[0]) + Qin[3] * trqq(dQ[1]) + Qin[5] * trqq(dQ[2]) + 2 * Qin[1] * q_mult(dQ[0], dQ[1]) + 2 * Qin[2] * q_mult(dQ[0], dQ[2]) + 2 * Qin[4] * q_mult(dQ[1], dQ[2]);
 					}
 				}
@@ -220,7 +242,7 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 					if(bulktype_MPI[i] == 1){
 						ans_in[3] += dQ[0][0] * dQ[0][0] + dQ[1][1] * dQ[1][1] + dQ[2][2] * dQ[2][2] + dQ[0][1] * dQ[0][1] + dQ[1][3] * dQ[1][3] + dQ[2][4] * dQ[2][4] + dQ[0][2] * dQ[0][2] + dQ[1][4] * dQ[1][4] + dQ[2][5] * dQ[2][5] + 2 * (dQ[0][1] * dQ[1][0] + dQ[0][2] * dQ[2][0] + dQ[1][2] * dQ[2][1] + dQ[0][3] * dQ[1][1] + dQ[0][4] * dQ[2][1] + dQ[1][4] * dQ[2][3] 	+ dQ[1][2] * dQ[0][4] + dQ[0][5] * dQ[2][2] + dQ[1][5] * dQ[2][4]);
 					}
-					else if(bulktype_MPI[i]== 2){
+					else if(bulktype_MPI[i] == 2 || bulktype_MPI[i] == 3){
 						ans_out[3] += dQ[0][0] * dQ[0][0] + dQ[1][1] * dQ[1][1] + dQ[2][2] * dQ[2][2] + dQ[0][1] * dQ[0][1] + dQ[1][3] * dQ[1][3] + dQ[2][4] * dQ[2][4] + dQ[0][2] * dQ[0][2] + dQ[1][4] * dQ[1][4] + dQ[2][5] * dQ[2][5] + 2 * (dQ[0][1] * dQ[1][0] + dQ[0][2] * dQ[2][0] + dQ[1][2] * dQ[2][1] + dQ[0][3] * dQ[1][1] + dQ[0][4] * dQ[2][1] + dQ[1][4] * dQ[2][3] 	+ dQ[1][2] * dQ[0][4] + dQ[0][5] * dQ[2][2] + dQ[1][5] * dQ[2][4]);
 					}
 				}
@@ -233,7 +255,7 @@ void energy_el(double* ans, double* ans_in, double* ans_out){
 				if(DoubleU){
 					if(bulktype_MPI[i] == 1){
 						ans_in[4] += Qin[0] * dQ[1][2] + Qin[1] * dQ[1][4] + Qin[2] * dQ[1][5] + Qin[1] * dQ[2][0] + Qin[3] * dQ[2][1] + Qin[4] * dQ[2][2]  + Qin[2] * dQ[0][1] + Qin[4] * dQ[0][3] + Qin[5] * dQ[0][4]  - Qin[0] * dQ[2][1] - Qin[1] * dQ[2][3] - Qin[2] * dQ[2][4]  - Qin[2] * dQ[1][0] - Qin[4] * dQ[1][1] - Qin[5] * dQ[1][2] - Qin[1] * dQ[0][2] - Qin[3] * dQ[0][4] - Qin[4] * dQ[0][5];					}
-					else if(bulktype_MPI[i] == 2){
+					else if(bulktype_MPI[i] == 2 || bulktype_MPI[i] == 3){
 						ans_out[4] += Qin[0] * dQ[1][2] + Qin[1] * dQ[1][4] + Qin[2] * dQ[1][5] + Qin[1] * dQ[2][0] + Qin[3] * dQ[2][1] + Qin[4] * dQ[2][2]  + Qin[2] * dQ[0][1] + Qin[4] * dQ[0][3] + Qin[5] * dQ[0][4]  - Qin[0] * dQ[2][1] - Qin[1] * dQ[2][3] - Qin[2] * dQ[2][4]  - Qin[2] * dQ[1][0] - Qin[4] * dQ[1][1] - Qin[5] * dQ[1][2] - Qin[1] * dQ[0][2] - Qin[3] * dQ[0][4] - Qin[4] * dQ[0][5];					}
 				}
 

@@ -1,6 +1,7 @@
 #include "finite.h"
 
 bool scatter(){
+	printf("Starting Scattering\n");
 	int i, j;
 	int count;
 	int count_tot;
@@ -49,6 +50,7 @@ bool scatter(){
 		for(int i = 0; i < length; i ++){
 			bulktype_MPI[i] = 0;
 		}
+		printf("Scattering bulktype\n");
 
 		MPI_Scatter(bulktype, length, MPI_INT, bulktype_MPI, length, MPI_INT, root, MPI_COMM_WORLD);
 		int mpicount = 0;
@@ -57,24 +59,28 @@ bool scatter(){
 		int zerocount = 0;
 		MPI_Barrier(MPI_COMM_WORLD);
 		if(myid == root){
+
+			printf("Creating the bulktype definition\n");
 			for(int i = 0; i < length * numprocs; i++){
-				if(bulktype[i] == 1 || bulktype[i] == 2){
+				//0: null 1:U1 2:U2 3:U2 interface 4:Channel surface 5:Nanoparticle 6:Nanoparticle Surface
+				if(bulktype[i] == 1 || bulktype[i] == 2 || bulktype[i] == 3 || bulktype[i] == 4 || bulktype[i] == 6){
 					icount++;
 				}
 				else if(bulktype[i] == 0){
 					zerocount++;
 				}
 			}
-			printf("Bulktype elementes = %d Nontype = %d Total = %d\n", icount, zerocount, icount + zerocount);
+			printf("Bulktype elements = %d Nontype = %d Total = %d\n", icount, zerocount, icount + zerocount);
 			if(zerocount + icount != length * numprocs){
 				printf("Mismatch in data lenght!\n");
+				return false;
 			}
 		}
 
 		int mpizerocount = 0;
 		for (int i = 0; i < length; i++){
 			
-			if(bulktype_MPI[i] == 1 || bulktype_MPI[i] == 2){
+			if(bulktype_MPI[i] >= 1 && bulktype_MPI[i] <= 6){
 				mpicount++;
 			}
 			else{

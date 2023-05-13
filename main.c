@@ -48,11 +48,13 @@ int main(int argc, char *argv[]){
 	
 	MPI_Bcast(&flag, 1, MPI_BYTE, root, MPI_COMM_WORLD);	
 	
+	
 	//For all infomation initialized in root processor, scatter them to all other processors.
 	if(!scatter()){
 		flag = false;
-	}		
-
+	}
+	
+			
 	MPI_Barrier(MPI_COMM_WORLD);
 	MPI_Win_fence(0, win);
 	

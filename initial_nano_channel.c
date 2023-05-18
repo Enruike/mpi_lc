@@ -216,11 +216,13 @@ bool initial_nano_channel(){
        
         int rebulker = bulk;
 
-        for(int node = 0; node < interface; node++){
-            for(int k = 0; k < Nz; k++){
-                for(int j = 0; j < Ny; j++){
-                    for(int i = 0; i < Nx; i++){
-                        if(drop[l]){
+        
+        for(int k = 0; k < Nz; k++){
+            for(int j = 0; j < Ny; j++){
+                for(int i = 0; i < Nx; i++){
+                    if(nboundary[l]){
+
+                        for(int node = 0; node < interface; node++){
                             xm = peri(i - (node + 1), 0) + j * Nx + k * Nx * Ny;
                             xp = peri(i + (node + 1), 0) + j * Nx + k * Nx * Ny;
                             ym = i + peri(j - (node + 1), 1) * Nx + k * Nx * Ny;
@@ -228,18 +230,44 @@ bool initial_nano_channel(){
                             zm = i + j * Nx + peri(k - (node + 1), 2) * Nx * Ny;
                             zp = i + j * Nx + peri(k + (node + 1), 2) * Nx * Ny;
                             
-                            if(nboundary[xm] || nboundary[xp] || nboundary[ym]
-                                || nboundary[yp] || nboundary[zm] || nboundary[zp]){
-                                init_bulktype[l] = 3;
+                            
+                            if(drop[xm] && init_bulktype[xm] != 3){
+                                init_bulktype[xm] = 3;
                                 interbulk++;
                                 rebulker--;
                             }
-                        }
-                    l++;
+                            if(drop[xp] && init_bulktype[xp] != 3){
+                                init_bulktype[xp] = 3;
+                                interbulk++;
+                                rebulker--;
+                            }
+                            if(drop[ym] && init_bulktype[ym] != 3){
+                                init_bulktype[ym] = 3;
+                                interbulk++;
+                                rebulker--;
+                            }
+                            if(drop[yp] && init_bulktype[yp] != 3){
+                                init_bulktype[yp] = 3;
+                                interbulk++;
+                                rebulker--;
+                            }
+                            if(drop[zm] && init_bulktype[zm] != 3){
+                                init_bulktype[zm] = 3;
+                                interbulk++;
+                                rebulker--;
+                            }
+                            if(drop[zp] && init_bulktype[zp] != 3){
+                                init_bulktype[zp] = 3;
+                                interbulk++;
+                                rebulker--;
+                            }
+                        } 
                     }
+                l++;
                 }
             }
         }
+        
 
         if(bulk != (rebulker + interbulk++)){
             printf("Problems with interface nodes\n");

@@ -570,9 +570,6 @@ bool initial_nano_channel(){
 		}
 		//for all nodes with problem, share +1
 	}
-    for(int i = 0; i < droplet * 6; i++){
-		printf("Qold %d is %lf ", i, Qold[i]);
-	}
 
 	free(ndrop);
 	free(indx);

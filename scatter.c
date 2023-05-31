@@ -60,7 +60,6 @@ bool scatter(){
 		MPI_Barrier(MPI_COMM_WORLD);
 		if(myid == root){
 
-			printf("Creating the bulktype definition\n");
 			for(int i = 0; i < length * numprocs; i++){
 				//0: null 1:U1 2:U2 3:U2 interface 4:Channel surface 5:Nanoparticle 6:Nanoparticle Surface
 				if(bulktype[i] >= 1 && bulktype[i] <= 6){
@@ -126,8 +125,8 @@ bool scatter(){
 	}
 
  	MPI_Reduce(&count, &count_tot, 1, MPI_INT, MPI_SUM, root, MPI_COMM_WORLD);
-	if(myid == root && count_tot != surf){
-		printf("Error in scatter(boundary). Counted number %d is not equal to surface %d.\n", count_tot, surf);	
+	if(myid == root && count_tot != surf + nsurf){
+		printf("Error in scatter(boundary). Counted number %d is not equal to surface %d and nanop surface %d.\n", count_tot, surf, nsurf);	
 		return false;
 	}
 	count *= 3;

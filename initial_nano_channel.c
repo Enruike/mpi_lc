@@ -54,25 +54,21 @@ bool initial_nano_channel(){
 
     bool *ndrop;
     int *indx;
-    int nsurf;
     int l;
 
-    int rx, ry, rz;
-    double Rx, Ry, Rz;
-
     //Mitad de la caja
-    rx = lrint(Nx / 2) - 1;
-    ry = lrint(Ny / 2) - 1;
-    rz = lrint(Nz / 2) - 1;
+    rx = lrint(Nx / 2);
+    ry = lrint(Ny / 2);
+    rz = lrint(Nz / 2);
 
     //Radio del sistema
-    Rx = Lx / 2. - 2.;
-    Ry = Ly / 2. - 2.;
-    Rz = Lz / 2. - 2.;
+    double Rx = Lx / 2. - 2.;
+    double Ry = Ly / 2. - 2.;
+    double Rz = Lz / 2. - 2.;
 
-    double dx = Lx/(Nx-1);
-	double dy = Ly/(Ny-1);
-	double dz = Lz/(Nz-1);
+    dx = Lx/(Nx-1);
+	dy = Ly/(Ny-1);
+	dz = Lz/(Nz-1);
 
 	idx = 1 / dx;
 	idy = 1 / dy;
@@ -81,10 +77,10 @@ bool initial_nano_channel(){
 	iddy = idy * idy;
 	iddz = idz * idz;
 
-    surf = 2 * Nx * Ny;
+    surf = 0;
 	nsurf = 0;
 	tot = Nx * Ny * Nz;
-	bulk = Nx * Ny * (Nz - 2);
+	bulk = Nx * Ny * Nz;
 
     //allocate drop and boundary
 	ndrop = (bool*)malloc(tot * sizeof(bool));
@@ -95,23 +91,24 @@ bool initial_nano_channel(){
 	init_bulktype = (int*)malloc(tot * sizeof(int));
 	for(l = 0; l < tot; l ++){
 		drop[l] = true;
-        init_bulktype[l] = 1;
 		boundary[l] = false;
 		ndrop[l] = false;
 		nboundary[l] = false;
+        init_bulktype[l] = 1;
 		indx[l] = -1;
 	}
 
-    int channel_surf = 0;
+ 
     //define the channel surface 
 	for (int j = 0; j < Ny; j++){
 		for (int i = 0; i < Nx; i++){
 			for(int k = 0; k <= Nz - 1; k += Nz - 1){
 				l = i + j * Nx + k * Nx * Ny;
-				drop[l] = false;
-                init_bulktype[l] = 4;
 				boundary[l] = true;
-                channel_surf ++;
+                drop[l] = false;
+                init_bulktype[l] = 4;
+                surf++;
+                bulk--;
 			}
 		}
 	}
@@ -133,15 +130,16 @@ bool initial_nano_channel(){
     double x, y, z;
     double x_rot, y_rot, z_rot;
     double distance;
+    int nanoparticle_nodes = 0;
     l = 0;
 
     for(int k = 0; k < Nz; k++){
         for(int j = 0; j < Ny; j++){
             for(int i = 0; i < Nx; i++){
 
-                x = i - rx;
-                y = j - ry;
-                z = k - rz;
+                x = (double)(i - rx) * dx;
+				y = (double)(j - ry) * dy;
+				z = (double)(k - rz) * dz;
 
                 x_rot = x * cos(alpha) * cos(beta) + y * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
 					+ z * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
@@ -159,6 +157,7 @@ bool initial_nano_channel(){
                 
                 if(distance <= 1){
                     ndrop[l] = true;
+                    nanoparticle_nodes++;
                     drop[l] = false;
                     init_bulktype[l] = 5;
                     bulk--;
@@ -195,8 +194,7 @@ bool initial_nano_channel(){
 						drop[l] = false;
                         init_bulktype[l] = 6;
 						bulk--;
-						nsurf++;	
-						surf++;
+						nsurf++;
 					}
                 }
                 l++;          
@@ -280,25 +278,26 @@ bool initial_nano_channel(){
     dV = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / bulk;
     dVi = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / (bulk - interbulk);
     dVo = (4 / 3 * M_PI * ((pRx + interface) * (pRy + interface) * (pRz + interface) - (pRx) * (pRy) * (pRz))) / interbulk;
-    dAdrop = (2 * Lx * Ly) / (surf - nsurf);
+    dAdrop = (2 * Lx * Ly) / (surf);
     dApart = 4. * M_PI * pow((pow(pRx * pRy, 1.6075) + pow(pRx * pRz, 1.6075) + pow(pRy * pRz, 1.6075)) / 3.0, 1.0/1.6075) / nsurf;
 
     int dAinterface;
 
+    droplet = bulk + surf + nsurf;
+
     printf("\ndV is %lf\ndA of droplet is %lf\ndA of nanoparticle is %lf\n", dV, dAdrop, dApart); 
     printf("dVi = %lf\ndVo = %lf\n", dVi, dVo);
-    droplet = bulk + surf;
-	printf("\nDroplet nodes number is %d.\nBulk nodes number is %d.\nDroplet surface nodes number is %d. \nParticle surface nodes number is %d.\n", droplet, bulk, surf, nsurf); 
+	printf("\nDroplet nodes number is %d.\nBulk nodes number is %d.\nDroplet surface nodes number is %d.\nNanoparticle nodes is %d.\nParticle surface nodes number is %d.\n", droplet, bulk, surf, nanoparticle_nodes, nsurf);
     printf("Nanoparticle interface is %d\n", interbulk);
 
-    nu = (double*)malloc(surf * 3 * sizeof(double));
-	for(int i = 0; i < surf * 3; i ++){
+    nu = (double*)malloc((surf + nsurf) * 3 * sizeof(double));
+	for(int i = 0; i < (surf + nsurf) * 3; i ++){
 		nu[i] = 0;
 	}
 
     if(degenerate == 0 && infinite == 0){
-		Qo = (double*)malloc(6 * surf * sizeof(double));
-		for(int i = 0; i < surf * 6; i ++){
+		Qo = (double*)malloc(6 * (surf + nsurf) * sizeof(double));
+		for(int i = 0; i < (surf + nsurf) * 6; i ++){
 			Qo[i] = 0;
 		}
 	}
@@ -316,8 +315,7 @@ bool initial_nano_channel(){
 	}
 
     int nd = 0;
-    int num_boundary = 0;
-    int nb_counter = 0;
+    int nb = 0;
 
     for(int i = 0; i < tot; i++){
         if(!ndrop[i]){
@@ -332,11 +330,11 @@ bool initial_nano_channel(){
             }
             else if(boundary[i]){
                 share[nd] = 2;
-                num_boundary++;
+                nb++;
             }
             else if(nboundary[i]){
                 share[nd] = 4;
-                nb_counter++;
+                nb++;
             }
             nd++;
         }
@@ -347,9 +345,9 @@ bool initial_nano_channel(){
 		printf("Problem in initialization of qtensor. nd is %d not equal to droplet %d.\n", nd, droplet);
 		return false;
 	}
-	if (num_boundary + nb_counter != surf){
-		printf("Problem in initialization of qtensor. nb is %d not equal to surf %d.\n", num_boundary, surf);
-        printf("Channel surface nodes: %d; Nanoparticle surface nodes %d; Nanoboundary counter: %d\n", channel_surf, nsurf, nb_counter);
+	if (nb != surf + nsurf){
+		printf("Problem in initialization of qtensor. nb is %d not equal to surf %d.\n", nb, surf);
+        printf("Channel surface nodes: %d; Nanoparticle surface nodes %d; Nanoboundary counter: %d\n", surf, nsurf, nb);
 		return false;
 	}
 
@@ -359,15 +357,20 @@ bool initial_nano_channel(){
     }
 
     nd = 0;
-    int nb = 0;
-    time_t t;
-    srand((unsigned) time(&t));
+    nb = 0;
+    // time_t t;
+    // srand((unsigned) time(&t));
+    srand(rand_seed);
     //Defininiendo los vecinos
     for(int k = 0; k < Nz; k++){
         for(int j = 0; j < Ny; j++){
             for(int i = 0; i < Nx; i++){
 
                 nd = indx[i + j * Nx + k * Nx * Ny];
+
+                if(nd == -1){
+                    continue;
+                }
 
                 if(drop[i + j * Nx + k * Nx * Ny]){
                     neighbor[nd * 6 + 0] = indx[peri(i - 1, 0) + j * Nx + k * Nx * Ny];
@@ -406,9 +409,9 @@ bool initial_nano_channel(){
                         }
                     }
                     else if(nboundary[i + j * Nx + k * Nx * Ny]){
-                        x = i - rx;
-                        y = j - ry;
-                        z = k - rz;
+                        x = (double)(i - rx) * dx;
+                        y = (double)(j - ry) * dy;
+                        z = (double)(k - rz) * dz;
 
                         x_rot = x * cos(alpha) * cos(beta) + y * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
                             + z * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
@@ -457,7 +460,6 @@ bool initial_nano_channel(){
                             Qold[nd * 6 + 5] = dir2ten(&nu[nb * 3], 5, S);
                             
                         }
-                        nsurf--;
                     }
 
                     if(nu[nb * 3 + 0] >= 0){
@@ -490,7 +492,7 @@ bool initial_nano_channel(){
         }
     }
 
-    if (nb != surf){
+    if (nb != surf + nsurf){
 		printf("Problem in initialization of share. nb is %d not equal to surf %d.\n", nb, surf);
 		return false;
 	}
@@ -567,6 +569,9 @@ bool initial_nano_channel(){
 			} 
 		}
 		//for all nodes with problem, share +1
+	}
+    for(int i = 0; i < droplet * 6; i++){
+		printf("Qold %d is %lf ", i, Qold[i]);
 	}
 
 	free(ndrop);

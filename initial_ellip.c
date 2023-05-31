@@ -8,15 +8,9 @@ bool initial_ellip(){
 	double x1, y1, z1;
 
 	//Center of the grid
-	int rx = lrint(Nx / 2) - 1;
-	int ry = lrint(Ny / 2) - 1;
-	int rz = lrint(Nz / 2) - 1;
-
-
-	double Rx = Lx / 2. - 2.;
-	double Ry = Ly / 2. - 2.;
-	double Rz = Lz / 2. - 2.;
-
+	rx = lrint(Nx / 2);
+	ry = lrint(Ny / 2);
+	rz = lrint(Nz / 2);
 
 	int xm, xp, ym, yp, zm, zp;
 	int nsurf;
@@ -28,13 +22,18 @@ bool initial_ellip(){
 	int bulkin = 0;
 	int bulkout = 0;
 
-	double dx = Lx/(Nx-1);
-	double dy = Ly/(Ny-1);
-	double dz = Lz/(Nz-1);
+	dx = Lx / (double)(Nx - 1);
+	dy = Ly / (double)(Ny - 1);
+	dz = Lz / (double)(Nz - 1);
 
-	idx = 1 / dx;
-	idy = 1 / dy;
-	idz = 1 / dz;
+	double Rx = Lx / 2. - 2.;
+	double Ry = Ly / 2. - 2.;
+	double Rz = Lz / 2. - 2.;
+
+	idx = 1. / dx;
+	idy = 1. / dy;
+	idz = 1. / dz;
+
 	iddx = idx * idx;
 	iddy = idy * idy;
 	iddz = idz * idz;
@@ -77,9 +76,11 @@ bool initial_ellip(){
 		for(int k = 0; k < Nz; k++){
 			for (int j = 0; j < Ny; j++){
 				for (int i = 0; i < Nx; i++){
-					x = (i-rx)*dx;
-					y = (j-ry)*dy;
-					z = (k-rz)*dz;
+
+					x = (double)(i - rx) * dx;
+					y = (double)(j - ry) * dy;
+					z = (double)(k - rz) * dz;
+
 					if (( (x * x) / ((Rx + 0.5) * (Rx + 0.5)) + (y * y) / ((Ry + 0.5) * (Ry + 0.5)) + (z * z) / ((Rz + 0.5) * (Rz + 0.5)) ) <= 1 ){
 						drop[l] = true;
 						bulk++;
@@ -106,9 +107,9 @@ bool initial_ellip(){
 		for(int k = 0; k < Nz; k++){
 			for (int j = 0; j < Ny; j++){
 				for (int i = 0; i < Nx; i++){
-					x = (i-rx)*dx;
-					y = (j-ry)*dy;
-					z = (k-rz)*dz;
+					x = (double)(i - rx) * dx;
+					y = (double)(j - ry) * dy;
+					z = (double)(k - rz) * dz;
 					if(( (x * x) / ((Rx + 0.5) * (Rx + 0.5)) + (y * y) / ((Ry + 0.5) * (Ry + 0.5)) + (z * z) / ((Rz + 0.5) * (Rz + 0.5)) ) <= 1){
 						drop[l] = true;
 						bulk ++;
@@ -218,15 +219,15 @@ bool initial_ellip(){
 		}
 	}
 
-	dV = (((4. / 3.) * M_PI * (Rx * Ry * Rz)) - (4.0 / 3.) * M_PI * Rp * Rp * Rp * Np) / bulk; 
+	dV = (((4. / 3.) * (double)M_PI * (Rx * Ry * Rz)) - (4.0 / 3.) * (double)M_PI * Rp * Rp * Rp * Np) / bulk; 
 	if(DoubleU){
-		dVi = (4.0 / 3. * M_PI * (iRx * iRy * iRz)) / bulkin; 
-		dVo = (4.0 / 3. * M_PI * ((Rx * Ry * Rz) - (iRx * iRy * iRz))) / (bulkout - surf);
+		dVi = (4.0 / 3. * (double)M_PI * (iRx * iRy * iRz)) / (double)bulkin; 
+		dVo = (4.0 / 3. * (double)M_PI * ((Rx * Ry * Rz) - (iRx * iRy * iRz))) / (double)(bulkout - surf);
 	}
 
-	dAdrop = (4. * M_PI * pow((pow(Rx * Ry, 1.6075) + pow(Rx * Rz, 1.6075) + pow(Ry * Rz, 1.6075)) / 3.0, 1.0/1.6075) - M_PI * Rp * Rp * Np) / (surf -  nsurf);
+	dAdrop = (4. * (double)M_PI * pow((pow(Rx * Ry, 1.6075) + pow(Rx * Rz, 1.6075) + pow(Ry * Rz, 1.6075)) / 3.0, 1.0/1.6075) - (double)M_PI * Rp * Rp * Np) / (double)(surf -  nsurf);
 	if(nsurf > 0){
-		dApart = (2 * M_PI * Rp * Rp * Np) / nsurf ;
+		dApart = (2 * (double)M_PI * Rp * Rp * Np) / (double)nsurf ;
 	}
 
 	else{
@@ -330,9 +331,9 @@ bool initial_ellip(){
 				}
 				if(boundary[l] || nboundary[l]){
 					if(boundary[l]){
-						x = (i - rx) * dx;
-						y = (j - ry) * dy;
-						z = (k - rz) * dz;
+						x = (double)(i - rx) * dx;
+						y = (double)(j - ry) * dy;
+						z = (double)(k - rz) * dz;
 						
 						dis = sqrt(x*x+y*y+z*z);
 						

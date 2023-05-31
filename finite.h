@@ -48,10 +48,14 @@ Por ejemplo, la superficie superior no degenerará y la inferior sí.
 Por ahora se mantiene como estándar la superficie de arriba no degenerada.*/
 extern bool surfdegen;
 
-int bulk, surf, tot, droplet;
+int bulk, surf, tot, droplet, nsurf;
 double S, S2;
 double dV, dAdrop, dApart;
 double idx, idy, idz, iddx, iddy, iddz;
+double dx, dz, dy;
+//center of grid
+int rx, ry, rz;
+
 double *nu;
 double  *Qold, *Qo;
 int *neighbor;

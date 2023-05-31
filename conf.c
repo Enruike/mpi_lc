@@ -5,12 +5,6 @@ bool conf(double **pos){
 	int nb, nd;
 	int i, j, k, n;
 	double dis, x = 0.0, y = 0.0, z = 0.0, xi, yi, zi;
-	int rx = lrint(Nx / 2) - 1;
-	int ry = lrint(Ny / 2) - 1;
-	int rz = lrint(Nz / 2) - 1;
-	double dx = Lx/(Nx-1);
-	double dy = Ly/(Ny-1);
-	double dz = Lz/(Nz-1);
 	double disxy;
 	double sinthe, costhe, sinphi, cosphi, omega;
 	double Qini[6] = {0};
@@ -432,10 +426,10 @@ bool conf(double **pos){
 
 		double A = 0.2;
 		double cst;
-		double isq2 = 1.0 / sqrt(2);
-		double sq2 = sqrt(2);
+		double isq2 = 1.0 / sqrt(2.);
+		double sq2 = sqrt(2.);
 					
-		cst = 2 * qch * redshift;
+		cst = 2. * qch * redshift;
 			
 		l = 0;
 		nd = 0;
@@ -457,9 +451,9 @@ bool conf(double **pos){
 								z = (k - rz) * cst * isq2;
 							}
 							else{
-								x = (i - rx) * cst * isq2;
-								y = (j - ry) * cst * isq2;
-								z = (k - rz) * cst * isq2;
+								x = (double)(i - rx) * cst * isq2;
+								y = (double)(j - ry) * cst * isq2;
+								z = (double)(k - rz) * cst * isq2;
 							}
 										
 							Qold[nd * 6 + 0] = A * (- sin(y) * cos(x) - sin(x) * cos(z) + 2 * sin(z) * cos(y));
@@ -479,8 +473,9 @@ bool conf(double **pos){
 		}
 		else{
 
-			time_t t;
-    		srand((unsigned) time(&t));
+			//time_t t;
+    		//srand((unsigned) time(&t));
+			srand(rand_seed);
 			double dir_temp[3] = { 0. };
 
 			for(int k = 0; k < Nz; k++){
@@ -505,10 +500,10 @@ bool conf(double **pos){
 							}
 							else{
 
-								x = i - rx;
-								y = j - ry;
-								z = k - rz;
-								
+								x = (double)(i - rx) * dx;
+								y = (double)(j - ry) * dy;
+								z = (double)(k - rz) * dz;
+
 							}
 
 							if(interface != 0){
@@ -542,6 +537,7 @@ bool conf(double **pos){
 								Qold[nd * 6 + 3] = A * (cos(cst * x) - cos(cst * z));
 								Qold[nd * 6 + 4] = A * sin(cst * x);
 								Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));
+								
 							}
 							nd ++;
 						}

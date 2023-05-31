@@ -8,9 +8,9 @@ bool initial_coaxialcyl(){
 	double x1, y1, z1;
 
     //Locating the center of the simbox.
-	int rx = lrint(Nx / 2) - 1;
-	int ry = lrint(Ny / 2) - 1;
-	int rz = lrint(Nz / 2) - 1;
+	int rx = lrint(Nx / 2);
+	int ry = lrint(Ny / 2);
+	int rz = lrint(Nz / 2);
 
     //System Radii
 	double Rx = Lx / 2 - 2;

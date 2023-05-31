@@ -33,10 +33,10 @@ int main(int argc, char *argv[]){
 	cycle = 0;
 	deltat = (tmax - tmin) / increment;
 
-	S = 0.25 * (1 + 3 * sqrt(1 - 8 / (3 * U)));
+	S = 0.25 * (1.0 + 3.0 * sqrt(1.0 - 8.0 / (3.0 * U)));
 	//	printf("Theoretical value is %lf.\n", third * (1 - third * U) * S * S - 2 * third * third * third * S * S * S * U + U / 9 * S * S * S * S );
 	
-	S2 = 0.25 * (1 + 3 * sqrt(1 - 8 / (3 * U2)));
+	S2 = 0.25 * (1.0 + 3.0 * sqrt(1.0 - 8.0 / (3.0 * U2)));
 
 	if(myid == root){
 		//define droplet and boundary, introduce particles, initialize qtensor;

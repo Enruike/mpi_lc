@@ -127,8 +127,8 @@ bool conf(double **pos){
 			}
 
 			for(nd = 0; nd < droplet; nd ++){
-				for(n = 0; n < 6; n ++){
-					if(drop[nd]){
+				if(drop[nd]){
+					for(n = 0; n < 6; n ++){
 						Qold[nd * 6 + n] = Qini[n];
 					}
 				}

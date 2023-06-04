@@ -506,7 +506,7 @@ bool conf(double **pos){
 
 							}
 
-							if(interface != 0){
+							if(interface != 0 && geo == 10){
 								if(init_bulktype[l] == 3){
 
 									dir_temp[0] = (rand() % (pRx + interface) + 1);

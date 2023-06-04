@@ -100,18 +100,18 @@ bool initial_nano_channel(){
 
  
     //define the channel surface 
-	for (int j = 0; j < Ny; j++){
-		for (int i = 0; i < Nx; i++){
-			for(int k = 0; k <= Nz - 1; k += Nz - 1){
-				l = i + j * Nx + k * Nx * Ny;
-				boundary[l] = true;
+	for(int k = 0; k < Nz; k += (Nz - 1)){
+        for(int j = 0; j < Ny; j++){
+            for(int i = 0; i < Nx; i++){
+                l = i + j * Nx + k * Nx * Ny;
+                boundary[l] = true;
                 drop[l] = false;
                 init_bulktype[l] = 4;
                 surf++;
                 bulk--;
-			}
-		}
-	}
+            }
+        }
+    }
 
     //Reading Nano.in file.
     if(!read_nano()){
@@ -569,9 +569,6 @@ bool initial_nano_channel(){
 			} 
 		}
 		//for all nodes with problem, share +1
-	}
-    for(int i = 0; i < droplet * 6; i++){
-		printf("Qold %d is %lf ", i, Qold[i]);
 	}
 
 	free(ndrop);

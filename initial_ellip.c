@@ -247,7 +247,7 @@ bool initial_ellip(){
 
 	printf("\ndV is %lf\ndA of droplet is %lf\ndA of nanoparticle is %lf\n", dV, dAdrop, dApart); 
 	droplet = bulk + surf;
-	printf("\nRx is %lf\nRy is %lf\nRz is %lf\nDroplet nodes number is %d\nBulk nodes number is %d\nDroplet surface nodes number is %d\nParticle surface nodes number is %d\n", Rx, Ry, Rz, droplet, bulk, surf, nsurf); 
+	printf("\nRx is %lf\nRy is %lf\nRz is %lf\nDroplet nodes number is %d\nBulk nodes number is %d\nDroplet surface nodes number is %d\n", Rx, Ry, Rz, droplet, bulk, surf); 
 	printf("Internal nodes count = %d\nExternal nodes count = %d\n", bulkin, bulkout);
 	printf("External bulk count contains surface nodes!!\n");
 	printf("External count after substracting surface nodes is %d\n", bulkout - surf);

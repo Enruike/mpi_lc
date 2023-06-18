@@ -2,6 +2,7 @@
 
 double pU;
 double alpha, beta, gama;
+int posX, posY, posZ;
 
 int anchoring;
 
@@ -68,6 +69,12 @@ bool read_nano(){
 }
 
 bool initial_nano_channel(){
+
+    //Reading Nano.in file.
+    if(!read_nano()){
+        return false;
+        exit(1);
+    }
 
     bool *ndrop;
     int *indx;
@@ -147,11 +154,6 @@ bool initial_nano_channel(){
         }
     }
 
-    //Reading Nano.in file.
-    if(!read_nano()){
-        return false;
-    }
-
     alpha = (alpha * M_PI) / 180.;
     beta = (beta * M_PI) / 180.;
     gama = (gama * M_PI) / 180.;
@@ -172,9 +174,12 @@ bool initial_nano_channel(){
     double pivotZ;
 
     //Pivot point.
-    pivotX = (double)pRx;
-    pivotY = (double)posY;
-    pivotZ = (double)posZ;
+    //pivotX = (double)pRx;
+    //pivotY = (double)posY;
+    //pivotZ = (double)posZ;
+    pivotX = 0.;
+    pivotY = 0.;
+    pivotZ = sin(beta) * pRx;
 
     for(int k = 0; k < Nz; k++){
         for(int j = 0; j < Ny; j++){
@@ -193,11 +198,11 @@ bool initial_nano_channel(){
 				    z_rot = x * -sin(beta) + y * cos(beta) * sin(gama) + z * cos(beta) * cos(gama);
                 }
                 else{
-                    x_rot = (x - pivotX) * cos(alpha) * cos(beta) + (y - pivotY) * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
+                    x_rot = (x + pivotX) * cos(alpha) * cos(beta) + (y + pivotY) * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
 					    + (z - pivotZ) * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
-				    y_rot = (x - pivotX) * sin(alpha) * cos(beta) + (y - pivotY)* (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
+				    y_rot = (x + pivotX) * sin(alpha) * cos(beta) + (y + pivotY)* (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
 					    + (z - pivotZ) * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
-				    z_rot = (x - pivotX) * -sin(beta) + (y - pivotY) * cos(beta) * sin(gama) + (z - pivotZ) * cos(beta) * cos(gama);
+				    z_rot = (x + pivotX) * -sin(beta) + (y + pivotY) * cos(beta) * sin(gama) + (z - pivotZ) * cos(beta) * cos(gama);
                 }
 
 				x = x_rot;
@@ -474,11 +479,11 @@ bool initial_nano_channel(){
                             z_rot = x * -sin(beta) + y * cos(beta) * sin(gama) + z * cos(beta) * cos(gama);
                         }
                         else{
-                            x_rot = (x - pivotX) * cos(alpha) * cos(beta) + (y - pivotY) * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
-                                + (z - pivotZ) * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
-                            y_rot = (x - pivotX) * sin(alpha) * cos(beta) + (y - pivotY)* (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
-                                + (z - pivotZ) * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
-                            z_rot = (x - pivotX) * -sin(beta) + (y - pivotY) * cos(beta) * sin(gama) + (z - pivotZ) * cos(beta) * cos(gama);
+                            x_rot = (x + pivotX) * cos(alpha) * cos(beta) + (y + pivotY) * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
+                                + (z + pivotZ) * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
+                            y_rot = (x + pivotX) * sin(alpha) * cos(beta) + (y + pivotY)* (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
+                                + (z + pivotZ) * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
+                            z_rot = (x + pivotX) * -sin(beta) + (y + pivotY) * cos(beta) * sin(gama) + (z + pivotZ) * cos(beta) * cos(gama);
                         }
 
                         x = x_rot;

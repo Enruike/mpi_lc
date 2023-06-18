@@ -75,6 +75,8 @@ bool AnchNInf;
 //Nano variables
 int interface;
 int pRx, pRy, pRz;
+int posX, posY, posZ;
+bool pivotflag;
 
 double en_ldg[3];
 double en_tot, dE, el_old;

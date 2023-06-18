@@ -23,6 +23,18 @@ bool read_nano(){
     fscanf(param, "gamma %lf\n", &gama);
     fscanf(param, "interface %d #thickness of the interface layer; 0: no interface\n", &interface);
     fscanf(param, "anchoring %d #0:random 1:homeotropic 2:planar\n", &anchoring);
+    fscanf(param, "posX %d #0 for center; nanoparticle position\n", &posX);
+    fscanf(param, "posY %d\n", &posY);
+    fscanf(param, "posZ %d\n", &posZ);
+    fscanf(param, "pivot %d\n #0:center; 1:edge", &pivotflag);
+
+    if(pivotflag == 0 && (posX != 0 || posY != 0 || posZ != 0)){
+        printf("Pivot flag it's set up for 0:center\n");
+        printf("Nanoparticle position will be set to center\n");
+        posX = 0;
+        posY = 0;
+        posZ = 0;
+    }
 
     printf("\n~ Nanoparticle data ~\n");
     printf("pRx %d\n", pRx);
@@ -44,7 +56,12 @@ bool read_nano(){
         printf("unknonw anchoring\n");
         return false;
     }
-
+    if(pivotflag == 0){
+        printf("Nanoparticle position will be in the center of the box\n");
+    }
+    else{
+        printf("Nanoparticle position is: posX: %d; posY: %d; posZ: %d\n", posX, posY, posZ);
+    }
 
     return true;
 
@@ -57,9 +74,26 @@ bool initial_nano_channel(){
     int l;
 
     //Mitad de la caja
-    rx = lrint(Nx / 2);
-    ry = lrint(Ny / 2);
-    rz = lrint(Nz / 2);
+    if(posX == 0){
+        rx = lrint(Nx / 2);
+    }
+    else{
+        rx = posX;
+    }
+    if(posY == 0){
+        ry = lrint(Ny / 2);
+    }
+    else{
+        ry = posY;
+    }
+    if(posZ == 0){
+        rz = lrint(Nz / 2);
+    }
+    else{
+        rz = posZ;
+    }
+
+    
 
     //Radio del sistema
     double Rx = Lx / 2. - 2.;
@@ -133,6 +167,15 @@ bool initial_nano_channel(){
     int nanoparticle_nodes = 0;
     l = 0;
 
+    double pivotX;
+    double pivotY;
+    double pivotZ;
+
+    //Pivot point.
+    pivotX = (double)pRx;
+    pivotY = (double)posY;
+    pivotZ = (double)posZ;
+
     for(int k = 0; k < Nz; k++){
         for(int j = 0; j < Ny; j++){
             for(int i = 0; i < Nx; i++){
@@ -141,11 +184,21 @@ bool initial_nano_channel(){
 				y = (double)(j - ry) * dy;
 				z = (double)(k - rz) * dz;
 
-                x_rot = x * cos(alpha) * cos(beta) + y * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
-					+ z * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
-				y_rot = x * sin(alpha) * cos(beta) + y * (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
-					+ z * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
-				z_rot = x * -sin(beta) + y * cos(beta) * sin(gama) + z * cos(beta) * cos(gama);
+                //pivotflag 0 for center
+                if(pivotflag == 0){
+                    x_rot = x * cos(alpha) * cos(beta) + y * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
+					    + z * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
+				    y_rot = x * sin(alpha) * cos(beta) + y * (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
+					    + z * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
+				    z_rot = x * -sin(beta) + y * cos(beta) * sin(gama) + z * cos(beta) * cos(gama);
+                }
+                else{
+                    x_rot = (x - pivotX) * cos(alpha) * cos(beta) + (y - pivotY) * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
+					    + (z - pivotZ) * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
+				    y_rot = (x - pivotX) * sin(alpha) * cos(beta) + (y - pivotY)* (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
+					    + (z - pivotZ) * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
+				    z_rot = (x - pivotX) * -sin(beta) + (y - pivotY) * cos(beta) * sin(gama) + (z - pivotZ) * cos(beta) * cos(gama);
+                }
 
 				x = x_rot;
 				y = y_rot;
@@ -413,11 +466,20 @@ bool initial_nano_channel(){
                         y = (double)(j - ry) * dy;
                         z = (double)(k - rz) * dz;
 
-                        x_rot = x * cos(alpha) * cos(beta) + y * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
-                            + z * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
-                        y_rot = x * sin(alpha) * cos(beta) + y * (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
-                            + z * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
-                        z_rot = x * -sin(beta) + y * cos(beta) * sin(gama) + z * cos(beta) * cos(gama);
+                        if(pivotflag == 0){
+                            x_rot = x * cos(alpha) * cos(beta) + y * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
+                                + z * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
+                            y_rot = x * sin(alpha) * cos(beta) + y * (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
+                                + z * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
+                            z_rot = x * -sin(beta) + y * cos(beta) * sin(gama) + z * cos(beta) * cos(gama);
+                        }
+                        else{
+                            x_rot = (x - pivotX) * cos(alpha) * cos(beta) + (y - pivotY) * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
+                                + (z - pivotZ) * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
+                            y_rot = (x - pivotX) * sin(alpha) * cos(beta) + (y - pivotY)* (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
+                                + (z - pivotZ) * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
+                            z_rot = (x - pivotX) * -sin(beta) + (y - pivotY) * cos(beta) * sin(gama) + (z - pivotZ) * cos(beta) * cos(gama);
+                        }
 
                         x = x_rot;
                         y = y_rot;

@@ -131,3 +131,4 @@ void relax_bulk();
 void relax_surf();
 void en_degen(double* Qin, double* loc_nu, double* Qdiff);
 void relax_degen(double* Qin, double* loc_nu, double* Qdiff);
+void conic(double* Qin, double* loc_nu, double* Qdiff);

@@ -14,6 +14,7 @@ extern int chiral;
 //int chiral;
 extern double qch;
 extern int geo, degenerate, infinite; 
+extern double tiltAngle;
 extern int Np;
 
 extern double Rp, Wp; 

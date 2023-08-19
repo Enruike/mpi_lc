@@ -12,6 +12,7 @@ double qch;
 double redshift;
 int geo; 
 int degenerate, infinite; 
+double tiltAngle;
 int Np;
 double Rp, Wp; 
 int rand_seed;

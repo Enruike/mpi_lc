@@ -26,7 +26,8 @@ bool read_param() {
         fscanf(param, "qch %lf\n", &qch);
 		fscanf(param, "redshift %lf #Default values BPI = 0.71 & BPII = 0.86.\n", &redshift);
         fscanf(param, "geo %d\n", &geo);
-        fscanf(param, "degenerate %d\n", &degenerate);
+        fscanf(param, "degenerate %d #1:Degenerated & 2:Conic\n", &degenerate);
+		fscanf(param, "tiltAngle %lf\n", &tiltAngle);
         fscanf(param, "infinite %d\n", &infinite);
         fscanf(param, "Np %d\n", &Np);
         fscanf(param, "Rp %lf\n", &Rp);
@@ -68,6 +69,7 @@ bool read_param() {
 		printf("redshift %lf\n", redshift);
 		printf("geo %d\n", geo);
 		printf("degenerate %d\n", degenerate);
+		printf("tilt angle = %lf\n", tiltAngle);
 		printf("infinite %d\n", infinite);
 		printf("Np %d\n", Np);
 		printf("Rp %lf\n", Rp);

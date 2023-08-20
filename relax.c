@@ -354,7 +354,7 @@ void relax_surf(){
 				}
 
 				else if(degen == 2){
-					conic(Qin, loc_nu, Qdiff);
+					relax_conic(Qin, loc_nu, Qdiff);
 					for(int n = 0; n < 6; n++){
 						qn[i * 6 + n] = Qin[n] + dt*(L1 * Qelas[n] + L2 * Qelas2[n] + L3 * Qelas3[n] + L4 * Qelas4[n] + chiral * 2 * qch * Qch[n] - 2 * Wstr * Qdiff[n]);
 					}
@@ -434,7 +434,7 @@ void relax_degen(double* Qin, double* loc_nu, double* Qdiff){
 	Qdiff[5] =  Qtemp[2][2]- Qp[2][2] - nuQnu;
 }
 
-void conic(double* Qin, double* loc_nu, double* Qdiff){
+void relax_conic(double* Qin, double* loc_nu, double* Qdiff){
 	double Qtemp[3][3];
 	double ptemp[3][3];
 	double Qp[3][3];

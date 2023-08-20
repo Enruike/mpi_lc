@@ -335,7 +335,8 @@ bool initial_nano_channel(){
     
     dV = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / bulk;
     dVi = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / (bulk - interbulk);
-    dVo = (4 / 3 * M_PI * ((pRx + interface) * (pRy + interface) * (pRz + interface) - (pRx) * (pRy) * (pRz))) / interbulk;
+    if(interface != 0) dVo = (4 / 3 * M_PI * ((pRx + interface) * (pRy + interface) * (pRz + interface) - (pRx) * (pRy) * (pRz))) / interbulk;
+    else dVo = 0.;
     dAdrop = (2 * Lx * Ly) / (surf);
     dApart = 4. * M_PI * pow((pow(pRx * pRy, 1.6075) + pow(pRx * pRz, 1.6075) + pow(pRy * pRz, 1.6075)) / 3.0, 1.0/1.6075) / nsurf;
 

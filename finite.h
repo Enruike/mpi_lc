@@ -13,7 +13,8 @@ extern double L1, L2, L3, L4;
 extern int chiral; 
 //int chiral;
 extern double qch;
-extern int geo, degenerate, infinite; 
+extern int geo, degenerate, infinite;
+//Extern tilt angle. From param.c file.
 extern double tiltAngle;
 extern int Np;
 
@@ -130,5 +131,6 @@ void energy_surf(double* ans);
 void relax_bulk();
 void relax_surf();
 void en_degen(double* Qin, double* loc_nu, double* Qdiff);
+void en_conic(double* Qin, double* loc_nu, double* Qdiff);
 void relax_degen(double* Qin, double* loc_nu, double* Qdiff);
-void conic(double* Qin, double* loc_nu, double* Qdiff);
+void relax_conic(double* Qin, double* loc_nu, double* Qdiff);

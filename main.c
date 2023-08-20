@@ -76,6 +76,7 @@ int main(int argc, char *argv[]){
 					if(!checktr(&q[i * 6])){
 						flag = false;
 						printf("%d\n", i);
+						printf("share : %d\n", share[i]);
 					}
 				}
 				if(!flag){

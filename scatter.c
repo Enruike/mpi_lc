@@ -163,7 +163,7 @@ bool scatter(){
 	if(myid == root){
 		free(neighbor);
 		free(Qold);
-		free(share);
+		//free(share);
 		free(nu);
 		if(DoubleU) free(bulktype);
 		if((degenerate == 0 && infinite == 0) || AnchNInf)	free(Qo);

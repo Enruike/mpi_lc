@@ -400,14 +400,14 @@ bool initial_nano_channel(){
 
     }
     int count1;
-    int countshare0 = 0;
+    /*int countshare0 = 0;
     int countshare2 = 0;
     int countshare4 = 0;
     int countshare8 = 0;
     int shareminusone = 0;
-    int undefined = 0;
-    count1 = 0;
-    for(int i = 0; i < droplet; i++){
+    int undefined = 0;*/
+    //count1 = 0;
+    /*for(int i = 0; i < droplet; i++){
         if(share[i] == 0){
             countshare0++;
             count1++;
@@ -429,15 +429,13 @@ bool initial_nano_channel(){
         }
         else{
             undefined++;
-            /* if(undefined < 10){
-                printf("Value share undefined is %d ", share[i]);
-            } */
+            
         }
-    }
-    printf("Pre count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
-    printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
+    }*/
+    //printf("Pre share count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
+    //printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
 
-    printf("nbulk count : %d\n", nbulk);
+    //printf("nbulk count : %d\n", nbulk);
     if (nd != droplet){
 		printf("Problem in initialization of qtensor. nd is %d not equal to droplet %d.\n", nd, droplet);
 		return false;
@@ -605,14 +603,14 @@ bool initial_nano_channel(){
 		return false;
 	}
     
-    countshare0 = 0;
+    /*countshare0 = 0;
     countshare2 = 0;
     countshare4 = 0;
     countshare8 = 0;
     shareminusone = 0;
-    undefined = 0;
-    count1 = 0;
-    for(int i = 0; i < droplet; i++){
+    undefined = 0;*/
+    //count1 = 0;
+    /*for(int i = 0; i < droplet; i++){
         if(share[i] == 0){
             countshare0++;
             count1++;
@@ -634,13 +632,10 @@ bool initial_nano_channel(){
         }
         else{
             undefined++;
-            /* if(undefined < 10){
-                printf("Value share undefined is %d ", share[i]);
-            } */
         }
-    }
-    printf("After count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
-    printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
+    }*/
+    //printf("After count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
+    //printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
 
     if(DoubleU){
 

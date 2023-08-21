@@ -36,11 +36,11 @@ bool scatter(){
     MPI_Win_allocate_shared(6 * length * sizeof(int), 1, MPI_INFO_NULL, shmcomm, &neigb, &win2);
     MPI_Scatter(neighbor, 6 * length, MPI_INT, neigb, 6 * length, MPI_INT, root, MPI_COMM_WORLD);
 
-	sign = (char*)malloc(length * sizeof(char));
+	sign = (signed char*)malloc(length * sizeof(signed char));
 	for(int i = 0; i < length; i ++){
 		sign[i] = -1;
 	}
-	MPI_Scatter(share, length, MPI_CHAR, sign, length, MPI_CHAR, root, MPI_COMM_WORLD);
+	MPI_Scatter(share, length, MPI_SIGNED_CHAR, sign, length, MPI_SIGNED_CHAR, root, MPI_COMM_WORLD);
 	
 	//Ahora checaremos que los bultype sean los mismos que los repartidos por MPI.
 	if(DoubleU){
@@ -163,7 +163,7 @@ bool scatter(){
 	if(myid == root){
 		free(neighbor);
 		free(Qold);
-		//free(share);
+		free(share);
 		free(nu);
 		if(DoubleU) free(bulktype);
 		if((degenerate == 0 && infinite == 0) || AnchNInf)	free(Qo);

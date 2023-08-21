@@ -68,8 +68,8 @@ bool *nboundary;
 0 para 
 
 */
-char *share;
-char *sign;
+signed char* share;
+signed char* sign;
 
 int *bulktype_MPI, *bulktype, *init_bulktype;
 bool AnchNInf;

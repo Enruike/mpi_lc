@@ -20,8 +20,11 @@ bool conf(double **pos){
 		double dirvec1[3] = {0};
 		double dirvec2[3] = {0};
 		double norm = 0;
+		srand(rand_seed);
+		double dir_temp[3] = { 0. };
+		l = 0;
 
-		if((geo == -2 || geo == -3) && ideal == 1){
+		if(geo == -2 || geo == -3){
 
 			for(int k = 0; k < Nz; k++){
 				for(int j = 0; j < Ny; j++){
@@ -107,6 +110,63 @@ bool conf(double **pos){
 					}
 				}
 			}		
+		}
+		else if(geo == 10){
+
+			for(int i = 0; i < 6; i++){
+				Qini[i] = dir2ten(init_dir, i, S);
+			}
+			dirvec1[0] = dirvec2[0] = init_dir[0];
+			dirvec1[1] = dirvec2[1] = init_dir[1];
+			dirvec1[2] = init_dir[2];
+			dirvec2[2] = - init_dir[2];
+			norm_v(dirvec1);
+			norm_v(dirvec2);
+
+			for(int k = 0; k < Nz; k++){
+				for(int j = 0; j < Ny; j++){
+					for(int i = 0; i < Nx; i++){
+						if(drop[l] || boundary[l] || nboundary[l]){
+							if(init_bulktype[l] == 3){
+
+								dir_temp[0] = (rand() % (pRx + interface) + 1);
+								dir_temp[1] = (rand() % (pRy + interface) + 1);
+								dir_temp[2] = (rand() % (pRz + interface) + 1);
+								norm_v(dir_temp);
+
+								Qold[nd * 6 + 0] = dir2ten(dir_temp, 0, S2);
+								Qold[nd * 6 + 1] = dir2ten(dir_temp, 1, S2);
+								Qold[nd * 6 + 2] = dir2ten(dir_temp, 2, S2);
+								Qold[nd * 6 + 3] = dir2ten(dir_temp, 3, S2);
+								Qold[nd * 6 + 4] = dir2ten(dir_temp, 4, S2);
+								Qold[nd * 6 + 5] = dir2ten(dir_temp, 5, S2);
+							}
+
+							else{
+								
+								if(k == 0){
+									for(int m = 0; m < 6; m++){
+										Qold[nd * 6 + m] = dir2ten(dirvec1, m, S);
+									}
+								}
+								else if(k == Nz - 1){
+									for(int m = 0; m < 6; m++){
+										Qold[nd * 6 + m] = dir2ten(dirvec2, m, S);
+									}
+								}
+								else{
+									for(int m = 0; m < 6; m++){
+										Qold[nd * 6 + m] = Qini[m];
+									}									
+								}
+	
+							}
+							nd++;
+						}
+						l++;
+					}
+				}
+			}
 		}
 
 		else{

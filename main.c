@@ -80,6 +80,7 @@ int main(int argc, char *argv[]){
 				}
 				if(!flag){
 					printf("Error in the trace of q; cycle : %d.\n", cycle);
+					MPI_Finalize();
 				}
 				//output();
 			}	

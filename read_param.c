@@ -51,7 +51,7 @@ bool read_param() {
         fscanf(param, "Save Every %d\n", &save_every);
         fscanf(param, "Check Every %d\n", &check_every);
 		fscanf(param, "Stop At %d #For non-stop condition use 0.\n", &stopat);
-		fscanf(param, "Check Trace At %d\n", trace_checker);
+		fscanf(param, "Check Trace At %d\n", &trace_checker);
 	if(myid == root){
 		printf("Nx %d\n", Nx);
 		printf("Ny %d\n", Ny);
@@ -89,6 +89,7 @@ bool read_param() {
 		printf("Lower Surface is %d\n", lowersurf);
 		printf("Checkpoint every %d!\n", save_every);
 		printf("Energy will be compared every %d!\n", check_every);
+		printf("Trace will be checked every %d!\n", trace_checker);
 		if(stopat != 0){
 			printf("Job will be\033[1;31m STOPPED\033[0m after %d!\n", stopat);
 		}

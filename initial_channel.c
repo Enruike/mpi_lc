@@ -13,9 +13,14 @@ bool initial_channel(){
 	int count1;
 	double dir[3] = {1, 0, 0};
 
-	double dx = Lx/(Nx-1);
-	double dy = Ly/(Ny-1);
-	double dz = Lz/(Nz-1);
+	//Radio del sistema
+    double Rx = Lx / 2. - 2.;
+    double Ry = Ly / 2. - 2.;
+    double Rz = Lz / 2. - 2.;
+
+	dx = Lx/(Nx-1);
+	dy = Ly/(Ny-1);
+	dz = Lz/(Nz-1);
 
 	idx = 1 / dx;
 	idy = 1 / dy;

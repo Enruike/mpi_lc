@@ -51,6 +51,7 @@ bool read_param() {
         fscanf(param, "Save Every %d\n", &save_every);
         fscanf(param, "Check Every %d\n", &check_every);
 		fscanf(param, "Stop At %d #For non-stop condition use 0.\n", &stopat);
+		fscanf(param, "Check Trace At %d\n", trace_checker);
 	if(myid == root){
 		printf("Nx %d\n", Nx);
 		printf("Ny %d\n", Ny);

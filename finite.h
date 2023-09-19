@@ -29,8 +29,8 @@ extern int rand_seed;
 extern int seed;
 
 //New variables for backup and saving
-int save_every, check_every;
-int stopat;
+extern int save_every, check_every;
+extern int stopat, trace_checker;
 
 //Redshift
 extern double redshift;

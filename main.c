@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
 			}
 		}
 
-		if(cycle % check_every == 0){ 
+		if(cycle % trace_checker == 0){ 
 			//Every 10000 steps check the trace of Qtensor
 			if(myid == root){	
 				for(i = 0; i < droplet; i++){

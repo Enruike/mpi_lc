@@ -13,7 +13,9 @@ extern double L1, L2, L3, L4;
 extern int chiral; 
 //int chiral;
 extern double qch;
-extern int geo, degenerate, infinite; 
+extern int geo, degenerate, infinite;
+//Extern tilt angle. From param.c file.
+extern double tiltAngle;
 extern int Np;
 
 extern double Rp, Wp; 
@@ -27,8 +29,8 @@ extern int rand_seed;
 extern int seed;
 
 //New variables for backup and saving
-int save_every, check_every;
-int stopat;
+extern int save_every, check_every;
+extern int stopat, trace_checker;
 
 //Redshift
 extern double redshift;
@@ -66,8 +68,8 @@ bool *nboundary;
 0 para 
 
 */
-char *share;
-char *sign;
+signed char* share;
+signed char* sign;
 
 int *bulktype_MPI, *bulktype, *init_bulktype;
 bool AnchNInf;
@@ -75,6 +77,7 @@ bool AnchNInf;
 //Nano variables
 int interface;
 int pRx, pRy, pRz;
+bool pivotflag;
 
 double en_ldg[3];
 double en_tot, dE, el_old;
@@ -128,4 +131,6 @@ void energy_surf(double* ans);
 void relax_bulk();
 void relax_surf();
 void en_degen(double* Qin, double* loc_nu, double* Qdiff);
+void en_conic(double* Qin, double* loc_nu, double* Qdiff);
 void relax_degen(double* Qin, double* loc_nu, double* Qdiff);
+void relax_conic(double* Qin, double* loc_nu, double* Qdiff);

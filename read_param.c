@@ -26,7 +26,8 @@ bool read_param() {
         fscanf(param, "qch %lf\n", &qch);
 		fscanf(param, "redshift %lf #Default values BPI = 0.71 & BPII = 0.86.\n", &redshift);
         fscanf(param, "geo %d\n", &geo);
-        fscanf(param, "degenerate %d\n", &degenerate);
+        fscanf(param, "degenerate %d #1:Degenerated & 2:Conic\n", &degenerate);
+		fscanf(param, "tiltAngle %lf\n", &tiltAngle);
         fscanf(param, "infinite %d\n", &infinite);
         fscanf(param, "Np %d\n", &Np);
         fscanf(param, "Rp %lf\n", &Rp);
@@ -50,6 +51,7 @@ bool read_param() {
         fscanf(param, "Save Every %d\n", &save_every);
         fscanf(param, "Check Every %d\n", &check_every);
 		fscanf(param, "Stop At %d #For non-stop condition use 0.\n", &stopat);
+		fscanf(param, "Check Trace At %d\n", &trace_checker);
 	if(myid == root){
 		printf("Nx %d\n", Nx);
 		printf("Ny %d\n", Ny);
@@ -68,6 +70,7 @@ bool read_param() {
 		printf("redshift %lf\n", redshift);
 		printf("geo %d\n", geo);
 		printf("degenerate %d\n", degenerate);
+		printf("tilt angle = %lf\n", tiltAngle);
 		printf("infinite %d\n", infinite);
 		printf("Np %d\n", Np);
 		printf("Rp %lf\n", Rp);
@@ -86,6 +89,7 @@ bool read_param() {
 		printf("Lower Surface is %d\n", lowersurf);
 		printf("Checkpoint every %d!\n", save_every);
 		printf("Energy will be compared every %d!\n", check_every);
+		printf("Trace will be checked every %d!\n", trace_checker);
 		if(stopat != 0){
 			printf("Job will be\033[1;31m STOPPED\033[0m after %d!\n", stopat);
 		}

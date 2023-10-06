@@ -353,6 +353,13 @@ void relax_surf(){
 					}
 				}
 
+				else if(degen == 2){
+					relax_conic(Qin, loc_nu, Qdiff);
+					for(int n = 0; n < 6; n++){
+						qn[i * 6 + n] = Qin[n] + dt*(L1 * Qelas[n] + L2 * Qelas2[n] + L3 * Qelas3[n] + L4 * Qelas4[n] + chiral * 2 * qch * Qch[n] - 2 * Wstr * Qdiff[n]);
+					}
+				}
+
 				else if(degen == 0 && inf == 0){
 					for(int n = 0; n < 6; n++){
 						qn[i * 6 + n] = Qin[n] + dt*(L1 * Qelas[n] + L2 * Qelas2[n] + L3 * Qelas3[n] + L4 * Qelas4[n] + chiral * 2 * qch * Qch[n] - Wstr* (Qin[n]-qo_p[nb * 6 + n]));
@@ -382,46 +389,95 @@ void relax_surf(){
 }
 
 void relax_degen(double* Qin, double* loc_nu, double* Qdiff){
-	int i, n, j, l, m;
+
 	double Qtemp[3][3];
 	double ptemp[3][3];
 	double Qp[3][3];
 	double third = 1.0 / 3;
 	double nuQnu;
+
 	Qtemp[0][0] = Qin[0] + third * S;
 	Qtemp[0][1] = Qtemp[1][0] = Qin[1];
 	Qtemp[0][2] = Qtemp[2][0] = Qin[2];
 	Qtemp[1][1] = Qin[3] + third * S;
 	Qtemp[1][2] = Qtemp[2][1] = Qin[4];
 	Qtemp[2][2] = Qin[5] + third * S;
-	for(i = 0; i < 3; i++){
-		for(j = 0; j < 3; j++){
+	for(int i = 0; i < 3; i++){
+		for(int j = 0; j < 3; j++){
 			if(i == j) ptemp[i][j] = 1 - loc_nu[i] * loc_nu[j];
 			else ptemp[i][j] = - loc_nu[i] * loc_nu[j];
 		}
 	}
-	for(i = 0; i < 3; i++){
-		for(j = 0; j < 3; j++){
+	for(int i = 0; i < 3; i++){
+		for(int j = 0; j < 3; j++){
 			Qp[i][j] = 0;
-			for(l = 0; l < 3; l++){
-				for(m = 0; m < 3; m++){
+			for(int l = 0; l < 3; l++){
+				for(int m = 0; m < 3; m++){
 					Qp[i][j] += ptemp[i][l]*Qtemp[l][m]*ptemp[m][j];
 				}
 			}
 		}
 	}
 	nuQnu = 0;
-	for(i = 0; i<3; i++) {
-		for(j = 0; j<3; j++){
+	for(int i = 0; i<3; i++) {
+		for(int j = 0; j<3; j++){
 			nuQnu += loc_nu[i]*Qtemp[i][j]*loc_nu[j];
 		}
 	}
 	nuQnu *= third;
-	for(n = 0; n < 6; n ++)	Qdiff[n] = 0;
+	for(int n = 0; n < 6; n ++)	Qdiff[n] = 0;
 	Qdiff[0] =  Qtemp[0][0]- Qp[0][0] - nuQnu;
 	Qdiff[1] =  Qtemp[0][1]- Qp[0][1];
 	Qdiff[2] =  Qtemp[0][2]- Qp[0][2];
 	Qdiff[3] =  Qtemp[1][1]- Qp[1][1] - nuQnu;
 	Qdiff[4] =  Qtemp[1][2]- Qp[1][2];
 	Qdiff[5] =  Qtemp[2][2]- Qp[2][2] - nuQnu;
+}
+
+void relax_conic(double* Qin, double* loc_nu, double* Qdiff){
+	double Qtemp[3][3];
+	double ptemp[3][3];
+	double Qp[3][3];
+	double third = 1. / 3.;
+	double trace = 0.;
+	double cosTiltAngle;
+	double cosTiltAngleSq;
+	
+	Qtemp[0][0] = Qin[0] + third * S;
+	Qtemp[0][1] = Qtemp[1][0] = Qin[1];
+	Qtemp[0][2] = Qtemp[2][0] = Qin[2];
+	Qtemp[1][1] = Qin[3] + third * S;
+	Qtemp[1][2] = Qtemp[2][1] = Qin[4];
+	Qtemp[2][2] = Qin[5] + third * S;
+
+	for(int i = 0; i < 3; i++){
+		for(int j = 0; j < 3; j++){
+			ptemp[i][j] = loc_nu[i] * loc_nu[j];
+		}
+	}
+
+	for(int i = 0; i < 3; i++){
+		for(int j = 0; j < 3; j++){
+			Qp[i][j] = 0;
+			for(int l = 0; l < 3; l++){
+				for(int m = 0; m < 3; m++){
+					Qp[i][j] += ptemp[i][l] * Qtemp[l][m] * ptemp[m][j];
+				}
+			}
+		}
+	}
+	
+	cosTiltAngle = cos(tiltAngle / 180.0 * M_PI);
+	cosTiltAngleSq = pow(cosTiltAngle, 2);
+	
+	Qdiff[0] =  Qp[0][0] - cosTiltAngleSq * S * ptemp[0][0];
+	Qdiff[1] =  Qp[0][1] - cosTiltAngleSq * S * ptemp[0][1];
+	Qdiff[2] =  Qp[0][2] - cosTiltAngleSq * S * ptemp[0][2];
+	Qdiff[3] =  Qp[1][1] - cosTiltAngleSq * S * ptemp[1][1];
+	Qdiff[4] =  Qp[1][2] - cosTiltAngleSq * S * ptemp[1][2];
+	Qdiff[5] =  Qp[2][2] - cosTiltAngleSq * S * ptemp[2][2];
+	trace = third * (Qdiff[0] + Qdiff[3] + Qdiff[5]);
+	Qdiff[0] -= trace;
+	Qdiff[3] -= trace;
+	Qdiff[5] -= trace;
 }

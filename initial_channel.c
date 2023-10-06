@@ -13,9 +13,14 @@ bool initial_channel(){
 	int count1;
 	double dir[3] = {1, 0, 0};
 
-	double dx = Lx/(Nx-1);
-	double dy = Ly/(Ny-1);
-	double dz = Lz/(Nz-1);
+	//Radio del sistema
+    double Rx = Lx / 2. - 2.;
+    double Ry = Ly / 2. - 2.;
+    double Rz = Lz / 2. - 2.;
+
+	dx = Lx/(Nx-1);
+	dy = Ly/(Ny-1);
+	dz = Lz/(Nz-1);
 
 	idx = 1 / dx;
 	idy = 1 / dy;
@@ -203,7 +208,7 @@ bool initial_channel(){
 	//allocate qold and neighbor
 	//allocate share to define droplet: -1 not defined; 20 bulk; 0-9 droplet boundary; 10 -19 nanoparticle boundary
 	length = lrint(droplet / numprocs) + 1;
-	share = (char*)malloc(numprocs * length * sizeof(char));
+	share = (signed char*)malloc(numprocs * length * sizeof(signed char));
 	Qold = (double*)malloc(6 * numprocs * length * sizeof(double));
 	neighbor = (int*)malloc(6 * numprocs * length * sizeof(int));
 	for(i = 0; i < numprocs * length; i ++){

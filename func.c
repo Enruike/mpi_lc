@@ -99,6 +99,7 @@ bool checktr(double* Q){
 //		for(n = 0; n < 6; n ++){
 //			Q[n] /= 1.3;
 //		}
+		printf("trqq(Q) : %lf\n", trqq(Q));
 		printf("Order parameter exceed 1.\n");
 		return false;
 	}

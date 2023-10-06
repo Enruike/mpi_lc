@@ -68,7 +68,7 @@ int main(int argc, char *argv[]){
 			}
 		}
 
-		if(cycle % check_every == 0){ 
+		if(cycle % trace_checker == 0){ 
 			//Every 10000 steps check the trace of Qtensor
 			if(myid == root){	
 				for(i = 0; i < droplet; i++){
@@ -80,10 +80,11 @@ int main(int argc, char *argv[]){
 				}
 				if(!flag){
 					printf("Error in the trace of q; cycle : %d.\n", cycle);
+					//MPI_Bcast(&flag, 1, MPI_BYTE, root, MPI_COMM_WORLD);
 				}
 				//output();
 			}	
-	//		MPI_Bcast(&flag, 1, MPI_BYTE, root, MPI_COMM_WORLD);	
+			MPI_Bcast(&flag, 1, MPI_BYTE, root, MPI_COMM_WORLD);	
 		}
 
 		//Mi modificación para evitar que escriba cada mil ciclos en el disco duro.

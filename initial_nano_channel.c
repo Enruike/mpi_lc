@@ -2,6 +2,7 @@
 
 double pU;
 double alpha, beta, gama;
+int posX, posY, posZ;
 
 int anchoring;
 
@@ -23,6 +24,18 @@ bool read_nano(){
     fscanf(param, "gamma %lf\n", &gama);
     fscanf(param, "interface %d #thickness of the interface layer; 0: no interface\n", &interface);
     fscanf(param, "anchoring %d #0:random 1:homeotropic 2:planar\n", &anchoring);
+    fscanf(param, "posX %d #0 for center; nanoparticle position\n", &posX);
+    fscanf(param, "posY %d\n", &posY);
+    fscanf(param, "posZ %d\n", &posZ);
+    fscanf(param, "pivot %d\n #0:center; 1:edge", &pivotflag);
+
+    if(pivotflag == 0 && (posX != 0 || posY != 0 || posZ != 0)){
+        printf("Pivot flag it's set up for 0:center\n");
+        printf("Nanoparticle position will be set to center\n");
+        posX = 0;
+        posY = 0;
+        posZ = 0;
+    }
 
     printf("\n~ Nanoparticle data ~\n");
     printf("pRx %d\n", pRx);
@@ -44,7 +57,12 @@ bool read_nano(){
         printf("unknonw anchoring\n");
         return false;
     }
-
+    if(pivotflag == 0){
+        printf("Nanoparticle position will be in the center of the box\n");
+    }
+    else{
+        printf("Nanoparticle position is: posX: %d; posY: %d; posZ: %d\n", posX, posY, posZ);
+    }
 
     return true;
 
@@ -52,14 +70,37 @@ bool read_nano(){
 
 bool initial_nano_channel(){
 
+    //Reading Nano.in file.
+    if(!read_nano()){
+        return false;
+        exit(1);
+    }
+
     bool *ndrop;
     int *indx;
     int l;
 
     //Mitad de la caja
-    rx = lrint(Nx / 2);
-    ry = lrint(Ny / 2);
-    rz = lrint(Nz / 2);
+    if(posX == 0){
+        rx = lrint(Nx / 2);
+    }
+    else{
+        rx = posX;
+    }
+    if(posY == 0){
+        ry = lrint(Ny / 2);
+    }
+    else{
+        ry = posY;
+    }
+    if(posZ == 0){
+        rz = lrint(Nz / 2);
+    }
+    else{
+        rz = posZ;
+    }
+
+    
 
     //Radio del sistema
     double Rx = Lx / 2. - 2.;
@@ -113,11 +154,6 @@ bool initial_nano_channel(){
         }
     }
 
-    //Reading Nano.in file.
-    if(!read_nano()){
-        return false;
-    }
-
     alpha = (alpha * M_PI) / 180.;
     beta = (beta * M_PI) / 180.;
     gama = (gama * M_PI) / 180.;
@@ -133,6 +169,18 @@ bool initial_nano_channel(){
     int nanoparticle_nodes = 0;
     l = 0;
 
+    double pivotX;
+    double pivotY;
+    double pivotZ;
+
+    //Pivot point.
+    //pivotX = (double)pRx;
+    //pivotY = (double)posY;
+    //pivotZ = (double)posZ;
+    pivotX = 0.;
+    pivotY = 0.;
+    pivotZ = sin(beta) * pRx;
+
     for(int k = 0; k < Nz; k++){
         for(int j = 0; j < Ny; j++){
             for(int i = 0; i < Nx; i++){
@@ -141,11 +189,21 @@ bool initial_nano_channel(){
 				y = (double)(j - ry) * dy;
 				z = (double)(k - rz) * dz;
 
-                x_rot = x * cos(alpha) * cos(beta) + y * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
-					+ z * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
-				y_rot = x * sin(alpha) * cos(beta) + y * (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
-					+ z * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
-				z_rot = x * -sin(beta) + y * cos(beta) * sin(gama) + z * cos(beta) * cos(gama);
+                //pivotflag 0 for center
+                if(pivotflag == 0){
+                    x_rot = x * cos(alpha) * cos(beta) + y * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
+					    + z * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
+				    y_rot = x * sin(alpha) * cos(beta) + y * (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
+					    + z * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
+				    z_rot = x * -sin(beta) + y * cos(beta) * sin(gama) + z * cos(beta) * cos(gama);
+                }
+                else{
+                    x_rot = (x - pivotX) * cos(alpha) * cos(beta) + (y - pivotY) * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
+					    + (z - pivotZ) * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
+				    y_rot = (x - pivotX) * sin(alpha) * cos(beta) + (y - pivotY)* (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
+					    + (z - pivotZ) * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
+				    z_rot = (x - pivotX) * -sin(beta) + (y - pivotY) * cos(beta) * sin(gama) + (z - pivotZ) * cos(beta) * cos(gama);
+                }
 
 				x = x_rot;
 				y = y_rot;
@@ -277,7 +335,8 @@ bool initial_nano_channel(){
     
     dV = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / bulk;
     dVi = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / (bulk - interbulk);
-    dVo = (4 / 3 * M_PI * ((pRx + interface) * (pRy + interface) * (pRz + interface) - (pRx) * (pRy) * (pRz))) / interbulk;
+    if(interface != 0) dVo = (4 / 3 * M_PI * ((pRx + interface) * (pRy + interface) * (pRz + interface) - (pRx) * (pRy) * (pRz))) / interbulk;
+    else dVo = 0.;
     dAdrop = (2 * Lx * Ly) / (surf);
     dApart = 4. * M_PI * pow((pow(pRx * pRy, 1.6075) + pow(pRx * pRz, 1.6075) + pow(pRy * pRz, 1.6075)) / 3.0, 1.0/1.6075) / nsurf;
 
@@ -303,7 +362,7 @@ bool initial_nano_channel(){
 	}
 
     length = lrint(droplet / numprocs) + 1;
-	share = (char*)malloc(numprocs * length * sizeof(char));
+	share = (signed char*)malloc(numprocs * length * sizeof(signed char));
 	Qold = (double*)malloc(6 * numprocs * length * sizeof(double));
 	neighbor = (int*)malloc(6 * numprocs * length * sizeof(int));
 	for(int i = 0; i < numprocs * length; i ++){
@@ -316,6 +375,7 @@ bool initial_nano_channel(){
 
     int nd = 0;
     int nb = 0;
+    int nbulk = 0;
 
     for(int i = 0; i < tot; i++){
         if(!ndrop[i]){
@@ -324,9 +384,8 @@ bool initial_nano_channel(){
             //superficie del canal: share/sign = 2
             //superficie de la nanopartícula: share/sign = 4
             if(drop[i]){
-        
                 share[nd] = 0;
-                
+                nbulk++;
             }
             else if(boundary[i]){
                 share[nd] = 2;
@@ -340,7 +399,43 @@ bool initial_nano_channel(){
         }
 
     }
+    int count1;
+    /*int countshare0 = 0;
+    int countshare2 = 0;
+    int countshare4 = 0;
+    int countshare8 = 0;
+    int shareminusone = 0;
+    int undefined = 0;*/
+    //count1 = 0;
+    /*for(int i = 0; i < droplet; i++){
+        if(share[i] == 0){
+            countshare0++;
+            count1++;
+        }
+        else if(share[i] == 2){
+            countshare2++;
+            count1++;
+        }
+        else if(share[i] == 4){
+            countshare4++;
+            count1++;
+        }
+        else if(share[i] == 8){
+            countshare8++;
+            count1++;
+        }
+        else if(share[i] == -1){
+            shareminusone++;
+        }
+        else{
+            undefined++;
+            
+        }
+    }*/
+    //printf("Pre share count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
+    //printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
 
+    //printf("nbulk count : %d\n", nbulk);
     if (nd != droplet){
 		printf("Problem in initialization of qtensor. nd is %d not equal to droplet %d.\n", nd, droplet);
 		return false;
@@ -396,7 +491,9 @@ bool initial_nano_channel(){
                             printf("Error in channel surface.\n");
                             return false;
                         }
-                        
+                
+                        norm_v(&nu[nb * 3]);
+
                         if(infinite == 1){
                             for(int n = 0; n < 6; n ++){
                                 Qold[nd * 6 + n] = dir2ten(&nu[nb * 3], n, S);
@@ -413,11 +510,20 @@ bool initial_nano_channel(){
                         y = (double)(j - ry) * dy;
                         z = (double)(k - rz) * dz;
 
-                        x_rot = x * cos(alpha) * cos(beta) + y * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
-                            + z * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
-                        y_rot = x * sin(alpha) * cos(beta) + y * (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
-                            + z * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
-                        z_rot = x * -sin(beta) + y * cos(beta) * sin(gama) + z * cos(beta) * cos(gama);
+                        if(pivotflag == 0){
+                            x_rot = x * cos(alpha) * cos(beta) + y * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
+                                + z * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
+                            y_rot = x * sin(alpha) * cos(beta) + y * (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
+                                + z * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
+                            z_rot = x * -sin(beta) + y * cos(beta) * sin(gama) + z * cos(beta) * cos(gama);
+                        }
+                        else{
+                            x_rot = (x - pivotX) * cos(alpha) * cos(beta) + (y - pivotY) * (cos(alpha) * sin(beta) * sin(gama) - sin(alpha) * cos(gama))\
+                                + (z - pivotZ) * (cos(alpha) * sin(beta) * cos(gama) + sin(alpha) * sin(gama));
+                            y_rot = (x - pivotX) * sin(alpha) * cos(beta) + (y - pivotY)* (sin(alpha) * sin(beta) *sin(gama) + cos(alpha) * cos(gama))\
+                                + (z - pivotZ) * (sin(alpha) * sin(beta) * cos(gama) - cos(alpha) * sin(gama));
+                            z_rot = (x - pivotX) * -sin(beta) + (y - pivotY) * cos(beta) * sin(gama) + (z - pivotZ) * cos(beta) * cos(gama);
+                        }
 
                         x = x_rot;
                         y = y_rot;
@@ -496,7 +602,40 @@ bool initial_nano_channel(){
 		printf("Problem in initialization of share. nb is %d not equal to surf %d.\n", nb, surf);
 		return false;
 	}
-    int count1;
+    
+    /*countshare0 = 0;
+    countshare2 = 0;
+    countshare4 = 0;
+    countshare8 = 0;
+    shareminusone = 0;
+    undefined = 0;*/
+    //count1 = 0;
+    /*for(int i = 0; i < droplet; i++){
+        if(share[i] == 0){
+            countshare0++;
+            count1++;
+        }
+        else if(share[i] == 2){
+            countshare2++;
+            count1++;
+        }
+        else if(share[i] == 4){
+            countshare4++;
+            count1++;
+        }
+        else if(share[i] == 8){
+            countshare8++;
+            count1++;
+        }
+        else if(share[i] == -1){
+            shareminusone++;
+        }
+        else{
+            undefined++;
+        }
+    }*/
+    //printf("After count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
+    //printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
 
     if(DoubleU){
 
@@ -571,10 +710,19 @@ bool initial_nano_channel(){
 		//for all nodes with problem, share +1
 	}
 
+    count1 = 0;
+
+    for(int i = 0; i < droplet; i++){
+        if(share[i] >= 0 && share[i] < 14){
+            count1++;
+        }
+    }
+    printf("Final count before scattering is %d\n", count1);
+
 	free(ndrop);
 	free(indx);
     free(init_bulktype);
 
-	printf("Initialization of ellipse successful.\n");
+	printf("Initialization of nanocanal successful.\n");
 	return true;
 }

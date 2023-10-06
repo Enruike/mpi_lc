@@ -14,7 +14,7 @@ lc_mpi.x: $(FILES) $(HEADERS) read_param.o
 	mpiicc -O2 $(FILES) $(OBJS) $(HEADERS) -o lc_mpi.x $(WARNS)
 
 read_param.o: read_param.c read_param.h
-	icc -c read_param.c
+	icc -c read_param.c $(WARNS)
 
 move: 
 	mv lc_mpi.x ~/Oblates/nanochannel/

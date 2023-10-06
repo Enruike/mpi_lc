@@ -99,7 +99,7 @@ int main(int argc, char *argv[]){
 
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Win_fence(0, win);
-		if(flag)	relax_surf();
+		if(flag) relax_surf();
 /*
 		if(myid == root){	
 			printf("check2.\n");

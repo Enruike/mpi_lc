@@ -112,7 +112,11 @@ bool conf(double **pos){
 			}		
 		}
 		else if(geo == 10){
-
+			
+			if(!norm_v(init_dir)){
+				printf("Problems in initial direction before loop!\n");
+				exit(1);
+			}
 			for(int i = 0; i < 6; i++){
 				Qini[i] = dir2ten(init_dir, i, S);
 			}
@@ -132,7 +136,12 @@ bool conf(double **pos){
 								dir_temp[0] = (rand() % (pRx + interface) + 1);
 								dir_temp[1] = (rand() % (pRy + interface) + 1);
 								dir_temp[2] = (rand() % (pRz + interface) + 1);
-								norm_v(dir_temp);
+								
+								
+								if(!norm_v(dir_temp)){
+									printf("Problems with random directions!\n");
+									exit(1);
+								}
 
 								Qold[nd * 6 + 0] = dir2ten(dir_temp, 0, S2);
 								Qold[nd * 6 + 1] = dir2ten(dir_temp, 1, S2);

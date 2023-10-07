@@ -11,10 +11,10 @@ int main(int argc, char *argv[]){
 
 	int i;
 	bool flag = true;
-	double deltat;
 
 	double time_spend;
 	double begin, end;
+	double deltat;
 
 	FILE* energy;
 

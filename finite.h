@@ -39,7 +39,7 @@ extern double redshift;
 double dVi, dVo;
 
 extern double tmin, tmax, dt; 
-extern int increment; 
+extern double increment; 
 extern double accuracy; 
 extern double init_dir[3], dir1[3], dir2[3]; 
 extern bool uppersurf, lowersurf, DoubleU; //Variables introducidas para nuevo código.

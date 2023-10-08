@@ -1,9 +1,12 @@
 all: lc_mpi.x
 GCC = gcc-9#gcc working version
+SRC_DIR := src
+SRC := $(wildcard $(SRC_DIR)/*.c)
+OBJ := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
-FILES = conf.c func.c initial_bulk.c initial_channel.c initial_coaxialcyl.c initial_drop.c initial_ellip.c initial_halfcylinder.c\
-		initial_halfdrop.c initial_quartercylinder.c initial_quarterdrop.c initial_sandwich.c initial.c main.c output.c\
-		relax.c scatter.c energy.c initial_cylinder.c initial_nano_channel.c
+FILES = conf.c func.c initial_bulk.c initial_channel.c initial_coaxialcyl.c initial_drop.c initial_ellip.c\
+		initial_halfcylinder.c initial_halfdrop.c initial_quartercylinder.c initial_quarterdrop.c initial_sandwich.c\
+		initial.c main.c output.c relax.c scatter.c energy.c initial_cylinder.c initial_nano_channel.c
 
 HEADERS = finite.h
 
@@ -22,6 +25,9 @@ read_param.o: read_param.c read_param.h
 
 move: 
 	mv lc_mpi.x ~/Oblates/nanochannel/
+
+test:
+	$(OBJ)
 
 clean:
 	rm -f $(OBJS) lc_mpi.x

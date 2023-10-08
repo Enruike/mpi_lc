@@ -1,3 +1,6 @@
+#ifndef __FINITE_H__
+#define __FINITE_H__
+
 #include <mpi.h>
 #include <stdio.h>
 #include <math.h>
@@ -135,3 +138,5 @@ void en_degen(double* Qin, double* loc_nu, double* Qdiff);
 void en_conic(double* Qin, double* loc_nu, double* Qdiff);
 void relax_degen(double* Qin, double* loc_nu, double* Qdiff);
 void relax_conic(double* Qin, double* loc_nu, double* Qdiff);
+
+#endif /* __FINITE_H__ */

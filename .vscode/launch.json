@@ -5,7 +5,7 @@
                 "Full launch.json configuration details can be found here:",
                 "https://code.visualstudio.com/docs/cpp/launch-json-reference"
             ],
-            "name": "(gdb-oneapi) lc_mpi.x Launch",
+            "name": "(gdb-oneapi) lc_mpi.x Launch & Break",
             "type": "cppdbg",
             "request": "launch",
             "preLaunchTask": "",

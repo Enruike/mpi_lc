@@ -11,7 +11,7 @@
             "compilerPath": "/opt/intel/oneapi/mpi/latest/bin/mpiicc",
             "cStandard": "c17",
             "cppStandard": "c++17",
-            "intelliSenseMode": "${default}",
+            "intelliSenseMode": "linux-gcc-x64",
             "configurationProvider": "ms-vscode.makefile-tools"
         }
     ],

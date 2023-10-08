@@ -1,0 +1,13 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "build lc_mpi.x",
+			"command": "make -f /home/enrique/mpi_lc/Makefile",
+			"type": "shell",
+			"options": {
+				"cwd": "/home/enrique/mpi_lc"
+			}
+		}
+	]
+}

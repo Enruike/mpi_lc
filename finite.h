@@ -1,9 +1,10 @@
-#include "mpi.h"
+#include <mpi.h>
 #include <stdio.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <time.h>
+
 #define root 0
 
 extern int Nx, Ny, Nz; 
@@ -92,7 +93,7 @@ int *neigb;
 
 int length;
 MPI_Win win, win2;
-MPI_Comm shmcomm; 
+MPI_Comm shmcomm;
 
 bool read_param();
 bool read_nppos(double** pos);

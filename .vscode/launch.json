@@ -1,20 +1,16 @@
 {
-    // Use IntelliSense to learn about possible attributes.
-    // Hover to view descriptions of existing attributes.
-    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
     "configurations": [
         {
             "comments": [
                 "Full launch.json configuration details can be found here:",
                 "https://code.visualstudio.com/docs/cpp/launch-json-reference"
             ],
-            "name": "oneAPI C++: Launch & Break",
+            "name": "(gdb-oneapi) lc_mpi.x Launch",
             "type": "cppdbg",
             "request": "launch",
             "preLaunchTask": "",
             "postDebugTask": "",
-            "program": "${workspaceFolder}/lc_mpi.x",
+            "program": "/home/enrique/mpi_lc/lc_mpi.x",
             "args": [],
             "stopAtEntry": true,
             "cwd": "${workspaceFolder}",

@@ -1,6 +1,6 @@
-#include "finite.h"
+#include"finite.h"
 
-int main(int argc, char *argv[]){
+int main(){
 
 	//read_param();
 	
@@ -20,6 +20,7 @@ int main(int argc, char *argv[]){
 
 	begin = MPI_Wtime();
 	//read in parameters
+	
 
 	if(!read_param()){
 			MPI_Comm_free(&shmcomm);

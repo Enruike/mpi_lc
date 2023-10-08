@@ -1,4 +1,4 @@
-#include "finite.h"
+#include"finite.h"
 
 bool scatter(){
 
@@ -71,7 +71,7 @@ bool scatter(){
 			}
 			printf("Bulktype elements = %d Nontype = %d Total = %d\n", icount, zerocount, icount + zerocount);
 			if(zerocount + icount != length * numprocs){
-				printf("Mismatch in data lenght!\n");
+				printf("Mismatch in data length!\n");
 				return false;
 			}
 		}
@@ -121,7 +121,7 @@ bool scatter(){
 
 	count = 0;
 	for(i = 0; i < length; i ++){
-		if(sign[i] >= 2 && sign[i] < 14)	count ++;
+		if(sign[i] >= 2 && sign[i] < 14 && sign[i] != 10)	count ++;
 	}
 
  	MPI_Reduce(&count, &count_tot, 1, MPI_INT, MPI_SUM, root, MPI_COMM_WORLD);

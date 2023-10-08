@@ -23,6 +23,8 @@ bool conf(double **pos){
 		srand(rand_seed);
 		double dir_temp[3] = { 0. };
 		l = 0;
+		
+		int tempcounter = 0;
 
 		if(geo == -2 || geo == -3){
 
@@ -131,17 +133,38 @@ bool conf(double **pos){
 				for(int j = 0; j < Ny; j++){
 					for(int i = 0; i < Nx; i++){
 						if(drop[l] || boundary[l] || nboundary[l]){
-							if(init_bulktype[l] == 3){
 
+							
+							if(init_bulktype[l] == 3){
+								
+								//Modified condition for negative direcctions.
+								dir_temp[0] = (rand() % (pRx + interface) - pRx - interface);
+								dir_temp[1] = (rand() % (pRy + interface) - pRy - interface);
+								dir_temp[2] = (rand() % (pRz + interface) - pRz - interface);
+								/* original condition for positive numbers 
+								
 								dir_temp[0] = (rand() % (pRx + interface) + 1);
 								dir_temp[1] = (rand() % (pRy + interface) + 1);
 								dir_temp[2] = (rand() % (pRz + interface) + 1);
 								
+								*/
+
+								/* if(tempcounter < 50) {
+									printf("Vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
+									
+								} */
 								
 								if(!norm_v(dir_temp)){
 									printf("Problems with random directions!\n");
+									printf("Problematic vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
 									exit(1);
 								}
+
+								
+							/* 	if(tempcounter < 50) {
+									printf("Norm vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
+									tempcounter++;
+								} */
 
 								Qold[nd * 6 + 0] = dir2ten(dir_temp, 0, S2);
 								Qold[nd * 6 + 1] = dir2ten(dir_temp, 1, S2);
@@ -152,6 +175,7 @@ bool conf(double **pos){
 							}
 
 							else{
+
 								
 								if(k == 0){
 									for(int m = 0; m < 6; m++){

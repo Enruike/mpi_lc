@@ -17,7 +17,6 @@ void free_q(){
 	free(bulktype_MPI);
 }
 
-
 bool norm_v(double* vec){
 	double mod = 0;
 	mod = sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]); 

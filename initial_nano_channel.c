@@ -136,7 +136,7 @@ bool initial_nano_channel(){
 		ndrop[l] = false;
 		nboundary[l] = false;
         init_bulktype[l] = 1;
-		indx[l] = -1;
+		indx[l] = 1;
 	}
 
  
@@ -325,7 +325,7 @@ bool initial_nano_channel(){
         }
         
 
-        if(bulk != (rebulker + interbulk++)){
+        if(bulk != (rebulker + interbulk)){
             printf("Problems with interface nodes\n");
             return false;
         }
@@ -335,7 +335,7 @@ bool initial_nano_channel(){
     
     dV = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / bulk;
     dVi = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / (bulk - interbulk);
-    if(interface != 0) dVo = (4 / 3 * M_PI * ((pRx + interface) * (pRy + interface) * (pRz + interface) - (pRx) * (pRy) * (pRz))) / interbulk;
+    if(interface != 0) dVo = (4. / 3. * M_PI * ((double)(pRx + interface) * (double)(pRy + interface) * (double)(pRz + interface) - (double)(pRx) * (double)(pRy) * (double)(pRz))) / (double)interbulk;
     else dVo = 0.;
     dAdrop = (2 * Lx * Ly) / (surf);
     dApart = 4. * M_PI * pow((pow(pRx * pRy, 1.6075) + pow(pRx * pRz, 1.6075) + pow(pRy * pRz, 1.6075)) / 3.0, 1.0/1.6075) / nsurf;
@@ -400,14 +400,14 @@ bool initial_nano_channel(){
 
     }
     int count1;
-    /*int countshare0 = 0;
+    int countshare0 = 0;
     int countshare2 = 0;
     int countshare4 = 0;
     int countshare8 = 0;
     int shareminusone = 0;
-    int undefined = 0;*/
-    //count1 = 0;
-    /*for(int i = 0; i < droplet; i++){
+    int undefined = 0;
+    count1 = 0;
+    for(int i = 0; i < droplet; i++){
         if(share[i] == 0){
             countshare0++;
             count1++;
@@ -431,9 +431,9 @@ bool initial_nano_channel(){
             undefined++;
             
         }
-    }*/
-    //printf("Pre share count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
-    //printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
+    }
+    printf("Pre share count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
+    printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
 
     //printf("nbulk count : %d\n", nbulk);
     if (nd != droplet){
@@ -603,14 +603,14 @@ bool initial_nano_channel(){
 		return false;
 	}
     
-    /*countshare0 = 0;
+    countshare0 = 0;
     countshare2 = 0;
     countshare4 = 0;
     countshare8 = 0;
     shareminusone = 0;
-    undefined = 0;*/
-    //count1 = 0;
-    /*for(int i = 0; i < droplet; i++){
+    undefined = 0;
+    count1 = 0;
+    for(int i = 0; i < droplet; i++){
         if(share[i] == 0){
             countshare0++;
             count1++;
@@ -633,9 +633,10 @@ bool initial_nano_channel(){
         else{
             undefined++;
         }
-    }*/
-    //printf("After count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
-    //printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
+    }
+
+    printf("After count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
+    printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
 
     if(DoubleU){
 
@@ -644,7 +645,7 @@ bool initial_nano_channel(){
 			bulktype[i]=0;
 		}
 
-		int bt1 = 0, bt2 = 0;
+		int bt1 = 0, bt2 = 0, bt0 = 0;
 		nd = 0;
 		for(int i = 0; i < tot; i++){
 			if(init_bulktype[i] == 1 ){
@@ -661,6 +662,7 @@ bool initial_nano_channel(){
 			}
             else if(init_bulktype[i] == 3){
                 bulktype[nd] = 3;
+                share[nd] = 10; // 10 for interface type. Share window
                 bt2++;
                 nd++;
                
@@ -669,12 +671,16 @@ bool initial_nano_channel(){
                 bulktype[nd] = init_bulktype[i];
                 bt2++;
                 nd++;
-            }       
+            }
+            else if(init_bulktype[i] == -1){
+                bt0++;
+                nd++;
+            } 
 		}
 
 		if ((bt1 + bt2) != droplet) {
 			printf("Error in transfer data to droplet bulktype!\n");
-            printf("bt1 is %d bt2 is %d\n", bt1, bt2);
+            printf("bt1 is %d bt2 is %d, bt0 is %d\n", bt1, bt2, bt0);
 			printf("droplet size is %d\n", droplet);
 			return false;
 		}
@@ -682,6 +688,32 @@ bool initial_nano_channel(){
 			printf("Data transfer to droplet bulktype successfully!\n");
 		}
 	}
+
+    if (interface != 0)
+    {
+        int sharecounter = 0;
+        for(int i = 0; i < numprocs * length; i++){
+            if (share[i] == 10)
+            {
+                sharecounter++;
+            }
+            
+        }
+
+        if (sharecounter != interbulk)
+        {
+            printf("Problems in share and interface nodes count!\n");
+            printf("Share count is %d and interbulk is %d\n", sharecounter, interbulk);
+            exit(1);
+        }
+        else{
+            printf("Share count for interface nodes is ok\n");
+        }
+        
+    }
+    
+    
+    
 
     for(nd = 0; nd < droplet; nd ++){
 		//for all Bulk point, if one of the neighbor is surface point

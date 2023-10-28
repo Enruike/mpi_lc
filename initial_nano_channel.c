@@ -540,9 +540,9 @@ bool initial_nano_channel(){
                         else {
 
                             if(anchoring == 0){
-                                nu[nb * 3 + 0] = (rand() % pRx + 1);
-						        nu[nb * 3 + 1] = (rand() % pRy + 1);
-						        nu[nb * 3 + 2] = (rand() % pRz + 1);
+                                nu[nb * 3 + 0] = (rand() % pRx - pRx);
+						        nu[nb * 3 + 1] = (rand() % pRy - pRy);
+						        nu[nb * 3 + 2] = (rand() % pRz - pRz);
                                 norm_v(&nu[nb * 3]);
 
                             }

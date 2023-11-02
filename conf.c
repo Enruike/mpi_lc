@@ -5,12 +5,6 @@ bool conf(double **pos){
 	int nb, nd;
 	int i, j, k, n;
 	double dis, x = 0.0, y = 0.0, z = 0.0, xi, yi, zi;
-	int rx = lrint(Nx / 2) - 1;
-	int ry = lrint(Ny / 2) - 1;
-	int rz = lrint(Nz / 2) - 1;
-	double dx = Lx/(Nx-1);
-	double dy = Ly/(Ny-1);
-	double dz = Lz/(Nz-1);
 	double disxy;
 	double sinthe, costhe, sinphi, cosphi, omega;
 	double Qini[6] = {0};
@@ -26,8 +20,13 @@ bool conf(double **pos){
 		double dirvec1[3] = {0};
 		double dirvec2[3] = {0};
 		double norm = 0;
+		srand(rand_seed);
+		double dir_temp[3] = { 0. };
+		l = 0;
+		
+		int tempcounter = 0;
 
-		if((geo == -2 || geo == -3) && ideal == 1){
+		if(geo == -2 || geo == -3){
 
 			for(int k = 0; k < Nz; k++){
 				for(int j = 0; j < Ny; j++){
@@ -113,6 +112,94 @@ bool conf(double **pos){
 					}
 				}
 			}		
+		}
+		else if(geo == 10){
+			
+			if(!norm_v(init_dir)){
+				printf("Problems in initial direction before loop!\n");
+				exit(1);
+			}
+			for(int i = 0; i < 6; i++){
+				Qini[i] = dir2ten(init_dir, i, S);
+			}
+			dirvec1[0] = dirvec2[0] = init_dir[0];
+			dirvec1[1] = dirvec2[1] = init_dir[1];
+			dirvec1[2] = init_dir[2];
+			dirvec2[2] = - init_dir[2];
+			norm_v(dirvec1);
+			norm_v(dirvec2);
+
+			for(int k = 0; k < Nz; k++){
+				for(int j = 0; j < Ny; j++){
+					for(int i = 0; i < Nx; i++){
+						if(drop[l] || boundary[l] || nboundary[l]){
+
+							
+							if(init_bulktype[l] == 3){
+								
+								//Modified condition for negative direcctions.
+								dir_temp[0] = (rand() % (pRx + interface) - pRx - interface);
+								dir_temp[1] = (rand() % (pRy + interface) - pRy - interface);
+								dir_temp[2] = (rand() % (pRz + interface) - pRz - interface);
+								/* original condition for positive numbers 
+								
+								dir_temp[0] = (rand() % (pRx + interface) + 1);
+								dir_temp[1] = (rand() % (pRy + interface) + 1);
+								dir_temp[2] = (rand() % (pRz + interface) + 1);
+								
+								*/
+
+								/* if(tempcounter < 50) {
+									printf("Vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
+									
+								} */
+								
+								if(!norm_v(dir_temp)){
+									printf("Problems with random directions!\n");
+									printf("Problematic vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
+									exit(1);
+								}
+
+								
+							/* 	if(tempcounter < 50) {
+									printf("Norm vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
+									tempcounter++;
+								} */
+
+								Qold[nd * 6 + 0] = dir2ten(dir_temp, 0, S2);
+								Qold[nd * 6 + 1] = dir2ten(dir_temp, 1, S2);
+								Qold[nd * 6 + 2] = dir2ten(dir_temp, 2, S2);
+								Qold[nd * 6 + 3] = dir2ten(dir_temp, 3, S2);
+								Qold[nd * 6 + 4] = dir2ten(dir_temp, 4, S2);
+								Qold[nd * 6 + 5] = dir2ten(dir_temp, 5, S2);
+							}
+
+							else{
+
+								
+								if(k == 0){
+									for(int m = 0; m < 6; m++){
+										Qold[nd * 6 + m] = dir2ten(dirvec1, m, S);
+									}
+								}
+								else if(k == Nz - 1){
+									for(int m = 0; m < 6; m++){
+										Qold[nd * 6 + m] = dir2ten(dirvec2, m, S);
+									}
+								}
+								else{
+									for(int m = 0; m < 6; m++){
+										Qold[nd * 6 + m] = Qini[m];
+									}									
+								}
+	
+							}
+							nd++;
+						}
+						l++;
+					}
+				}
+			}
 		}
 
 		else{
@@ -432,88 +519,130 @@ bool conf(double **pos){
 	//BPI (seed = 4) and BPII (seed = 5)
 	else if(seed == 4 || seed == 5){
 
-    double A = 0.2;
-    double cst;
-    double isq2 = 1.0 / sqrt(2);
-    double sq2 = sqrt(2);
-                
-	cst = 2 * qch * redshift;
-           
-    l = 0;
-	nd = 0;
+		double A = 0.2;
+		double cst;
+		double isq2 = 1.0 / sqrt(2.);
+		double sq2 = sqrt(2.);
+					
+		cst = 2. * qch * redshift;
+			
+		l = 0;
+		nd = 0;
 
-	for(int k = 0; k < Nz; k++){
-        for (int j = 0; j < Ny; j++){
-            for (int i = 0; i < Nx; i++){
-                
-				if(drop[l] || boundary[l] || nboundary[l]){
-                	if(seed == 4){
+		if(seed == 4){
+			for(int k = 0; k < Nz; k++){
+				for (int j = 0; j < Ny; j++){
+					for (int i = 0; i < Nx; i++){
+						
+						if(drop[l] || boundary[l] || nboundary[l]){
+							if(geo == -2){
+								x = (i - rx) * cst * isq2;
+								y = (j - 2) * cst * isq2;
+								z = (k) * cst * isq2;
+							}
+							else if(geo == -3){
+								x = (i - rx) * cst * isq2;
+								y = (j - 2) * cst * isq2;
+								z = (k - rz) * cst * isq2;
+							}
+							else{
+								x = (double)(i - rx) * cst * isq2;
+								y = (double)(j - ry) * cst * isq2;
+								z = (double)(k - rz) * cst * isq2;
+							}
+										
+							Qold[nd * 6 + 0] = A * (- sin(y) * cos(x) - sin(x) * cos(z) + 2 * sin(z) * cos(y));
+							Qold[nd * 6 + 3] = A * (- sin(z) * cos(y) - sin(y) * cos(x) + 2 * sin(x) * cos(z));
+							Qold[nd * 6 + 5] = A * (- sin(x) * cos(z) - sin(z) * cos(y) + 2 * sin(y) * cos(x));
+							Qold[nd * 6 + 1] = A * (- sq2 * sin(x) * sin(z) - sq2 * cos(y) * cos(z) + sin(x) * cos(y));
+							Qold[nd * 6 + 2] = A * (- sq2 * sin(z) * sin(y) - sq2 * cos(x) * cos(y) + sin(z) * cos(x));
+							Qold[nd * 6 + 4] = A * (- sq2 * sin(y) * sin(x) - sq2 * cos(z) * cos(x) + sin(y) * cos(z));
 
-						if(geo == -2){
-							x = (i - rx) * cst * isq2;
-                        	y = (j - 2) * cst * isq2;
-                        	z = (k) * cst * isq2;
+							nd ++;
 						}
-						else if(geo == -3){
-							x = (i - rx) * cst * isq2;
-                        	y = (j - 2) * cst * isq2;
-                        	z = (k - rz) * cst * isq2;
+						l ++;
+
+					}
+				}
+			}
+		}
+		else{
+
+			//time_t t;
+    		//srand((unsigned) time(&t));
+			srand(rand_seed);
+			double dir_temp[3] = { 0. };
+
+			for(int k = 0; k < Nz; k++){
+				for (int j = 0; j < Ny; j++){
+					for (int i = 0; i < Nx; i++){
+						
+						if(drop[l] || boundary[l] || nboundary[l]){
+							
+							if(geo == -2){
+
+								x = i - rx;
+								y = j - 2;
+								z = k;
+
+							}
+							else if(geo == -3){
+
+								x = i - rx;
+								y = j - 2;
+								z = k - rz;
+
+							}
+							else{
+
+								x = (double)(i - rx) * dx;
+								y = (double)(j - ry) * dy;
+								z = (double)(k - rz) * dz;
+
+							}
+
+							if(interface != 0 && geo == 10){
+								if(init_bulktype[l] == 3){
+
+									dir_temp[0] = (rand() % (pRx + interface) + 1);
+						        	dir_temp[1] = (rand() % (pRy + interface) + 1);
+						        	dir_temp[2] = (rand() % (pRz + interface) + 1);
+                               		norm_v(dir_temp);
+
+									Qold[nd * 6 + 0] = dir2ten(dir_temp, 0, S2);
+									Qold[nd * 6 + 1] = dir2ten(dir_temp, 1, S2);
+									Qold[nd * 6 + 2] = dir2ten(dir_temp, 2, S2);
+									Qold[nd * 6 + 3] = dir2ten(dir_temp, 3, S2);
+									Qold[nd * 6 + 4] = dir2ten(dir_temp, 4, S2);
+									Qold[nd * 6 + 5] = dir2ten(dir_temp, 5, S2);
+								}
+								else{
+									Qold[nd * 6 + 0] = A * (cos(cst * z) - cos(cst * y));
+									Qold[nd * 6 + 1] = A * sin(cst * z);
+									Qold[nd * 6 + 2] = A * sin(cst * y);
+									Qold[nd * 6 + 3] = A * (cos(cst * x) - cos(cst * z));
+									Qold[nd * 6 + 4] = A * sin(cst * x);
+									Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));
+								}
+							}
+							else{
+								Qold[nd * 6 + 0] = A * (cos(cst * z) - cos(cst * y));
+								Qold[nd * 6 + 1] = A * sin(cst * z);
+								Qold[nd * 6 + 2] = A * sin(cst * y);
+								Qold[nd * 6 + 3] = A * (cos(cst * x) - cos(cst * z));
+								Qold[nd * 6 + 4] = A * sin(cst * x);
+								Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));
+								
+							}
+							nd ++;
 						}
-						else{
-							x = (i - rx) * cst * isq2;
-                        	y = (j - ry) * cst * isq2;
-                        	z = (k - rz) * cst * isq2;
-						}
-                                    
-						Qold[nd * 6 + 0] = A * (- sin(y) * cos(x) - sin(x) * cos(z) + 2 * sin(z) * cos(y));
-                        Qold[nd * 6 + 3] = A * (- sin(z) * cos(y) - sin(y) * cos(x) + 2 * sin(x) * cos(z));
-                        Qold[nd * 6 + 5] = A * (- sin(x) * cos(z) - sin(z) * cos(y) + 2 * sin(y) * cos(x));
-                        Qold[nd * 6 + 1] = A * (- sq2 * sin(x) * sin(z) - sq2 * cos(y) * cos(z) + sin(x) * cos(y));
-                        Qold[nd * 6 + 2] = A * (- sq2 * sin(z) * sin(y) - sq2 * cos(x) * cos(y) + sin(z) * cos(x));
-                        Qold[nd * 6 + 4] = A * (- sq2 * sin(y) * sin(x) - sq2 * cos(z) * cos(x) + sin(y) * cos(z));
-                    }
+						l ++;
+					}
+				}
+			}
+		}
+	}              
 
-                    else if(seed == 5){
-                                
-						if(geo == -2){
-
-							x = i - rx;
-                    		y = j - 2;
-                   			z = k;
-
-						}
-						else if(geo == -3){
-
-							x = i - rx;
-                    		y = j - 2;
-                   			z = k - rz;
-
-						}
-						else{
-
-							x = i - rx;
-                    		y = j - ry;
-                   			z = k - rz;
-							   
-						}
-
-                    	Qold[nd * 6 + 0] = A * (cos(cst * z) - cos(cst * y));
-                    	Qold[nd * 6 + 1] = A * sin(cst * z);
-                    	Qold[nd * 6 + 2] = A * sin(cst * y);
-                    	Qold[nd * 6 + 3] = A * (cos(cst * x) - cos(cst * z));
-                    	Qold[nd * 6 + 4] = A * sin(cst * x);
-                    	Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));
-                    }
-
-					nd ++;
-                }
-                l ++;
-
-            }
-        }
-    }
-		              
-}
 	
 	//seed=6; [110] BPI; 7: [110] BPII; 8: [111] BPI; 9: [111] BPII
 	else if(seed == 6 || seed == 7 || seed==8 || seed==9){

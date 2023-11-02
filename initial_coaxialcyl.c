@@ -8,9 +8,9 @@ bool initial_coaxialcyl(){
 	double x1, y1, z1;
 
     //Locating the center of the simbox.
-	int rx = lrint(Nx / 2) - 1;
-	int ry = lrint(Ny / 2) - 1;
-	int rz = lrint(Nz / 2) - 1;
+	int rx = lrint(Nx / 2);
+	int ry = lrint(Ny / 2);
+	int rz = lrint(Nz / 2);
 
     //System Radii
 	double Rx = Lx / 2 - 2;
@@ -274,7 +274,7 @@ bool initial_coaxialcyl(){
 	//allocate qold and neighbor
 	//allocate share to define droplet: -1 not defined; 20 bulk; 0-9 droplet boundary; 10 -19 nanoparticle boundary
 	length = lrint(droplet / numprocs) + 1;
-	share = (int*)malloc(numprocs * length * sizeof(int));
+	share = (signed char*)malloc(numprocs * length * sizeof(signed char));
 	Qold = (double*)malloc(6 * numprocs * length * sizeof(double));
 	neighbor = (int*)malloc(6 * numprocs * length * sizeof(int));
 	for(int i = 0; i < numprocs * length; i ++){

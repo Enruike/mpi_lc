@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Linux Intel OneAPI",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "/opt/intel/oneapi/mpi/2021.2.0/include/",
+                "~/mpi_lc/"
+            ],
+            "defines": [],
+            "compilerPath": "/opt/intel/oneapi/mpi/latest/bin/mpiicc",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64",
+            "configurationProvider": "ms-vscode.makefile-tools"
+        },
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**"
+            ],
+            "defines": [],
+            "compilerPath": "/usr/bin/clang-14",
+            "cStandard": "c17",
+            "cppStandard": "gnu++14",
+            "intelliSenseMode": "linux-clang-x64"
+        }
+    ],
+    "version": 4
+}

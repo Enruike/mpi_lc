@@ -1,6 +1,7 @@
-#include "finite.h"
+#include"finite.h"
 
 bool scatter(){
+
 	int i, j;
 	int count;
 	int count_tot;
@@ -35,11 +36,11 @@ bool scatter(){
     MPI_Win_allocate_shared(6 * length * sizeof(int), 1, MPI_INFO_NULL, shmcomm, &neigb, &win2);
     MPI_Scatter(neighbor, 6 * length, MPI_INT, neigb, 6 * length, MPI_INT, root, MPI_COMM_WORLD);
 
-	sign = (int*)malloc(length * sizeof(int));
+	sign = (signed char*)malloc(length * sizeof(signed char));
 	for(int i = 0; i < length; i ++){
 		sign[i] = -1;
 	}
-	MPI_Scatter(share, length, MPI_INT, sign, length, MPI_INT, root, MPI_COMM_WORLD);
+	MPI_Scatter(share, length, MPI_SIGNED_CHAR, sign, length, MPI_SIGNED_CHAR, root, MPI_COMM_WORLD);
 	
 	//Ahora checaremos que los bultype sean los mismos que los repartidos por MPI.
 	if(DoubleU){
@@ -49,6 +50,7 @@ bool scatter(){
 		for(int i = 0; i < length; i ++){
 			bulktype_MPI[i] = 0;
 		}
+	
 
 		MPI_Scatter(bulktype, length, MPI_INT, bulktype_MPI, length, MPI_INT, root, MPI_COMM_WORLD);
 		int mpicount = 0;
@@ -57,24 +59,27 @@ bool scatter(){
 		int zerocount = 0;
 		MPI_Barrier(MPI_COMM_WORLD);
 		if(myid == root){
+
 			for(int i = 0; i < length * numprocs; i++){
-				if(bulktype[i] == 1 || bulktype[i] == 2){
+				//0: null 1:U1 2:U2 3:U2 interface 4:Channel surface 5:Nanoparticle 6:Nanoparticle Surface
+				if(bulktype[i] >= 1 && bulktype[i] <= 6){
 					icount++;
 				}
 				else if(bulktype[i] == 0){
 					zerocount++;
 				}
 			}
-			printf("Bulktype elementes = %d Nontype = %d Total = %d\n", icount, zerocount, icount + zerocount);
+			printf("Bulktype elements = %d Nontype = %d Total = %d\n", icount, zerocount, icount + zerocount);
 			if(zerocount + icount != length * numprocs){
-				printf("Mismatch in data lenght!\n");
+				printf("Mismatch in data length!\n");
+				return false;
 			}
 		}
 
 		int mpizerocount = 0;
 		for (int i = 0; i < length; i++){
 			
-			if(bulktype_MPI[i] == 1 || bulktype_MPI[i] == 2){
+			if(bulktype_MPI[i] >= 1 && bulktype_MPI[i] <= 6){
 				mpicount++;
 			}
 			else{
@@ -116,12 +121,12 @@ bool scatter(){
 
 	count = 0;
 	for(i = 0; i < length; i ++){
-		if(sign[i] >= 2 && sign[i] < 14)	count ++;
+		if(sign[i] >= 2 && sign[i] < 14 && sign[i] != 10)	count ++;
 	}
 
  	MPI_Reduce(&count, &count_tot, 1, MPI_INT, MPI_SUM, root, MPI_COMM_WORLD);
-	if(myid == root && count_tot != surf){
-		printf("Error in scatter(boundary). Counted number %d is not equal to surface %d.\n", count_tot, surf);	
+	if(myid == root && count_tot != surf + nsurf){
+		printf("Error in scatter(boundary). Counted number %d is not equal to surface %d and nanop surface %d.\n", count_tot, surf, nsurf);	
 		return false;
 	}
 	count *= 3;

@@ -43,6 +43,11 @@ bool initial(){
 			return false;
 		}
 	}
+	else if(geo == 10){
+		if(!initial_nano_channel()){
+			return false;
+		}
+	}
 	else if(geo == 11){
 		if(!initial_sandwich()){
 			return false;
@@ -58,13 +63,10 @@ bool initial(){
 			return false;
 		}
 	}
-	else if (geo == -22)		
-	{
-		if (!initial_quartercylinder())
-		{
+	else if (geo == -22){
+		if (!initial_quartercylinder()){
 			return false;
 		}
-		
 	}
 	else if(geo == 22){
 		if(!initial_coaxialcyl()){
@@ -81,13 +83,10 @@ bool initial(){
 			return false;
 		}
 	}
-	else if (geo == -33)
-	{
-		if (!initial_quarterdrop())	
-		{
+	else if (geo == -33){
+		if (!initial_quarterdrop()){
 			return false;
 		}
-		
 	}
 	
 	else if(geo == 4){

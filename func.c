@@ -17,7 +17,6 @@ void free_q(){
 	free(bulktype_MPI);
 }
 
-
 bool norm_v(double* vec){
 	double mod = 0;
 	mod = sqrt(vec[0] * vec[0] + vec[1] * vec[1] + vec[2] * vec[2]); 
@@ -99,6 +98,7 @@ bool checktr(double* Q){
 //		for(n = 0; n < 6; n ++){
 //			Q[n] /= 1.3;
 //		}
+		printf("trqq(Q) : %lf\n", trqq(Q));
 		printf("Order parameter exceed 1.\n");
 		return false;
 	}

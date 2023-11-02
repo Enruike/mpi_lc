@@ -1,10 +1,9 @@
-#include <time.h>
-#include "finite.h"
+#include"finite.h"
 
-int main(int argc, char *argv[]){
+int main(int argc, char * argv[]){
 
 	//read_param();
-	
+		
         MPI_Init(&argc, &argv);
         MPI_Comm_split_type(MPI_COMM_WORLD, MPI_COMM_TYPE_SHARED, 0, MPI_INFO_NULL, &shmcomm);
         MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
@@ -12,15 +11,16 @@ int main(int argc, char *argv[]){
 
 	int i;
 	bool flag = true;
-	double deltat;
 
 	double time_spend;
 	double begin, end;
+	double deltat;
 
 	FILE* energy;
 
 	begin = MPI_Wtime();
 	//read in parameters
+	
 
 	if(!read_param()){
 			MPI_Comm_free(&shmcomm);
@@ -34,10 +34,10 @@ int main(int argc, char *argv[]){
 	cycle = 0;
 	deltat = (tmax - tmin) / increment;
 
-	S = 0.25 * (1 + 3 * sqrt(1 - 8 / (3 * U)));
+	S = 0.25 * (1.0 + 3.0 * sqrt(1.0 - 8.0 / (3.0 * U)));
 	//	printf("Theoretical value is %lf.\n", third * (1 - third * U) * S * S - 2 * third * third * third * S * S * S * U + U / 9 * S * S * S * S );
 	
-	S2 = 0.25 * (1 + 3 * sqrt(1 - 8 / (3 * U2)));
+	S2 = 0.25 * (1.0 + 3.0 * sqrt(1.0 - 8.0 / (3.0 * U2)));
 
 	if(myid == root){
 		//define droplet and boundary, introduce particles, initialize qtensor;
@@ -49,11 +49,13 @@ int main(int argc, char *argv[]){
 	
 	MPI_Bcast(&flag, 1, MPI_BYTE, root, MPI_COMM_WORLD);	
 	
+	
 	//For all infomation initialized in root processor, scatter them to all other processors.
 	if(!scatter()){
 		flag = false;
-	}		
-
+	}
+	
+			
 	MPI_Barrier(MPI_COMM_WORLD);
 	MPI_Win_fence(0, win);
 	
@@ -67,7 +69,7 @@ int main(int argc, char *argv[]){
 			}
 		}
 
-		if(cycle % check_every == 0){ 
+		if(cycle % trace_checker == 0){ 
 			//Every 10000 steps check the trace of Qtensor
 			if(myid == root){	
 				for(i = 0; i < droplet; i++){
@@ -79,10 +81,11 @@ int main(int argc, char *argv[]){
 				}
 				if(!flag){
 					printf("Error in the trace of q; cycle : %d.\n", cycle);
+					//MPI_Bcast(&flag, 1, MPI_BYTE, root, MPI_COMM_WORLD);
 				}
 				//output();
 			}	
-	//		MPI_Bcast(&flag, 1, MPI_BYTE, root, MPI_COMM_WORLD);	
+			MPI_Bcast(&flag, 1, MPI_BYTE, root, MPI_COMM_WORLD);	
 		}
 
 		//Mi modificación para evitar que escriba cada mil ciclos en el disco duro.
@@ -97,7 +100,7 @@ int main(int argc, char *argv[]){
 
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Win_fence(0, win);
-		if(flag)	relax_surf();
+		if(flag) relax_surf();
 /*
 		if(myid == root){	
 			printf("check2.\n");

@@ -12,6 +12,7 @@ double qch;
 double redshift;
 int geo; 
 int degenerate, infinite; 
+double tiltAngle;
 int Np;
 double Rp, Wp; 
 int rand_seed;
@@ -19,11 +20,11 @@ int seed;
 int conf_seed;
 double iRx, iRy, iRz; 
 double tmin, tmax, dt; 
-int increment; 
+double increment; 
 double accuracy; 
 double init_dir[3], dir1[3], dir2[3]; 
 bool surfdegen, uppersurf, lowersurf, DoubleU;
-int save_every, check_every, stopat;
+int save_every, check_every, stopat, trace_checker;
 
 bool read_param();
 //external functions

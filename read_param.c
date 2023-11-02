@@ -26,7 +26,8 @@ bool read_param() {
         fscanf(param, "qch %lf\n", &qch);
 		fscanf(param, "redshift %lf #Default values BPI = 0.71 & BPII = 0.86.\n", &redshift);
         fscanf(param, "geo %d\n", &geo);
-        fscanf(param, "degenerate %d\n", &degenerate);
+        fscanf(param, "degenerate %d #1:Degenerated & 2:Conic\n", &degenerate);
+		fscanf(param, "tiltAngle %lf\n", &tiltAngle);
         fscanf(param, "infinite %d\n", &infinite);
         fscanf(param, "Np %d\n", &Np);
         fscanf(param, "Rp %lf\n", &Rp);
@@ -50,24 +51,26 @@ bool read_param() {
         fscanf(param, "Save Every %d\n", &save_every);
         fscanf(param, "Check Every %d\n", &check_every);
 		fscanf(param, "Stop At %d #For non-stop condition use 0.\n", &stopat);
+		fscanf(param, "Check Trace At %d\n", &trace_checker);
 	if(myid == root){
 		printf("Nx %d\n", Nx);
 		printf("Ny %d\n", Ny);
 		printf("Nz %d\n", Nz);
-		printf("Lx %lf\n", Lx);
-		printf("Ly %lf\n", Ly);
-		printf("Lz %lf\n", Lz);
+		printf("Lx %.1lf\n", Lx);
+		printf("Ly %.1lf\n", Ly);
+		printf("Lz %.1lf\n", Lz);
 		printf("W %lf\n", W);
 		printf("U %lf\n", U);
-		printf("L1 %lf\n", L1);
-		printf("L2 %lf\n", L2);
-		printf("L3 %lf\n", L3);
-		printf("L4 %lf\n", L4);
+		printf("L1 %.3lf\n", L1);
+		printf("L2 %.3lf\n", L2);
+		printf("L3 %.3lf\n", L3);
+		printf("L4 %.3lf\n", L4);
 		printf("chiral %d\n", chiral);
 		printf("qch %lf\n", qch);
 		printf("redshift %lf\n", redshift);
 		printf("geo %d\n", geo);
 		printf("degenerate %d\n", degenerate);
+		printf("tilt angle = %.2lf\n", tiltAngle);
 		printf("infinite %d\n", infinite);
 		printf("Np %d\n", Np);
 		printf("Rp %lf\n", Rp);
@@ -76,16 +79,17 @@ bool read_param() {
 		//	printf("pinfinite %d\n", pinfinite);
 		printf("seed %d\n", seed);
 		printf("rand_seed %d\n", rand_seed);
-		printf("tmin tmax %lf %lf\n", tmin, tmax);
-		printf("increment %lf\n", increment);
-		printf("accuracy %lf\n", accuracy);
-		printf("init_dir is %lf,%lf,%lf\n", init_dir[0], init_dir[1], init_dir[2]);
-		printf("dir1 is %lf,%lf,%lf\n", dir1[0], dir1[1], dir1[2]);
-		printf("dir2 is %lf,%lf,%lf\n", dir2[0], dir2[1], dir2[2]);
+		printf("tmin tmax %.e %.e\n", tmin, tmax);
+		printf("increment %.e\n", increment);
+		printf("accuracy %.e\n", accuracy);
+		printf("init_dir is %.1lf, %.1lf, %.1lf\n", init_dir[0], init_dir[1], init_dir[2]);
+		printf("dir1 is %.1lf, %.1lf, %.1lf\n", dir1[0], dir1[1], dir1[2]);
+		printf("dir2 is %.1lf, %.1lf, %.1lf\n", dir2[0], dir2[1], dir2[2]);
 		printf("Upper Surface is %d\n", uppersurf);
 		printf("Lower Surface is %d\n", lowersurf);
 		printf("Checkpoint every %d!\n", save_every);
 		printf("Energy will be compared every %d!\n", check_every);
+		printf("Trace will be checked every %d!\n", trace_checker);
 		if(stopat != 0){
 			printf("Job will be\033[1;31m STOPPED\033[0m after %d!\n", stopat);
 		}

@@ -229,7 +229,7 @@ bool initial_halfcylinder(){
 	//allocate qold and neighbor
 	//allocate share to define droplet: -1 not defined; 20 bulk; 0-9 droplet boundary; 10 -19 nanoparticle boundary
 	length = lrint(droplet / numprocs) + 1;
-	share = (int*)malloc(numprocs * length * sizeof(int));
+	share = (signed char*)malloc(numprocs * length * sizeof(signed char));
 	Qold = (double*)malloc(6 * numprocs * length * sizeof(double));
 	neighbor = (int*)malloc(6 * numprocs * length * sizeof(int));
 	for(i = 0; i < numprocs * length; i ++){

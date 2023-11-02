@@ -28,70 +28,76 @@ void relax_bulk(){
 	int ref = length * myid;
 
 	for (int i = 0; i < length; i++){
-			if(sign[i] == 0 || sign[i] == 1){
+		if(sign[i] == 0 || sign[i] == 1){
 
-				Qin[0] = q[i * 6 + 0];
-				Qin[1] = q[i * 6 + 1];
-				Qin[2] = q[i * 6 + 2];
-				Qin[3] = q[i * 6 + 3];
-				Qin[4] = q[i * 6 + 4];
-				Qin[5] = q[i * 6 + 5];
-
-				QQ[0] = Qin[0]*Qin[0]+Qin[1]*Qin[1]+Qin[2]*Qin[2];
-				QQ[1] = Qin[0]*Qin[1]+Qin[1]*Qin[3]+Qin[2]*Qin[4];
-				QQ[2] = Qin[0]*Qin[2]+Qin[1]*Qin[4]+Qin[2]*Qin[5];
-				QQ[3] = Qin[1]*Qin[1]+Qin[3]*Qin[3]+Qin[4]*Qin[4];
-				QQ[4] = Qin[1]*Qin[2]+Qin[3]*Qin[4]+Qin[4]*Qin[5];
-				QQ[5] = Qin[2]*Qin[2]+Qin[4]*Qin[4]+Qin[5]*Qin[5];
-				trQQ = trqq(Qin);
-
-				if(DoubleU){
-
-					if(bulktype_MPI[i] == 1){
-						for (int n = 0; n < 6; n++) {
-							Qldg[n] = (1-U*third)*Qin[n]-U*(QQ[n]-trQQ*(Qin[n]+delta[n]*third));
-						}
-					}
-					else if(bulktype_MPI[i] == 2){
-						for (int n = 0; n < 6; n++) {
-							Qldg[n] = (1-U2*third)*Qin[n]-U2*(QQ[n]-trQQ*(Qin[n]+delta[n]*third));
-						}
-					}
-
+			if(DoubleU){
+				if(bulktype_MPI[i] == 3){
+					continue;
 				}
-				else{
+			}
+
+			Qin[0] = q[i * 6 + 0];
+			Qin[1] = q[i * 6 + 1];
+			Qin[2] = q[i * 6 + 2];
+			Qin[3] = q[i * 6 + 3];
+			Qin[4] = q[i * 6 + 4];
+			Qin[5] = q[i * 6 + 5];
+
+			QQ[0] = Qin[0]*Qin[0]+Qin[1]*Qin[1]+Qin[2]*Qin[2];
+			QQ[1] = Qin[0]*Qin[1]+Qin[1]*Qin[3]+Qin[2]*Qin[4];
+			QQ[2] = Qin[0]*Qin[2]+Qin[1]*Qin[4]+Qin[2]*Qin[5];
+			QQ[3] = Qin[1]*Qin[1]+Qin[3]*Qin[3]+Qin[4]*Qin[4];
+			QQ[4] = Qin[1]*Qin[2]+Qin[3]*Qin[4]+Qin[4]*Qin[5];
+			QQ[5] = Qin[2]*Qin[2]+Qin[4]*Qin[4]+Qin[5]*Qin[5];
+			trQQ = trqq(Qin);
+
+			if(DoubleU){
+
+				if(bulktype_MPI[i] == 1){
 					for (int n = 0; n < 6; n++) {
 						Qldg[n] = (1-U*third)*Qin[n]-U*(QQ[n]-trQQ*(Qin[n]+delta[n]*third));
 					}
 				}
-			
-				//	if(!checktr2(Qldg)){
-				//		printf("Traceless in bulk point. Qldg\n");
-				//	}
-			
-				xm = neigb[i * 6 + 0] - ref;
-				xp = neigb[i * 6 + 1] - ref;
-				ym = neigb[i * 6 + 2] - ref;
-				yp = neigb[i * 6 + 3] - ref;
-				zm = neigb[i * 6 + 4] - ref;
-				zp = neigb[i * 6 + 5] - ref;
-
-				for (int n = 0; n < 6; n++) {
-				//ddQ is de second derivative of qtensor:
-				//first index, 0:xx; 1:xy; 2:xz; 3:yy; 4:yz; 5:zz;
-				//second index, for qtensor index; 
-					ddQ[0][n] = (q[xp * 6 + n]+q[xm * 6 + n]-2*Qin[n])*iddx;
-					ddQ[3][n] = (q[yp * 6 + n]+q[ym * 6 + n]-2*Qin[n])*iddy;
-					ddQ[5][n] = (q[zp * 6 + n]+q[zm * 6 + n]-2*Qin[n])*iddz;
-					Qelas[n] = ddQ[0][n] + ddQ[3][n] + ddQ[5][n];
+				else if(bulktype_MPI[i] == 2){
+					for (int n = 0; n < 6; n++) {
+						Qldg[n] = (1-U2*third)*Qin[n]-U2*(QQ[n]-trQQ*(Qin[n]+delta[n]*third));
+					}
 				}
 
-				if(chiral == 1 || L3 != 0){
-					//dQ first derivative: detail see energy.c
-					for (int n = 0; n < 6; n ++) {
-						dQ[0][n] = (q[xp * 6 + n] - q[xm * 6 + n]) * 0.5 * idx;
-						dQ[1][n] = (q[yp * 6 + n] - q[ym * 6 + n]) * 0.5 * idy;
-						dQ[2][n] = (q[zp * 6 + n] - q[zm * 6 + n]) * 0.5 * idz;
+			}
+			else{
+				for (int n = 0; n < 6; n++) {
+					Qldg[n] = (1-U*third)*Qin[n]-U*(QQ[n]-trQQ*(Qin[n]+delta[n]*third));
+				}
+			}
+		
+			//	if(!checktr2(Qldg)){
+			//		printf("Traceless in bulk point. Qldg\n");
+			//	}
+		
+			xm = neigb[i * 6 + 0] - ref;
+			xp = neigb[i * 6 + 1] - ref;
+			ym = neigb[i * 6 + 2] - ref;
+			yp = neigb[i * 6 + 3] - ref;
+			zm = neigb[i * 6 + 4] - ref;
+			zp = neigb[i * 6 + 5] - ref;
+
+			for (int n = 0; n < 6; n++) {
+			//ddQ is de second derivative of qtensor:
+			//first index, 0:xx; 1:xy; 2:xz; 3:yy; 4:yz; 5:zz;
+			//second index, for qtensor index; 
+				ddQ[0][n] = (q[xp * 6 + n]+q[xm * 6 + n]-2*Qin[n])*iddx;
+				ddQ[3][n] = (q[yp * 6 + n]+q[ym * 6 + n]-2*Qin[n])*iddy;
+				ddQ[5][n] = (q[zp * 6 + n]+q[zm * 6 + n]-2*Qin[n])*iddz;
+				Qelas[n] = ddQ[0][n] + ddQ[3][n] + ddQ[5][n];
+			}
+
+			if(chiral == 1 || L3 != 0){
+				//dQ first derivative: detail see energy.c
+				for (int n = 0; n < 6; n ++) {
+					dQ[0][n] = (q[xp * 6 + n] - q[xm * 6 + n]) * 0.5 * idx;
+					dQ[1][n] = (q[yp * 6 + n] - q[ym * 6 + n]) * 0.5 * idy;
+					dQ[2][n] = (q[zp * 6 + n] - q[zm * 6 + n]) * 0.5 * idz;
 				}
 			}
 			
@@ -347,6 +353,13 @@ void relax_surf(){
 					}
 				}
 
+				else if(degen == 2){
+					relax_conic(Qin, loc_nu, Qdiff);
+					for(int n = 0; n < 6; n++){
+						qn[i * 6 + n] = Qin[n] + dt*(L1 * Qelas[n] + L2 * Qelas2[n] + L3 * Qelas3[n] + L4 * Qelas4[n] + chiral * 2 * qch * Qch[n] - 2 * Wstr * Qdiff[n]);
+					}
+				}
+
 				else if(degen == 0 && inf == 0){
 					for(int n = 0; n < 6; n++){
 						qn[i * 6 + n] = Qin[n] + dt*(L1 * Qelas[n] + L2 * Qelas2[n] + L3 * Qelas3[n] + L4 * Qelas4[n] + chiral * 2 * qch * Qch[n] - Wstr* (Qin[n]-qo_p[nb * 6 + n]));
@@ -376,46 +389,95 @@ void relax_surf(){
 }
 
 void relax_degen(double* Qin, double* loc_nu, double* Qdiff){
-	int i, n, j, l, m;
+
 	double Qtemp[3][3];
 	double ptemp[3][3];
 	double Qp[3][3];
 	double third = 1.0 / 3;
 	double nuQnu;
+
 	Qtemp[0][0] = Qin[0] + third * S;
 	Qtemp[0][1] = Qtemp[1][0] = Qin[1];
 	Qtemp[0][2] = Qtemp[2][0] = Qin[2];
 	Qtemp[1][1] = Qin[3] + third * S;
 	Qtemp[1][2] = Qtemp[2][1] = Qin[4];
 	Qtemp[2][2] = Qin[5] + third * S;
-	for(i = 0; i < 3; i++){
-		for(j = 0; j < 3; j++){
+	for(int i = 0; i < 3; i++){
+		for(int j = 0; j < 3; j++){
 			if(i == j) ptemp[i][j] = 1 - loc_nu[i] * loc_nu[j];
 			else ptemp[i][j] = - loc_nu[i] * loc_nu[j];
 		}
 	}
-	for(i = 0; i < 3; i++){
-		for(j = 0; j < 3; j++){
+	for(int i = 0; i < 3; i++){
+		for(int j = 0; j < 3; j++){
 			Qp[i][j] = 0;
-			for(l = 0; l < 3; l++){
-				for(m = 0; m < 3; m++){
+			for(int l = 0; l < 3; l++){
+				for(int m = 0; m < 3; m++){
 					Qp[i][j] += ptemp[i][l]*Qtemp[l][m]*ptemp[m][j];
 				}
 			}
 		}
 	}
 	nuQnu = 0;
-	for(i = 0; i<3; i++) {
-		for(j = 0; j<3; j++){
+	for(int i = 0; i<3; i++) {
+		for(int j = 0; j<3; j++){
 			nuQnu += loc_nu[i]*Qtemp[i][j]*loc_nu[j];
 		}
 	}
 	nuQnu *= third;
-	for(n = 0; n < 6; n ++)	Qdiff[n] = 0;
+	for(int n = 0; n < 6; n ++)	Qdiff[n] = 0;
 	Qdiff[0] =  Qtemp[0][0]- Qp[0][0] - nuQnu;
 	Qdiff[1] =  Qtemp[0][1]- Qp[0][1];
 	Qdiff[2] =  Qtemp[0][2]- Qp[0][2];
 	Qdiff[3] =  Qtemp[1][1]- Qp[1][1] - nuQnu;
 	Qdiff[4] =  Qtemp[1][2]- Qp[1][2];
 	Qdiff[5] =  Qtemp[2][2]- Qp[2][2] - nuQnu;
+}
+
+void relax_conic(double* Qin, double* loc_nu, double* Qdiff){
+	double Qtemp[3][3];
+	double ptemp[3][3];
+	double Qp[3][3];
+	double third = 1. / 3.;
+	double trace = 0.;
+	double cosTiltAngle;
+	double cosTiltAngleSq;
+	
+	Qtemp[0][0] = Qin[0] + third * S;
+	Qtemp[0][1] = Qtemp[1][0] = Qin[1];
+	Qtemp[0][2] = Qtemp[2][0] = Qin[2];
+	Qtemp[1][1] = Qin[3] + third * S;
+	Qtemp[1][2] = Qtemp[2][1] = Qin[4];
+	Qtemp[2][2] = Qin[5] + third * S;
+
+	for(int i = 0; i < 3; i++){
+		for(int j = 0; j < 3; j++){
+			ptemp[i][j] = loc_nu[i] * loc_nu[j];
+		}
+	}
+
+	for(int i = 0; i < 3; i++){
+		for(int j = 0; j < 3; j++){
+			Qp[i][j] = 0;
+			for(int l = 0; l < 3; l++){
+				for(int m = 0; m < 3; m++){
+					Qp[i][j] += ptemp[i][l] * Qtemp[l][m] * ptemp[m][j];
+				}
+			}
+		}
+	}
+	
+	cosTiltAngle = cos(tiltAngle / 180.0 * M_PI);
+	cosTiltAngleSq = pow(cosTiltAngle, 2);
+	
+	Qdiff[0] =  Qp[0][0] - cosTiltAngleSq * S * ptemp[0][0];
+	Qdiff[1] =  Qp[0][1] - cosTiltAngleSq * S * ptemp[0][1];
+	Qdiff[2] =  Qp[0][2] - cosTiltAngleSq * S * ptemp[0][2];
+	Qdiff[3] =  Qp[1][1] - cosTiltAngleSq * S * ptemp[1][1];
+	Qdiff[4] =  Qp[1][2] - cosTiltAngleSq * S * ptemp[1][2];
+	Qdiff[5] =  Qp[2][2] - cosTiltAngleSq * S * ptemp[2][2];
+	trace = third * (Qdiff[0] + Qdiff[3] + Qdiff[5]);
+	Qdiff[0] -= trace;
+	Qdiff[3] -= trace;
+	Qdiff[5] -= trace;
 }

@@ -62,7 +62,7 @@ bool scatter(){
 
 			for(int i = 0; i < length * numprocs; i++){
 				//0: null 1:U1 2:U2 3:U2 interface 4:Channel surface 5:Nanoparticle 6:Nanoparticle Surface
-				if(bulktype[i] >= 1 && bulktype[i] <= 6){
+				if(bulktype[i] >= 1 && bulktype[i] <= 6 || bulktype[i] == 13){
 					icount++;
 				}
 				else if(bulktype[i] == 0){
@@ -79,7 +79,7 @@ bool scatter(){
 		int mpizerocount = 0;
 		for (int i = 0; i < length; i++){
 			
-			if(bulktype_MPI[i] >= 1 && bulktype_MPI[i] <= 6){
+			if(bulktype_MPI[i] >= 1 && bulktype_MPI[i] <= 6 || bulktype_MPI[i] == 13){
 				mpicount++;
 			}
 			else{
@@ -110,7 +110,7 @@ bool scatter(){
 	//Verify the number of droplet and boundary. If not consistent, report error.
 	count = 0;
 	for(i = 0; i < length; i ++){
-		if(sign[i] >= 0 && sign[i] < 14)	count ++;
+		if(sign[i] >= 0 && sign[i] < 24)	count ++;
 	}
 
  	MPI_Reduce(&count, &count_tot, 1, MPI_INT, MPI_SUM, root, MPI_COMM_WORLD);
@@ -121,7 +121,7 @@ bool scatter(){
 
 	count = 0;
 	for(i = 0; i < length; i ++){
-		if(sign[i] >= 2 && sign[i] < 14 && sign[i] != 10)	count ++;
+		if(sign[i] >= 2 && sign[i] < 24 && sign[i] != 10)	count ++;
 	}
 
  	MPI_Reduce(&count, &count_tot, 1, MPI_INT, MPI_SUM, root, MPI_COMM_WORLD);

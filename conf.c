@@ -138,9 +138,9 @@ bool conf(double **pos){
 							if(init_bulktype[l] == 3){
 								
 								//Modified condition for negative direcctions.
-								dir_temp[0] = (rand() % (pRx + interface) - pRx - interface);
-								dir_temp[1] = (rand() % (pRy + interface) - pRy - interface);
-								dir_temp[2] = (rand() % (pRz + interface) - pRz - interface);
+								dir_temp[0] = rand() % (2 * pRx + 2 * interface) - pRx - interface;
+								dir_temp[1] = rand() % (2 * pRy + 2 * interface) - pRy - interface;
+								dir_temp[2] = rand() % (2 * pRz + 2 * interface) - pRz - interface;
 								/* original condition for positive numbers 
 								
 								dir_temp[0] = (rand() % (pRx + interface) + 1);
@@ -153,12 +153,13 @@ bool conf(double **pos){
 									printf("Vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
 									
 								} */
-								
+								//printf("before norm dir1 %lf dir2 %lf dir3 %lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
 								if(!norm_v(dir_temp)){
 									printf("Problems with random directions!\n");
 									printf("Problematic vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
 									exit(1);
 								}
+								//printf("after norm dir1 %lf dir2 %lf dir3 %lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
 
 								
 							/* 	if(tempcounter < 50) {

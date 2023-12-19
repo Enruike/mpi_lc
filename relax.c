@@ -31,6 +31,7 @@ void relax_bulk(){
 		if(sign[i] == 0 || sign[i] == 1){
 
 			if(DoubleU){
+				//La interfaz no evoluciona. Tipo 3 es la interfaz.
 				if(bulktype_MPI[i] == 3){
 					continue;
 				}
@@ -201,8 +202,11 @@ void relax_surf(){
 	nb = 0;
 
 	for(int i = 0; i < length; i ++){
-		if((sign[i] >= 2 && sign[i] <= 8) || (sign[i] == 12 || sign[i] == 13)){
+		if((sign[i] >= 2 && sign[i] <= 8) || (sign[i] == 12 || sign[i] == 13) || (sign[i] >= 20 && sign[i] <= 23)){
 
+			if(sign[i] == 8){
+				continue;
+			}
 			//for geo boundary
 			if(sign[i] == 2 || sign[i] == 3 || sign[i] == 12 || sign[i] == 13){
 				degen = degenerate;
@@ -222,6 +226,17 @@ void relax_surf(){
 
 			else if(sign[i] == 6 || sign[i] == 7){
 				degen = 1;
+				inf = 0;
+				Wstr = Wp;
+			}
+
+			else if(sign[i] == 20 || sign[i] == 21){
+				degen = 1;
+				inf = 0;
+				Wstr = Wp;
+			}
+			else if(sign[i] == 22 || sign[i] == 23){
+				degen = 2;
 				inf = 0;
 				Wstr = Wp;
 			}
@@ -374,7 +389,7 @@ void relax_surf(){
 	MPI_Barrier(MPI_COMM_WORLD);	
 	MPI_Win_fence(0, win);
 	for(int i = 0; i < length; i ++){	
-		if((sign[i] >= 4 && sign[i] < 8) || ((sign[i] == 2 || sign[i] == 3 || sign[i] == 12 || sign[i] == 13) && infinite == 0)){
+		if((sign[i] >= 4 && sign[i] < 8) || ((sign[i] == 2 || sign[i] == 3 || sign[i] == 12 || sign[i] == 13) || (sign[i] >= 20 && sign[i] <= 23) && infinite == 0)){
 		
 			q[i * 6 + 0] = qn[i * 6 + 0];
 			q[i * 6 + 1] = qn[i * 6 + 1];

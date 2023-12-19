@@ -37,7 +37,8 @@ void free_energy(){
 			if(L2 != 0){
 				printf("L2: %lf, ", en_el[1]);
 			}
-			printf("En_Chiral: %lf, En_Surf1: %lf, Cycle: %d\n", en_el[4], en_surf[0], cycle);
+			if(chiral != 0) printf("En_Chiral: %lf ", en_el[4]);
+			printf("En_Surf1: %lf, Par_Surf: %lf, Cycle: %d\n", en_surf[0], en_surf[1], cycle);
 			if(geo != 10){
 				printf("\t\t ~Inner Region Energy~\n");
 			}
@@ -293,7 +294,7 @@ void energy_surf(double* ans){
 	bool npboundary = true;
 	nb = 0;
 	for (i = 0; i < length; i++){
-		if(sign[i] >= 2 && sign[i] <= 8 || sign[i] == 12 || sign[i] == 13){
+		if(sign[i] >= 2 && sign[i] <= 8 || sign[i] == 12 || sign[i] == 13 || (sign[i] >= 20 && sign[i] <= 23)){
 			//for channel boundary
 			if(sign[i] == 2 || sign[i] == 3){
 				degen = degenerate;
@@ -326,12 +327,15 @@ void energy_surf(double* ans){
 				dA = dApart;
 				npboundary = true;
 			}
-			else if(sign[i] == 8){
-				degen = 0;
-				inf = 1;
+			else if(sign[i] >= 20 && sign[i] <= 23){
+				degen = 2;
+				inf = 0;
 				Wstr = Wp;
 				dA = dApart;
 				npboundary = true;
+			}
+			else if(sign[i] == 8){
+				continue;
 			}
 			else{
 				printf("Error in energy_surf.\n");

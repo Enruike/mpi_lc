@@ -3,8 +3,8 @@
 double pU;
 double alpha, beta, gama;
 int posX, posY, posZ;
-
 int anchoring;
+int pdegenerate;
 
 bool read_nano(){
 
@@ -24,6 +24,7 @@ bool read_nano(){
     fscanf(param, "gamma %lf\n", &gama);
     fscanf(param, "interface %d #thickness of the interface layer; 0: no interface\n", &interface);
     fscanf(param, "anchoring %d #0:random 1:homeotropic 2:planar\n", &anchoring);
+    fscanf(param, "degenerate %d	#0:No 1:Planar degenerate 2:Conic degenerate\n", &pdegenerate);
     fscanf(param, "posX %d #0 for center; nanoparticle position\n", &posX);
     fscanf(param, "posY %d\n", &posY);
     fscanf(param, "posZ %d\n", &posZ);
@@ -57,6 +58,19 @@ bool read_nano(){
         printf("unknonw anchoring\n");
         return false;
     }
+    if(pdegenerate == 0){
+		printf("Nanoparticle surface will not evolve\n");
+	}
+	else if(pdegenerate == 1){
+		printf("Nanoparticle will planar degenerate surface evolution\n");
+	}
+	else if(pdegenerate == 2){
+		printf("Nanoparticle will conic degenerate surface evolution\n");
+	}
+	else{
+		printf("Unknown nanoparticle surface evolution! Something's wrong!\n");
+		exit(1);
+	}
     if(pivotflag == 0){
         printf("Nanoparticle position will be in the center of the box\n");
     }
@@ -136,7 +150,7 @@ bool initial_nano_channel(){
 		ndrop[l] = false;
 		nboundary[l] = false;
         init_bulktype[l] = 1;
-		indx[l] = 1;
+		indx[l] = -1;
 	}
 
  
@@ -331,7 +345,34 @@ bool initial_nano_channel(){
         }
     }
 
-    
+    /* Defining bulk nodes near to isotropic phase */
+
+	l = 0;
+	int btype_13 = 0;
+
+    /* for(int k = 0; k < Nz; k++){
+        for(int j = 0; j < Ny; j++){
+            for(int i = 0; i < Nx; i++){
+
+                if(drop[l]){
+                    xm = peri(i - 1, 0) + j * Nx + k * Nx * Ny;
+                    xp = peri(i + 1, 0) + j * Nx + k * Nx * Ny;
+                    ym = i + peri(j - 1, 1) * Nx + k * Nx * Ny;
+                    yp = i + peri(j + 1, 1) * Nx + k * Nx * Ny;
+                    zm = i + j * Nx + (k - 1) * Nx * Ny;
+                    zp = i + j * Nx + (k + 1) * Nx * Ny;
+
+					if(bulktype[xm] == 3 || bulktype[xp] == 3 || bulktype[ym] == 3 || bulktype[yp] == 3 || bulktype[zm] == 3 || bulktype[xp] == 3){
+						bulktype[l] = 13;
+						btype_13++;
+					}
+                }
+                l++;          
+            }
+        }
+    } */
+
+	if(interface != 0) printf("\nBulktype 13 nodes number : %d\n", btype_13);
     
     dV = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / bulk;
     dVi = (Lx * Ly * Lz - 4. / 3. * M_PI * pRx * pRy * pRz) / (bulk - interbulk);
@@ -404,6 +445,8 @@ bool initial_nano_channel(){
     int countshare2 = 0;
     int countshare4 = 0;
     int countshare8 = 0;
+    int countshare20 = 0;
+    int countshare22 = 0;
     int shareminusone = 0;
     int undefined = 0;
     count1 = 0;
@@ -432,7 +475,7 @@ bool initial_nano_channel(){
             
         }
     }
-    printf("Pre share count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
+    printf("Share's BEFORE count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
     printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
 
     //printf("nbulk count : %d\n", nbulk);
@@ -451,6 +494,7 @@ bool initial_nano_channel(){
         return false;
     }
 
+    int nondrop = 0;
     nd = 0;
     nb = 0;
     // time_t t;
@@ -464,6 +508,7 @@ bool initial_nano_channel(){
                 nd = indx[i + j * Nx + k * Nx * Ny];
 
                 if(nd == -1){
+                    nondrop++;
                     continue;
                 }
 
@@ -540,9 +585,9 @@ bool initial_nano_channel(){
                         else {
 
                             if(anchoring == 0){
-                                nu[nb * 3 + 0] = (rand() % pRx - pRx);
-						        nu[nb * 3 + 1] = (rand() % pRy - pRy);
-						        nu[nb * 3 + 2] = (rand() % pRz - pRz);
+                                nu[nb * 3 + 0] = (double)(rand() % (int)x - x);
+						        nu[nb * 3 + 1] = (double)(rand() % (int)y - y);
+						        nu[nb * 3 + 2] = (double)(rand() % (int)z - z);
                                 norm_v(&nu[nb * 3]);
 
                             }
@@ -556,8 +601,18 @@ bool initial_nano_channel(){
                                 printf("Not available yet\n");
                                 exit(1);
                             }
-                            //La superficie no evoluciona
-                            share[nd] = 8;
+                            if(pdegenerate == 0){
+								//La superficie no evoluciona
+								share[nd] = 8;
+								
+							}
+							else if(pdegenerate == 1){
+								share[nd] = 20;
+							}
+							else if(pdegenerate == 2){
+								share[nd] = 22;
+							}
+                            
                             Qold[nd * 6 + 0] = dir2ten(&nu[nb * 3], 0, S);
                             Qold[nd * 6 + 1] = dir2ten(&nu[nb * 3], 1, S);
                             Qold[nd * 6 + 2] = dir2ten(&nu[nb * 3], 2, S);
@@ -598,6 +653,11 @@ bool initial_nano_channel(){
         }
     }
 
+    if(nondrop != nanoparticle_nodes){
+        printf("Problems in nondrop %d and nanopartilce nodes %d\n", nondrop, nanoparticle_nodes);
+    }
+
+
     if (nb != surf + nsurf){
 		printf("Problem in initialization of share. nb is %d not equal to surf %d.\n", nb, surf);
 		return false;
@@ -627,6 +687,14 @@ bool initial_nano_channel(){
             countshare8++;
             count1++;
         }
+        else if(share[i] == 20){
+            countshare20++;
+			count1++;
+        }
+		else if(share[i] == 22){
+            countshare22++;
+			count1++;
+        }
         else if(share[i] == -1){
             shareminusone++;
         }
@@ -635,7 +703,11 @@ bool initial_nano_channel(){
         }
     }
 
-    printf("After count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
+    if(pdegenerate == 1 || pdegenerate == 2){
+		printf("Degenerated nanoparticle surface nodes 20 : %d, 22 : %d\n", countshare20, countshare22);
+	}
+
+    printf("Share AFTER count 0 : %d, 2 : %d, 4 : %d, 8 : %d, total : %d\n", countshare0, countshare2, countshare4, countshare8, count1);
     printf("-1 : %d, undefined : %d\n", shareminusone, undefined);
 
     if(DoubleU){
@@ -645,7 +717,7 @@ bool initial_nano_channel(){
 			bulktype[i]=0;
 		}
 
-		int bt1 = 0, bt2 = 0, bt0 = 0;
+		int bt1 = 0, bt2 = 0, bt0 = 0, bt13 = 0;
 		nd = 0;
 		for(int i = 0; i < tot; i++){
 			if(init_bulktype[i] == 1 ){
@@ -654,6 +726,11 @@ bool initial_nano_channel(){
 				nd++;
                
 			}
+            else if(init_bulktype[i] == 13){
+                bulktype[nd] = 13;
+                nd++;
+                bt13++;
+		    }
 			else if(init_bulktype[i] == 2){
 				bulktype[nd] = 2;
 				bt2++;
@@ -680,7 +757,7 @@ bool initial_nano_channel(){
 
 		if ((bt1 + bt2) != droplet) {
 			printf("Error in transfer data to droplet bulktype!\n");
-            printf("bt1 is %d bt2 is %d, bt0 is %d\n", bt1, bt2, bt0);
+            printf("bt1: %d bt2: %d, bt0: %d, bt13: %d\n", bt1, bt2, bt0, bt13);
 			printf("droplet size is %d\n", droplet);
 			return false;
 		}
@@ -729,7 +806,7 @@ bool initial_nano_channel(){
 			} 
 		}
 		//for all surface point, if one of the neighbor is not defined
-		else if(share[nd] < 8 && share[nd] >= 2){	
+		else if(share[nd] < 8 && share[nd] >= 2 || (share[nd] >= 20 && share[nd] <= 23)){	
 			for(int n = 0; n < 6; n++){
 				if(neighbor[nd * 6 + n] == -1){
 					count1 ++;	
@@ -745,7 +822,7 @@ bool initial_nano_channel(){
     count1 = 0;
 
     for(int i = 0; i < droplet; i++){
-        if(share[i] >= 0 && share[i] < 14){
+        if(share[i] >= 0 && share[i] < 24){
             count1++;
         }
     }

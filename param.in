@@ -1,29 +1,29 @@
-Nx 299
-Ny 167
-Nz 167
-Lx 298
-Ly 166
-Lz 166
-W 1.2
-U 4
-L1 1
-L2 0
+Nx 201
+Ny 201
+Nz 75
+Lx 200
+Ly 200
+Lz 74
+W 0.1
+U 3.5
+L1 0.769
+L2 1.537
 L3 0
 L4 0
-chiral 1
+chiral 0
 qch 0.182650736
 redshift 0.86                   #Default values BPI = 0.71 & BPII = 0.86.
-geo 4
+geo 10
 degenerate 0                    #1:Degenerated & 2:Conic
 tiltAngle 36
 infinite 0
 Np 0
 Rp 25
-Wp 1.2
-seed 6
+Wp 0.25
+seed 0
 rand_seed 100
-tmin tmax 0.01 0.1
-increment 5000
+tmin tmax 0.001 0.1
+increment 10000
 accuracy 1e-4
 init_dir 0 0 1
 dir1 0 0 1
@@ -32,11 +32,11 @@ UpperSurface 1
 LowerSurface 1
 LowerSurfaceDegen 0
 DoubleU Mode 1
-U2 3.0
-iRx 60
-iRy 60
-iRz 60
-Save Every 25000
-Check Every 1000
-Stop At 100000                  #For non-stop condition use 0.
+U2 3.5
+iRx 120
+iRy 120
+iRz 120
+Save Every 10000
+Check Every 500
+Stop At 0                  	#For non-stop condition use 0.
 Check Trace At 1000

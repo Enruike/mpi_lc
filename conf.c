@@ -128,6 +128,7 @@ bool conf(double **pos){
 			dirvec2[2] = - init_dir[2];
 			norm_v(dirvec1);
 			norm_v(dirvec2);
+			bool flag = true;
 
 			for(int k = 0; k < Nz; k++){
 				for(int j = 0; j < Ny; j++){
@@ -137,24 +138,30 @@ bool conf(double **pos){
 							
 							if(init_bulktype[l] == 3){
 								
-								//Modified condition for negative direcctions.
-								dir_temp[0] = rand() % (2 * pRx + 2 * interface) - pRx - interface;
-								dir_temp[1] = rand() % (2 * pRy + 2 * interface) - pRy - interface;
-								dir_temp[2] = rand() % (2 * pRz + 2 * interface) - pRz - interface;
-								/* original condition for positive numbers 
-								
-								dir_temp[0] = (rand() % (pRx + interface) + 1);
-								dir_temp[1] = (rand() % (pRy + interface) + 1);
-								dir_temp[2] = (rand() % (pRz + interface) + 1);
-								
-								*/
+								do{
+									//Modified condition for negative direcctions.
+									dir_temp[0] = rand() % (2 * pRx + 2 * interface) - pRx - interface;
+									dir_temp[1] = rand() % (2 * pRy + 2 * interface) - pRy - interface;
+									dir_temp[2] = rand() % (2 * pRz + 2 * interface) - pRz - interface;
+									
+									/* original condition for positive numbers 
+									
+									dir_temp[0] = (rand() % (pRx + interface) + 1);
+									dir_temp[1] = (rand() % (pRy + interface) + 1);
+									dir_temp[2] = (rand() % (pRz + interface) + 1);
+									
+									*/
+									flag = norm_v(dir_temp);
+
+								}
+								while(!flag)
 
 								/* if(tempcounter < 50) {
 									printf("Vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
 									
 								} */
 								//printf("before norm dir1 %lf dir2 %lf dir3 %lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
-								if(!norm_v(dir_temp)){
+								if(sqrt(pow(dir_temp[0], 2) + pow(dir_temp[1], 2) + pow(dir_temp[2], 2)) == 0.){
 									printf("Problems with random directions!\n");
 									printf("Problematic vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
 									exit(1);

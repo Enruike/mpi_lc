@@ -154,7 +154,7 @@ bool conf(double **pos){
 									flag = norm_v(dir_temp);
 
 								}
-								while(!flag)
+								while(!flag);
 
 								/* if(tempcounter < 50) {
 									printf("Vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);

@@ -624,6 +624,12 @@ bool initial_nano_channel(){
 							else if(pdegenerate == 2){
 								share[nd] = 22;
 							}
+
+                            if(sqrt(pow(nu[nb * 3 + 0], 2) + pow(nu[nb * 3 + 1], 2) + pow(nu[nb * 3 + 2], 2)) == 0.){
+                                printf("Problems with surface vector directions!\n");
+                                printf("Problematic vector is x:%lf y:%lf z:%lf\n", nu[nb * 3 + 0], nu[nb * 3 + 1], nu[nb * 3 + 2]);
+                                exit(1);
+							}
                             
                             Qold[nd * 6 + 0] = dir2ten(&nu[nb * 3], 0, S);
                             Qold[nd * 6 + 1] = dir2ten(&nu[nb * 3], 1, S);

@@ -22,7 +22,7 @@ bool read_nano(){
     fscanf(param, "alpha %lf #Angles for rotate or tilt the nano particle\n", &alpha);
     fscanf(param, "beta %lf\n", &beta);
     fscanf(param, "gamma %lf\n", &gama);
-    fscanf(param, "interface %d #thickness of the interface layer; 0: no interface\n", &interface);
+    fscanf(param, "interface %d #1: yes (1 node thickness); 0: no interface\n", &interface);
     fscanf(param, "anchoring %d #0:random 1:homeotropic 2:planar\n", &anchoring);
     fscanf(param, "degenerate %d	#0:No 1:Planar degenerate 2:Conic degenerate\n", &pdegenerate);
     fscanf(param, "posX %d #0 for center; nanoparticle position\n", &posX);
@@ -36,6 +36,11 @@ bool read_nano(){
         posX = 0;
         posY = 0;
         posZ = 0;
+    }
+
+    if(interface != 1 && interface != 0){
+        printf("Wrong value for interface. Value will be set to 1\n");
+        interface = 1;
     }
 
     printf("\n~ Nanoparticle data ~\n");
@@ -493,7 +498,8 @@ bool initial_nano_channel(){
     if(!conf(pos)){
         return false;
     }
-
+    
+    bool flag = true;
     int nondrop = 0;
     nd = 0;
     nb = 0;
@@ -585,17 +591,23 @@ bool initial_nano_channel(){
                         else {
 
                             if(anchoring == 0){
-                                nu[nb * 3 + 0] = (double)(rand() % (int)x - x);
-						        nu[nb * 3 + 1] = (double)(rand() % (int)y - y);
-						        nu[nb * 3 + 2] = (double)(rand() % (int)z - z);
-                                norm_v(&nu[nb * 3]);
+                                do{
+                                    nu[nb * 3 + 0] = (double)(rand() % pRx - pRx);
+                                    nu[nb * 3 + 1] = (double)(rand() % pRy - pRy);
+                                    nu[nb * 3 + 2] = (double)(rand() % pRz - pRz);
+                                    flag = norm_v(&nu[nb * 3]);
 
+                                }while(!flag);
+                                flag = false;
                             }
                             else if(anchoring == 1){
-                                nu[nb * 3 + 0] = 2. * x / (pRx * pRx);
-						        nu[nb * 3 + 1] = 2. * y / (pRy * pRy);
-						        nu[nb * 3 + 2] = 2. * z / (pRz * pRz);
-						        norm_v(&nu[nb * 3]);
+                                do{
+                                    nu[nb * 3 + 0] = 2. * x / (pRx * pRx);
+						            nu[nb * 3 + 1] = 2. * y / (pRy * pRy);
+						            nu[nb * 3 + 2] = 2. * z / (pRz * pRz);
+                                    flag = norm_v(&nu[nb * 3]);
+                                }while(!flag);
+                                flag = false;
                             }
                             else if(anchoring == 2){
                                 printf("Not available yet\n");

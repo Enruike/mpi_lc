@@ -156,6 +156,8 @@ bool conf(double **pos){
 								}
 								while(!flag);
 
+								flag = false;
+
 								/* if(tempcounter < 50) {
 									printf("Vector is x:%lf y:%lf z:%lf\n", dir_temp[0], dir_temp[1], dir_temp[2]);
 									

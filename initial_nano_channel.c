@@ -631,12 +631,14 @@ bool initial_nano_channel(){
                                 exit(1);
 							}
                             
-                            Qold[nd * 6 + 0] = dir2ten(&nu[nb * 3], 0, S);
-                            Qold[nd * 6 + 1] = dir2ten(&nu[nb * 3], 1, S);
-                            Qold[nd * 6 + 2] = dir2ten(&nu[nb * 3], 2, S);
-                            Qold[nd * 6 + 3] = dir2ten(&nu[nb * 3], 3, S);
-                            Qold[nd * 6 + 4] = dir2ten(&nu[nb * 3], 4, S);
-                            Qold[nd * 6 + 5] = dir2ten(&nu[nb * 3], 5, S);
+                            if(seed != -1){
+                                Qold[nd * 6 + 0] = dir2ten(&nu[nb * 3], 0, S);
+                                Qold[nd * 6 + 1] = dir2ten(&nu[nb * 3], 1, S);
+                                Qold[nd * 6 + 2] = dir2ten(&nu[nb * 3], 2, S);
+                                Qold[nd * 6 + 3] = dir2ten(&nu[nb * 3], 3, S);
+                                Qold[nd * 6 + 4] = dir2ten(&nu[nb * 3], 4, S);
+                                Qold[nd * 6 + 5] = dir2ten(&nu[nb * 3], 5, S);
+                            }
                             
                         }
                     }

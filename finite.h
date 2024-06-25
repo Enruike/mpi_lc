@@ -112,6 +112,7 @@ bool initial_drop();
 bool initial_halfdrop();
 bool initial_quarterdrop();
 bool initial_ellip();
+bool initial_shell();
 bool initial_nano_channel();
 
 int peri(int node, int dir);

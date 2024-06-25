@@ -95,6 +95,12 @@ bool initial(){
 		}
 	}
 
+	else if(geo == -4){
+		if(!initial_shell()){
+			return false;
+		}
+	}
+
 	printf("\nS is %lf.\n\n", S);
 	printf("S2 is %lf.\n\n", S2);
 

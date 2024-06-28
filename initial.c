@@ -101,6 +101,13 @@ bool initial(){
 		}
 	}
 
+	else if(geo == -44){
+		if(!initial_not_evolving_shell()){
+			return false;
+			exit(1);
+		}
+	}
+
 	printf("\nS is %lf.\n\n", S);
 	printf("S2 is %lf.\n\n", S2);
 

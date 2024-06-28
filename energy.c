@@ -82,7 +82,26 @@ void energy_ldg(double* ans){
 	double trace3 = 0.;
 	double Qin[6] = { 0. };
 
-	if(DoubleU){
+	if(DoubleU && geo == -44 && flag_2 == false){
+		for(int i = 0; i < length; i++)	{
+			if(sign[i] == 0 || sign[i] == 1){
+				
+				Qin[0] = q[i * 6 + 0];
+				Qin[1] = q[i * 6 + 1];
+				Qin[2] = q[i * 6 + 2];
+				Qin[3] = q[i * 6 + 3];
+				Qin[4] = q[i * 6 + 4];
+				Qin[5] = q[i * 6 + 5];
+
+				trace2 = trqq(Qin);
+				trace3 = trqqq(Qin);
+				
+				ans[0] += 0.5 * (1. - U2 / 3.) * trace2 - U2 / 3. * trace3 + U2 * 0.25 * trace2 * trace2;
+				
+			}
+		}
+	}
+	else if(DoubleU){
 		for (int i = 0; i < length; i ++){				
 
 			if(sign[i] == 0 || sign[i] == 1){
@@ -101,6 +120,7 @@ void energy_ldg(double* ans){
 					ans[0] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
 					ans[1] += 0.5 * (1. - U / 3.) * trace2 - U / 3. * trace3 + U * 0.25 * trace2 * trace2;
 				}
+				
 				else if(bulktype_MPI[i] == 2 || bulktype_MPI[i] == 3){
 					ans[0] += 0.5 * (1. - U2 / 3.) * trace2 - U2 / 3. * trace3 + U2 * 0.25 * trace2 * trace2;
 					ans[2] += 0.5 * (1. - U2 / 3.) * trace2 - U2 / 3. * trace3 + U2 * 0.25 * trace2 * trace2;

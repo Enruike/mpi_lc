@@ -72,6 +72,10 @@ bool *nboundary;
 0 para 
 
 */
+
+bool flag;
+bool flag_2;
+
 signed char* share;
 signed char* sign;
 
@@ -113,6 +117,7 @@ bool initial_halfdrop();
 bool initial_quarterdrop();
 bool initial_ellip();
 bool initial_shell();
+bool initial_not_evolving_shell();
 bool initial_nano_channel();
 
 int peri(int node, int dir);
@@ -127,6 +132,7 @@ double q_mult(double *q1, double *q2);
 bool checktr(double *Q);
 void free_energy();
 void output();
+void evolving_output(int count_qtensor);
 bool scatter();
 //double energy_ldg();
 void energy_ldg(double* ans);
@@ -134,7 +140,9 @@ void energy_ldg(double* ans);
 void energy_el(double* ans, double* ans_in, double* ans_out);
 void energy_surf(double* ans);
 void relax_bulk();
+void relax_evolving_bulk();
 void relax_surf();
+void relax_evolving_surf();
 void en_degen(double* Qin, double* loc_nu, double* Qdiff);
 void en_conic(double* Qin, double* loc_nu, double* Qdiff);
 void relax_degen(double* Qin, double* loc_nu, double* Qdiff);

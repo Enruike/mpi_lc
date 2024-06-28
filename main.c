@@ -10,7 +10,9 @@ int main(int argc, char * argv[]){
         MPI_Comm_rank(MPI_COMM_WORLD, &myid);
 
 	int i;
-	bool flag = true;
+
+	flag = true;
+	flag_2 = false;
 
 	double time_spend;
 	double begin, end;
@@ -66,6 +68,11 @@ int main(int argc, char * argv[]){
 			free_energy();
 			if(fabs(dE) < accuracy){
 				flag = false;
+
+				if(geo == -44 && flag_2 == false){
+					flag = true;
+					flag_2 = true;
+				}
 			}
 		}
 
@@ -90,17 +97,40 @@ int main(int argc, char * argv[]){
 
 		//Mi modificación para evitar que escriba cada mil ciclos en el disco duro.
 		if(cycle % save_every == 0 && myid == root){
-			output();
+			if(geo != -44){
+				output();
+			}
+			else{
+				evolving_output(cycle);
+			}
 		}
 
 		//Wait until all the processors are ready and relax the system, first bulk and then boundary.
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Win_fence(0, win);
-		if(flag) relax_bulk();
+		if(flag){
+			if(geo == -44 && flag_2 == true){
+				relax_bulk();
+			}
+			else if(geo == -44 && flag_2 == false){
+				relax_evolving_bulk();	
+			}
+			else{
+				relax_bulk();
+			}
+		} 
 
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Win_fence(0, win);
-		if(flag) relax_surf();
+		if(flag){
+			if(geo == -44 && flag_2 == true){
+				//relax_evolving_surf();
+			}
+			else{
+				relax_surf();
+			}
+		} 
+		
 /*
 		if(myid == root){	
 			printf("check2.\n");
@@ -111,7 +141,7 @@ int main(int argc, char * argv[]){
 			if(dt >= tmax)	dt = tmax;
 		}
 
-		cycle ++;
+		cycle++;
 		MPI_Barrier(MPI_COMM_WORLD);
 		MPI_Win_fence(0, win);
 		

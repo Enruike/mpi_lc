@@ -526,6 +526,162 @@ bool conf(double **pos){
 		fclose(grid);
 }
 
+	else if(seed == -1442 || seed == -1443 || seed == -1445){
+		
+		if(!norm_v(init_dir)){
+			return false;
+		}
+		
+		for(n = 0; n < 6; n ++){
+        	Qini[n] = dir2ten(init_dir, n, 0.5);
+        }
+                
+		double a[6] = {0};
+                
+		FILE* qtensor;
+        qtensor = fopen("Qtensor_shell.bin","rb");
+		FILE* grid;
+		grid = fopen("grid.bin", "rb");
+		int signal;
+			
+		if(qtensor == (FILE*)NULL){
+			printf("File Qtensor_shell.bin not found.\n");
+			return false;
+			exit(1);
+		}
+			
+		if(grid == (FILE*)NULL){
+			printf("File grid.bin not found.\n");
+			return false;
+		}
+	
+		nd = 0;
+
+		for(l = 0; l < tot; l++){
+
+
+			fread(&signal, sizeof(int), 1, grid);
+			
+			if(signal == 0 || signal == 1){
+				fread(a, sizeof(double), 6, qtensor);
+					a[5] = - a[0] - a[3];
+			}				
+			else{
+				for (n = 0; n < 6; n++) {
+					a[n] = Qini[n]; 
+				}
+			}
+
+			if(init_bulktype[l] == 1){
+				nd++;
+			}
+			
+			else if(init_bulktype[l] == 2 || init_bulktype[l] == 3){
+				for (n = 0; n < 6; n++) {
+					Qold[nd * 6 + n] = a[n];
+				}
+				nd ++;
+			}
+		}
+		
+		fclose(qtensor);
+		fclose(grid);
+
+		l = 0;
+		nd = 0;
+
+		if(seed == -1442 || seed == -1443){
+
+			for(int k = 0; k < Nz; k++){
+				for(int j = 0; j < Ny; j++){
+					for(int i = 0; i < Nx; i++){
+						
+						if(init_bulktype[l] == 1){
+							
+							x = (i-rx)*dx;
+							y = (j-ry)*dy;
+							z = (k-rz)*dz;
+							dis = sqrt(x*x+y*y+z*z);
+
+							if(seed == -1442){
+								omega = dis * qch;
+							}   
+							
+							else{
+								omega = atan2(y, x) + dis * qch;
+								disxy = sqrt(x * x + y * y);
+							}
+								
+							if(disxy == 0){
+								dir[2] = 1;
+								dir[0] = dir[1] = 0;
+							}
+
+							else{
+								costhe = z / dis;
+								sinthe = disxy / dis;
+								cosphi = x / disxy;
+								sinphi = y / disxy;
+								dir[0] = cos(omega) * costhe * cosphi - sin(omega) * sinphi;
+								dir[1] = cos(omega) * costhe * sinphi + sin(omega) * cosphi;
+								dir[2] = - cos(omega) * sinthe;
+							}
+			
+							if(!norm_v(dir)){
+								return false;
+							}
+								
+							for (n = 0; n < 6; n++) {
+								Qold[nd * 6 + n] = dir2ten(dir, n, S);
+							}
+							
+							nd++;
+						}
+						else if(init_bulktype[l] == 2 || init_bulktype[l] == 3){
+							nd++;
+						}
+						l++;
+					}
+				}
+			}
+		}
+		else{
+
+			double A = 0.2;
+			double cst;
+			double isq2 = 1.0 / sqrt(2.);
+			double sq2 = sqrt(2.);
+						
+			cst = 2. * qch * redshift;
+
+			for(int k = 0; k < Nz; k++){
+				for(int j = 0; j < Ny; j++){
+					for(int i = 0; i < Nx; i++){
+						
+						if(init_bulktype[l] == 1){
+							
+							x = (i - rx) * dx;
+							y = (j - ry) * dy;
+							z = (k - rz) * dz;
+							
+							Qold[nd * 6 + 0] = A * (cos(cst * z) - cos(cst * y));
+							Qold[nd * 6 + 1] = A * sin(cst * z);
+							Qold[nd * 6 + 2] = A * sin(cst * y);
+							Qold[nd * 6 + 3] = A * (cos(cst * x) - cos(cst * z));
+							Qold[nd * 6 + 4] = A * sin(cst * x);
+							Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));
+
+							nd++;
+						}
+						else if(init_bulktype[l] == 2 || init_bulktype[l] == 3){
+							nd++;
+						}
+						l++;
+					}
+				}
+			}
+		}
+	}
 	//BPI (seed = 4) and BPII (seed = 5)
 	else if(seed == 4 || seed == 5){
 

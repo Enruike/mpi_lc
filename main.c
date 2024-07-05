@@ -17,6 +17,7 @@ int main(int argc, char * argv[]){
 	double time_spend;
 	double begin, end;
 	double deltat;
+	double shell_accuracy = 10e-1;
 
 	FILE* energy;
 
@@ -57,7 +58,10 @@ int main(int argc, char * argv[]){
 		flag = false;
 	}
 	
-			
+	if(seed == -1442 || seed == -1443){
+		flag_2 = true;
+	}
+		
 	MPI_Barrier(MPI_COMM_WORLD);
 	MPI_Win_fence(0, win);
 	
@@ -66,14 +70,22 @@ int main(int argc, char * argv[]){
 		//Every 1000 steps calculate energies.
 		if(cycle % check_every == 0){
 			free_energy();
-			if(fabs(dE) < accuracy){
-				flag = false;
 
-				if(geo == -44 && flag_2 == false){
-					flag = true;
+			if(geo == -44){
+
+				if(fabs(dE) < shell_accuracy && flag_2 == false && (seed != -1442 || seed != -1443)){
 					flag_2 = true;
 				}
+				else if(fabs(dE) < accuracy){
+					flag = false;
+				}
 			}
+			else{
+				if(fabs(dE) < accuracy){
+					flag = false;
+				}
+			}
+			
 		}
 
 		if(cycle % trace_checker == 0){ 

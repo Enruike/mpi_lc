@@ -91,7 +91,13 @@ bool initial_not_evolving_shell(){
                     }
                     else{
                         drop[l] = true;
-                        init_bulktype[l] = 2; //para bulk externo.
+						if(seed != -1442 || seed != -1443){
+							init_bulktype[l] = 3; //para bulk externo.
+						}
+						else{
+							init_bulktype[l] = 2; //para bulk externo.
+						}
+
                         bulk++;
                     }
 
@@ -336,7 +342,7 @@ bool initial_not_evolving_shell(){
 			btcount++;
 		}
 
-		int bt1 = 0, bt2 = 0;
+		int bt1 = 0, bt2 = 0, bt3 = 0;
 		nd = 0;
 		for(int i = 0; i < tot; i++){
 			if(init_bulktype[i] == 1 ){
@@ -349,9 +355,14 @@ bool initial_not_evolving_shell(){
 				bt2++;
 				nd++;
 			}
+			else if(init_bulktype[i] == 3){
+				bulktype[nd] = 3;
+				bt3++;
+				nd++;
+			}
 		}
 
-		if ((bt1 + bt2) != droplet || btcount != length * numprocs) {
+		if ((bt1 + bt2 + bt3) != droplet || btcount != length * numprocs) {
 			printf("Error in transfer data to droplet bulktype!\n");
 			printf("count is %d and droplet size is %d\n", btcount, droplet);
 			return false;

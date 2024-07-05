@@ -58,7 +58,7 @@ int main(int argc, char * argv[]){
 		flag = false;
 	}
 	
-	if(seed == -1442 || seed == -1443){
+	if(seed == -1442 || seed == -1443 || seed == -1445){
 		flag_2 = true;
 	}
 		

@@ -58,7 +58,7 @@ int main(int argc, char * argv[]){
 		flag = false;
 	}
 	
-	if(seed == -1442 || seed == -1443 || seed == -1445){
+	if(seed == -1442 || seed == -1443 || seed == -1444 || seed == -1445 || seed == -1446){
 		flag_2 = true;
 	}
 		
@@ -73,7 +73,7 @@ int main(int argc, char * argv[]){
 
 			if(geo == -44){
 
-				if(fabs(dE) < shell_accuracy && flag_2 == false && (seed != -1442 || seed != -1443)){
+				if(fabs(dE) < shell_accuracy && flag_2 == false && (seed != -1442 || seed != -1443 || seed != -1444 || seed != -1445 || seed == -1446)){
 					flag_2 = true;
 				}
 				else if(fabs(dE) < accuracy){

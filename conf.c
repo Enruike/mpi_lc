@@ -526,7 +526,8 @@ bool conf(double **pos){
 		fclose(grid);
 }
 
-	else if(seed == -1442 || seed == -1443 || seed == -1445){
+	else if(seed == -1442 || seed == -1443 || seed == -1444 || seed == -1445
+			seed == -1446){
 		
 		if(!norm_v(init_dir)){
 			return false;
@@ -645,38 +646,113 @@ bool conf(double **pos){
 				}
 			}
 		}
-		else{
+		else if(seed == -1444 || seed == -1445 || seed == -1446){
 
 			double A = 0.2;
 			double cst;
+			double theta = 45 / 180.0 * M_PI;
 			double isq2 = 1.0 / sqrt(2.);
 			double sq2 = sqrt(2.);
 						
 			cst = 2. * qch * redshift;
 
-			for(int k = 0; k < Nz; k++){
-				for(int j = 0; j < Ny; j++){
-					for(int i = 0; i < Nx; i++){
-						
-						if(init_bulktype[l] == 1){
-							
-							x = (i - rx) * dx;
-							y = (j - ry) * dy;
-							z = (k - rz) * dz;
-							
-							Qold[nd * 6 + 0] = A * (cos(cst * z) - cos(cst * y));
-							Qold[nd * 6 + 1] = A * sin(cst * z);
-							Qold[nd * 6 + 2] = A * sin(cst * y);
-							Qold[nd * 6 + 3] = A * (cos(cst * x) - cos(cst * z));
-							Qold[nd * 6 + 4] = A * sin(cst * x);
-							Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));
+			if(seed == -1444){
 
-							nd++;
+				for(int k = 0; k < Nz; k++){
+					for (int j = 0; j < Ny; j++){
+						for (int i = 0; i < Nx; i++){
+							
+							if(init_bulktype[l] == 1){
+								
+								x = (double)(i - rx) * cst * isq2;
+								y = (double)(j - ry) * cst * isq2;
+								z = (double)(k - rz) * cst * isq2;
+								
+											
+								Qold[nd * 6 + 0] = A * (- sin(y) * cos(x) - sin(x) * cos(z) + 2 * sin(z) * cos(y));
+								Qold[nd * 6 + 3] = A * (- sin(z) * cos(y) - sin(y) * cos(x) + 2 * sin(x) * cos(z));
+								Qold[nd * 6 + 5] = A * (- sin(x) * cos(z) - sin(z) * cos(y) + 2 * sin(y) * cos(x));
+								Qold[nd * 6 + 1] = A * (- sq2 * sin(x) * sin(z) - sq2 * cos(y) * cos(z) + sin(x) * cos(y));
+								Qold[nd * 6 + 2] = A * (- sq2 * sin(z) * sin(y) - sq2 * cos(x) * cos(y) + sin(z) * cos(x));
+								Qold[nd * 6 + 4] = A * (- sq2 * sin(y) * sin(x) - sq2 * cos(z) * cos(x) + sin(y) * cos(z));
+
+								nd ++;
+							}
+							else if(init_bulktype[l] == 2 || init_bulktype[l] == 3){
+								nd++;
+							}
+							l++;
 						}
-						else if(init_bulktype[l] == 2 || init_bulktype[l] == 3){
-							nd++;
+					}
+				}
+			}
+
+			else if (seed == -1445){
+
+				for(int k = 0; k < Nz; k++){
+					for(int j = 0; j < Ny; j++){
+						for(int i = 0; i < Nx; i++){
+							
+							if(init_bulktype[l] == 1){
+								
+								x = (i - rx) * dx;
+								y = (j - ry) * dy;
+								z = (k - rz) * dz;
+								
+								Qold[nd * 6 + 0] = A * (cos(cst * z) - cos(cst * y));
+								Qold[nd * 6 + 1] = A * sin(cst * z);
+								Qold[nd * 6 + 2] = A * sin(cst * y);
+								Qold[nd * 6 + 3] = A * (cos(cst * x) - cos(cst * z));
+								Qold[nd * 6 + 4] = A * sin(cst * x);
+								Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));
+
+								nd++;
+							}
+							else if(init_bulktype[l] == 2 || init_bulktype[l] == 3){
+								nd++;
+							}
+							l++;
 						}
-						l++;
+					}
+				}
+			}
+			else if (seed == -1446){
+
+				for(int k = 0; k < Nz; k++){
+					for(int j = 0; j < Ny; j++){
+						for(int i = 0; i < Nx; i++){
+							
+							if(init_bulktype[l] == 1){
+								
+								xi = (i - rx) * cst * isq2;
+								yi = (j - ry) * cst * isq2;
+								zi = (k - rz) * cst * isq2;
+								
+								x = xi;
+								y = cos(theta) * yi + sin(theta) * zi;
+								z = -sin(theta) * yi + cos(theta) * zi;
+								
+								Qold[nd * 6 + 0] = A * (cos(cst * z) - cos(cst * y));
+								Qold[nd * 6 + 1] = A * sin(cst * z);
+								Qold[nd * 6 + 2] = A * sin(cst * y);
+								Qold[nd * 6 + 3] = A * (cos(cst * x) - cos(cst * z));
+								Qold[nd * 6 + 4] = A * sin(cst * x);
+								Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));
+
+								Qold[nd * 6 + 0] = A * (- sin(y) * cos(x) - sin(x) * cos(z) + 2 * sin(z) * cos(y));
+								Qold[nd * 6 + 3] = A * (- sin(z) * cos(y) - sin(y) * cos(x) + 2 * sin(x) * cos(z));
+								Qold[nd * 6 + 5] = A * (- sin(x) * cos(z) - sin(z) * cos(y) + 2 * sin(y) * cos(x));
+								Qold[nd * 6 + 1] = A * (- sq2 * sin(x) * sin(z) - sq2 * cos(y) * cos(z) + sin(x) * cos(y));
+								Qold[nd * 6 + 2] = A * (- sq2 * sin(z) * sin(y) - sq2 * cos(x) * cos(y) + sin(z) * cos(x));
+								Qold[nd * 6 + 4] = A * (- sq2 * sin(y) * sin(x) - sq2 * cos(z) * cos(x) + sin(y) * cos(z));
+
+								nd++;
+							}
+							else if(init_bulktype[l] == 2 || init_bulktype[l] == 3){
+								nd++;
+							}
+							l++;
+						}
 					}
 				}
 			}

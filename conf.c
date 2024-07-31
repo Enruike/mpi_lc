@@ -526,7 +526,7 @@ bool conf(double **pos){
 		fclose(grid);
 }
 
-	else if(seed == -1442 || seed == -1443 || seed == -1444 || seed == -1445
+	else if(seed == -1442 || seed == -1443 || seed == -1444 || seed == -1445 ||
 			seed == -1446){
 		
 		if(!norm_v(init_dir)){

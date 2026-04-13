@@ -5,10 +5,10 @@ static inline double surface_order_parameter(void){
 	if(DoubleU && geo == 4){
 		surfS = S2;
 	}
-	if(myid == root && cycle == 0){
+	/* if(myid == root && cycle == 0){
 		printf("[debug energy] DoubleU=%d geo=%d S=%lf S2=%lf surfS=%lf\n",
 			DoubleU, geo, S, S2, surfS);
-	}
+	} */
 	return surfS;
 }
 
@@ -359,7 +359,14 @@ void energy_surf(double* ans){
 				dA = dApart;
 				npboundary = true;
 			}
-			else if(sign[i] >= 20 && sign[i] <= 23){
+			else if(sign[i] == 20 || sign[i] == 21){
+				degen = 1;
+				inf = 0;
+				Wstr = Wp;
+				dA = dApart;
+				npboundary = true;
+			}
+			else if(sign[i] == 22 || sign[i] == 23){
 				degen = 2;
 				inf = 0;
 				Wstr = Wp;

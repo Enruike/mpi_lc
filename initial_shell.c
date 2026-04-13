@@ -81,16 +81,18 @@ bool initial_shell(){
                 y = (double)(j - ry) * dy;
                 z = (double)(k - rz) * dz;
 
-                if (( (x * x) / ((Rx + 0.5) * (Rx + 0.5)) + (y * y) / ((Ry + 0.5) * (Ry + 0.5)) + (z * z) / ((Rz + 0.5) * (Rz + 0.5)) ) <= 1 ){
+	                if (( (x * x) / ((Rx + 0.5) * (Rx + 0.5)) + (y * y) / ((Ry + 0.5) * (Ry + 0.5)) + (z * z) / ((Rz + 0.5) * (Rz + 0.5)) ) <= 1 ){
 
                     //Añadimos un if anidado para determinar el bulk externo.
-                    if(( (x * x) / ((iRx + 0.5) * (iRx + 0.5)) + (y * y) / ((iRy + 0.5) * (iRy + 0.5)) + (z * z) / ((iRz + 0.5) * (iRz + 0.5)) ) <= 1){
-                        init_bulktype[l] = 0; //bulk interno.					
-                    }
-                    else{
-                        drop[l] = true;
-                        init_bulktype[l] = 2; //para bulk externo.
-                        bulk++;
+	                    if(( (x * x) / ((iRx + 0.5) * (iRx + 0.5)) + (y * y) / ((iRy + 0.5) * (iRy + 0.5)) + (z * z) / ((iRz + 0.5) * (iRz + 0.5)) ) <= 1){
+	                        drop[l] = true;
+	                        init_bulktype[l] = 1; //bulk interno.
+	                        bulk++;
+	                    }
+	                    else{
+	                        drop[l] = true;
+	                        init_bulktype[l] = 2; //para bulk externo.
+	                        bulk++;
                     }
 
                 }
@@ -128,9 +130,26 @@ bool initial_shell(){
 		if(boundary[l])		drop[l] = false;
 	}
 
-	dV = ((4. / 3.) * (double)M_PI * (Rx * Ry * Rz) - (4.0 / 3.) * (double)M_PI * (iRx * iRy * iRz)) / (double)bulk; 
-	dAdrop = (4. * (double)M_PI * pow((pow(Rx * Ry, 1.6075) + pow(Rx * Rz, 1.6075) + pow(Ry * Rz, 1.6075)) / 3.0, 1.0/1.6075) + \
-    4. * (double)M_PI * pow((pow(iRx * iRy, 1.6075) + pow(iRx * iRz, 1.6075) + pow(iRy * iRz, 1.6075)) / 3.0, 1.0/1.6075)) / (double)(surf);
+		bulkin = 0;
+		bulkout = 0;
+		for(int l = 0; l < tot; l++){
+			if(drop[l]){
+				if(init_bulktype[l] == 1){
+					bulkin++;
+				}
+				else if(init_bulktype[l] == 2){
+					bulkout++;
+				}
+			}
+		}
+
+		dV = ((4. / 3.) * (double)M_PI * (Rx * Ry * Rz) - (4.0 / 3.) * (double)M_PI * (iRx * iRy * iRz)) / (double)bulk; 
+		if(DoubleU){
+			dVi = (4.0 / 3.0 * (double)M_PI * (iRx * iRy * iRz)) / (double)bulkin;
+			dVo = (4.0 / 3.0 * (double)M_PI * ((Rx * Ry * Rz) - (iRx * iRy * iRz))) / (double)bulkout;
+		}
+		dAdrop = (4. * (double)M_PI * pow((pow(Rx * Ry, 1.6075) + pow(Rx * Rz, 1.6075) + pow(Ry * Rz, 1.6075)) / 3.0, 1.0/1.6075) + \
+	    4. * (double)M_PI * pow((pow(iRx * iRy, 1.6075) + pow(iRx * iRz, 1.6075) + pow(iRy * iRz, 1.6075)) / 3.0, 1.0/1.6075)) / (double)(surf);
 
 	dApart = 0;
 	
@@ -146,9 +165,15 @@ bool initial_shell(){
 	//	dApart = 0;
 	//}
 
-	printf("\ndV is %lf\ndA of droplet is %lf\ndA of nanoparticle is %lf\n", dV, dAdrop, dApart); 
-	droplet = bulk + surf;
-	printf("\nRx is %lf\nRy is %lf\nRz is %lf\nDroplet nodes number is %d\nBulk nodes number is %d\nDroplet surface nodes number is %d\n", Rx, Ry, Rz, droplet, bulk, surf); 
+		printf("\ndV is %lf\ndA of droplet is %lf\ndA of nanoparticle is %lf\n", dV, dAdrop, dApart); 
+		if(DoubleU){
+			printf("dVi = %lf\ndVo = %lf\n", dVi, dVo);
+		}
+		droplet = bulk + surf;
+		printf("\nRx is %lf\nRy is %lf\nRz is %lf\nDroplet nodes number is %d\nBulk nodes number is %d\nDroplet surface nodes number is %d\n", Rx, Ry, Rz, droplet, bulk, surf); 
+		if(DoubleU){
+			printf("Inner bulk nodes number is %d\nOuter bulk nodes number is %d\n", bulkin, bulkout);
+		}
 	//allocate nu 
 	//allocate Qo only for finite homeotropic
 	nu = (double*)malloc(surf * 3 * sizeof(double));

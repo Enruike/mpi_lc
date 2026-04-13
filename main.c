@@ -73,9 +73,10 @@ int main(int argc, char * argv[]){
 
 			if(geo == -44){
 
-				if(fabs(dE) < shell_accuracy && flag_2 == false && (seed != -1442 || seed != -1443 || seed != -1444 || seed != -1445 || seed == -1446)){
-					flag_2 = true;
-				}
+					if(fabs(dE) < shell_accuracy && flag_2 == false &&
+						(seed != -1442 && seed != -1443 && seed != -1444 && seed != -1445 && seed != -1446)){
+						flag_2 = true;
+					}
 				else if(fabs(dE) < accuracy){
 					flag = false;
 				}

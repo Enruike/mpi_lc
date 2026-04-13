@@ -1,5 +1,12 @@
 #include "finite.h"
 
+static inline double surface_order_parameter(void){
+	if(DoubleU && geo == 4){
+		return S2;
+	}
+	return S;
+}
+
 void free_energy(){
 
 	//Cambiaremos la dimensión de la variable a 3 por ser 2 regiones y una total.
@@ -402,12 +409,13 @@ void en_degen(double* Qin, double* loc_nu, double* Qdiff){
 	double ptemp[3][3];
 	double Qp[3][3];
 	double third = 1.0 / 3;
-	Qtemp[0][0] = Qin[0] + third * S;
+	double surfS = surface_order_parameter();
+	Qtemp[0][0] = Qin[0] + third * surfS;
 	Qtemp[0][1] = Qtemp[1][0] = Qin[1];
 	Qtemp[0][2] = Qtemp[2][0] = Qin[2];
-	Qtemp[1][1] = Qin[3] + third * S;
+	Qtemp[1][1] = Qin[3] + third * surfS;
 	Qtemp[1][2] = Qtemp[2][1] = Qin[4];
-	Qtemp[2][2] = Qin[5] + third * S;
+	Qtemp[2][2] = Qin[5] + third * surfS;
 	for(i = 0; i < 3; i++){
 		for(j = 0; j < 3; j++){
 			if(i == j) ptemp[i][j] = 1 - loc_nu[i] * loc_nu[j];
@@ -439,13 +447,14 @@ void en_conic(double* Qin, double* loc_nu, double* Qdiff){
 	double third = 1. / 3.;
 	double cosTiltAngle;
 	double cosTiltAngleSq;
+	double surfS = surface_order_parameter();
 	
-	Qtemp[0][0] = Qin[0] + third * S;
+	Qtemp[0][0] = Qin[0] + third * surfS;
 	Qtemp[0][1] = Qtemp[1][0] = Qin[1];
 	Qtemp[0][2] = Qtemp[2][0] = Qin[2];
-	Qtemp[1][1] = Qin[3] + third * S;
+	Qtemp[1][1] = Qin[3] + third * surfS;
 	Qtemp[1][2] = Qtemp[2][1] = Qin[4];
-	Qtemp[2][2] = Qin[5] + third * S;
+	Qtemp[2][2] = Qin[5] + third * surfS;
 
 	for(int i = 0; i < 3; i++){
 		for(int j = 0; j < 3; j++){
@@ -467,10 +476,10 @@ void en_conic(double* Qin, double* loc_nu, double* Qdiff){
 	cosTiltAngle = cos(tiltAngle / 180.0 * M_PI);
 	cosTiltAngleSq = pow(cosTiltAngle, 2);
 	
-	Qdiff[0] =  Qp[0][0] - cosTiltAngleSq * S * ptemp[0][0];
-	Qdiff[1] =  Qp[0][1] - cosTiltAngleSq * S * ptemp[0][1];
-	Qdiff[2] =  Qp[0][2] - cosTiltAngleSq * S * ptemp[0][2];
-	Qdiff[3] =  Qp[1][1] - cosTiltAngleSq * S * ptemp[1][1];
-	Qdiff[4] =  Qp[1][2] - cosTiltAngleSq * S * ptemp[1][2];
-	Qdiff[5] =  Qp[2][2] - cosTiltAngleSq * S * ptemp[2][2];
+	Qdiff[0] =  Qp[0][0] - cosTiltAngleSq * surfS * ptemp[0][0];
+	Qdiff[1] =  Qp[0][1] - cosTiltAngleSq * surfS * ptemp[0][1];
+	Qdiff[2] =  Qp[0][2] - cosTiltAngleSq * surfS * ptemp[0][2];
+	Qdiff[3] =  Qp[1][1] - cosTiltAngleSq * surfS * ptemp[1][1];
+	Qdiff[4] =  Qp[1][2] - cosTiltAngleSq * surfS * ptemp[1][2];
+	Qdiff[5] =  Qp[2][2] - cosTiltAngleSq * surfS * ptemp[2][2];
 }

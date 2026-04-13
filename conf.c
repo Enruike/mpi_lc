@@ -1932,7 +1932,7 @@ bool conf(double **pos){
 					else if(init_bulktype[l] == 2){
 					
 						if(drop[l] || boundary[l] || nboundary[l]){
-							if(seed == 114 || seed == 124 || seed == 134 || seed == 874){
+							if(seed == 114 || seed == 124 || seed == 134 || seed == 874 || seed == 884){
 
 								x = (i - rx) * cst * isq2;
 								y = (j - ry) * cst * isq2;
@@ -1946,7 +1946,7 @@ bool conf(double **pos){
 								Qold[nd * 6 + 4] = A * (- sq2 * sin(y) * sin(x) - sq2 * cos(z) * cos(x) + sin(y) * cos(z));
 							}
 
-							else if(seed == 115 || seed == 125 || seed == 135 || seed == 141 || seed == 875){
+							else if(seed == 115 || seed == 125 || seed == 135 || seed == 141 || seed == 875 || seed == 885){
 										
 								x = i - rx;
 								y = j - ry;
@@ -1960,7 +1960,7 @@ bool conf(double **pos){
 								Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));
 							}
 
-							else if(seed == 116  || seed == 126 || seed == 136 || seed == 876){
+							else if(seed == 116  || seed == 126 || seed == 136 || seed == 876 || seed == 886){
 
 								xi = (i - rx) * cst * isq2;
 								yi = (j - ry) * cst * isq2;
@@ -1995,7 +1995,7 @@ bool conf(double **pos){
 								Qold[nd * 6 + 4] = A * sin(cst * x);
 								Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));}
 
-							else if(seed == 119  || seed == 129 || seed == 139 || seed == 143 || seed == 879){
+							else if(seed == 119  || seed == 129 || seed == 139 || seed == 143 || seed == 879 || seed == 889){
 
 								xi = i - rx;
 								yi = j - ry;

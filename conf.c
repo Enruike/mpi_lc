@@ -1797,16 +1797,9 @@ bool conf(double **pos){
 		srand(rand_seed);
 		double norm = 0.0;
 		double dirvec1[3] = {0};
-
-		if( seed == 114 || seed == 116 || seed == 124 || seed == 126 || seed == 134 || seed == 136 || 
-			seed == 141 || seed == 142 || seed == 143 ||
-			seed == 874 || seed == 876){
-			cst = 2 * qch * 0.71;
-		}        
-		else{
-			cst = 2 * qch * 0.86;
-		}	
-
+		
+		cst = 2 * qch * redshift;
+		
 		l = 0;
 		nd = 0;
 

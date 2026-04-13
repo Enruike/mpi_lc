@@ -5,10 +5,6 @@ static inline double surface_order_parameter(void){
 	if(DoubleU && geo == 4){
 		surfS = S2;
 	}
-	/* if(myid == root && cycle == 0){
-		printf("[debug relax] DoubleU=%d geo=%d S=%lf S2=%lf surfS=%lf\n",
-			DoubleU, geo, S, S2, surfS);
-	} */
 	return surfS;
 }
 

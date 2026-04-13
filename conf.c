@@ -1785,7 +1785,7 @@ bool conf(double **pos){
 			seed == 141 || seed == 142 || seed == 143 || 
 			seed == 874 || seed == 875 || seed == 876 || seed == 879 ||
 			seed == 884 || seed == 885 || seed == 886 || seed == 879)
-		{
+			{
 
 		double A = 0.2;
 		double cst, phi;
@@ -1794,24 +1794,28 @@ bool conf(double **pos){
         double theta = 45 / 180.0 * M_PI;
         double xj,yj,zj;
 		double mod;
+		srand(rand_seed);
 		double norm = 0.0;
 		double dirvec1[3] = {0};
 
-		srand(rand_seed);
-
-		
-		cst = 2 * qch * redshift;
-		
+		if( seed == 114 || seed == 116 || seed == 124 || seed == 126 || seed == 134 || seed == 136 || 
+			seed == 141 || seed == 142 || seed == 143 ||
+			seed == 874 || seed == 876){
+			cst = 2 * qch * 0.71;
+		}        
+		else{
+			cst = 2 * qch * 0.86;
+		}	
 
 		l = 0;
 		nd = 0;
 
-		for(int k = 0; k < Nz; k++){
-			for (int j = 0; j < Ny; j++){
-				for (int i = 0; i < Nx; i++){
+		for(k = 0; k < Nz; k++){
+			for (j = 0; j < Ny; j++){
+				for (i = 0; i < Nx; i++){
 
-					if(bulktype[l] == 1){
-						if(drop[l] || boundary[l]){ // || nboundary[l]){
+					if(init_bulktype[l] == 1){
+						if(drop[l] || boundary[l] || nboundary[l]){
 							if(seed == 114 || seed == 116 || seed == 115 || seed == 119){
 								
 								
@@ -1838,7 +1842,7 @@ bool conf(double **pos){
 									dir[2] = dir[2] / mod;						
 								}												
 
-								for (int n = 0; n < 6; n++) {
+								for (n = 0; n < 6; n++) {
 									Qold[nd * 6 + n] = dir2ten(dir, n, S);
 								}
 								nd ++;
@@ -1846,7 +1850,7 @@ bool conf(double **pos){
 							}
 							else if(seed == 141 || seed == 142 || seed == 143){
 								
-									for(int n = 0; n < 3; n ++){
+									for(n = 0; n < 3; n ++){
 										dir[n] = (double)rand() / (double)RAND_MAX * 2 - 1;
 									}
 
@@ -1855,7 +1859,7 @@ bool conf(double **pos){
 										return false;
 									}        	
 
-									for(int n = 0; n < 6; n ++){
+									for(n = 0; n < 6; n ++){
 										Qold[nd * 6 + n] = dir2ten(dir, n, 0.5);
 									}            
 								 nd ++;
@@ -1896,7 +1900,7 @@ bool conf(double **pos){
 									return false;
 								}
 									
-								for (int n = 0; n < 6; n++) {
+								for (n = 0; n < 6; n++) {
 									Qold[nd * 6 + n] = dir2ten(dir, n, S);
 								}
 						
@@ -1925,10 +1929,10 @@ bool conf(double **pos){
 						}
 					}
 
-					else if(bulktype[l] == 2){
+					else if(init_bulktype[l] == 2){
 					
-						if(drop[l] || boundary[l]){ // || nboundary[l]){
-							if(seed == 114 || seed == 124 || seed == 134 || seed == 874 || seed == 884){
+						if(drop[l] || boundary[l] || nboundary[l]){
+							if(seed == 114 || seed == 124 || seed == 134 || seed == 874){
 
 								x = (i - rx) * cst * isq2;
 								y = (j - ry) * cst * isq2;
@@ -1942,7 +1946,7 @@ bool conf(double **pos){
 								Qold[nd * 6 + 4] = A * (- sq2 * sin(y) * sin(x) - sq2 * cos(z) * cos(x) + sin(y) * cos(z));
 							}
 
-							else if(seed == 115 || seed == 125 || seed == 135 || seed == 141 || seed == 875 || seed == 885){
+							else if(seed == 115 || seed == 125 || seed == 135 || seed == 141 || seed == 875){
 										
 								x = i - rx;
 								y = j - ry;
@@ -1956,7 +1960,7 @@ bool conf(double **pos){
 								Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));
 							}
 
-							else if(seed == 116  || seed == 126 || seed == 136 || seed == 876 || seed == 886){
+							else if(seed == 116  || seed == 126 || seed == 136 || seed == 876){
 
 								xi = (i - rx) * cst * isq2;
 								yi = (j - ry) * cst * isq2;
@@ -1991,7 +1995,7 @@ bool conf(double **pos){
 								Qold[nd * 6 + 4] = A * sin(cst * x);
 								Qold[nd * 6 + 5] = A * (cos(cst * y) - cos(cst * x));}
 
-							else if(seed == 119  || seed == 129 || seed == 139 || seed == 143 || seed == 879 || seed == 889){
+							else if(seed == 119  || seed == 129 || seed == 139 || seed == 143 || seed == 879){
 
 								xi = i - rx;
 								yi = j - ry;
@@ -2027,14 +2031,11 @@ bool conf(double **pos){
 							nd ++;
 						}
 					}
-
 					l ++;
-
 				}
 			}
 		}
 	}
-
 
 	return true;
 }

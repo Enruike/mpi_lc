@@ -1,10 +1,15 @@
 #include "finite.h"
 
 static inline double surface_order_parameter(void){
+	double surfS = S;
 	if(DoubleU && geo == 4){
-		return S2;
+		surfS = S2;
 	}
-	return S;
+	if(myid == root && cycle == 0){
+		printf("[debug energy] DoubleU=%d geo=%d S=%lf S2=%lf surfS=%lf\n",
+			DoubleU, geo, S, S2, surfS);
+	}
+	return surfS;
 }
 
 void free_energy(){

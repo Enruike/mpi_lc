@@ -1787,6 +1787,16 @@ bool conf(double **pos){
 			seed == 884 || seed == 885 || seed == 886 || seed == 879)
 		{
 
+		double A = 0.2;
+		double cst, phi;
+		double isq2 = 1.0 / sqrt(2);
+		double sq2 = sqrt(2);
+        double theta = 45 / 180.0 * M_PI;
+        double xj,yj,zj;
+		double mod;
+		double norm = 0.0;
+		double dirvec1[3] = {0};
+
 		srand(rand_seed);
 
 		

@@ -4,6 +4,11 @@ bool read_param() {
 
 	//seed = 0;
 	FILE* param = fopen("param.in", "r");
+	int degenerate_in = 0;
+	int uppersurf_in = 0;
+	int lowersurf_in = 0;
+	int surfdegen_in = 0;
+	int DoubleU_in = 0;
 
 	if (param == (FILE*)NULL) {
 		printf("No param.in file found!\n");
@@ -26,33 +31,39 @@ bool read_param() {
         fscanf(param, "qch %lf\n", &qch);
 		fscanf(param, "redshift %lf #Default values BPI = 0.71 & BPII = 0.86.\n", &redshift);
         fscanf(param, "geo %d\n", &geo);
-        fscanf(param, "degenerate %d #1:Planar & 2:Conic\n", &degenerate);
-		fscanf(param, "tiltAngle %lf\n", &tiltAngle);
-        fscanf(param, "infinite %d\n", &infinite);
-        fscanf(param, "Np %d\n", &Np);
-        fscanf(param, "Rp %lf\n", &Rp);
-        fscanf(param, "Wp %lf\n", &Wp);
+	        fscanf(param, "degenerate %d #1:Planar & 2:Conic\n", &degenerate_in);
+			fscanf(param, "tiltAngle %lf\n", &tiltAngle);
+	        fscanf(param, "infinite %d\n", &infinite);
+	        fscanf(param, "Np %d\n", &Np);
+	        fscanf(param, "Rp %lf\n", &Rp);
+	        fscanf(param, "Wp %lf\n", &Wp);
         fscanf(param, "seed %d\n", &seed);
         fscanf(param, "rand_seed %d\n", &rand_seed);
         fscanf(param, "tmin tmax %lf %lf\n", &tmin, &tmax);
-        fscanf(param, "increment %lf\n", &increment);
-        fscanf(param, "accuracy %lf\n", &accuracy);
-        fscanf(param, "init_dir %lf %lf %lf\n", &init_dir[0], &init_dir[1], &init_dir[2]);
-        fscanf(param, "dir1 %lf %lf %lf\n", &dir1[0], &dir1[1], &dir1[2]);
-        fscanf(param, "dir2 %lf %lf %lf\n", &dir2[0], &dir2[1], &dir2[2]);
-        fscanf(param, "UpperSurface %d\n", &uppersurf);
-        fscanf(param, "LowerSurface %d\n", &lowersurf);
-        fscanf(param, "LowerSurfaceDegen %d\n", &surfdegen);
-        fscanf(param, "DoubleU Mode %d\n", &DoubleU);
-        fscanf(param, "U2 %lf\n", &U2);
-        fscanf(param, "iRx %lf\n", &iRx);
-        fscanf(param, "iRy %lf\n", &iRy);
-        fscanf(param, "iRz %lf\n", &iRz);
-        fscanf(param, "Save Every %d\n", &save_every);
-        fscanf(param, "Check Every %d\n", &check_every);
-		fscanf(param, "Stop At %d #For non-stop condition use 0.\n", &stopat);
-		fscanf(param, "Check Trace At %d\n", &trace_checker);
-	if(myid == root){
+	        fscanf(param, "increment %lf\n", &increment);
+	        fscanf(param, "accuracy %lf\n", &accuracy);
+	        fscanf(param, "init_dir %lf %lf %lf\n", &init_dir[0], &init_dir[1], &init_dir[2]);
+	        fscanf(param, "dir1 %lf %lf %lf\n", &dir1[0], &dir1[1], &dir1[2]);
+	        fscanf(param, "dir2 %lf %lf %lf\n", &dir2[0], &dir2[1], &dir2[2]);
+	        fscanf(param, "UpperSurface %d\n", &uppersurf_in);
+	        fscanf(param, "LowerSurface %d\n", &lowersurf_in);
+	        fscanf(param, "LowerSurfaceDegen %d\n", &surfdegen_in);
+	        fscanf(param, "DoubleU Mode %d\n", &DoubleU_in);
+	        fscanf(param, "U2 %lf\n", &U2);
+	        fscanf(param, "iRx %lf\n", &iRx);
+	        fscanf(param, "iRy %lf\n", &iRy);
+	        fscanf(param, "iRz %lf\n", &iRz);
+	        fscanf(param, "Save Every %d\n", &save_every);
+	        fscanf(param, "Check Every %d\n", &check_every);
+			fscanf(param, "Stop At %d #For non-stop condition use 0.\n", &stopat);
+			fscanf(param, "Check Trace At %d\n", &trace_checker);
+
+		degenerate = (degenerate_in != 0);
+		uppersurf = (uppersurf_in != 0);
+		lowersurf = (lowersurf_in != 0);
+		surfdegen = (surfdegen_in != 0);
+		DoubleU = (DoubleU_in != 0);
+		if(myid == root){
 		printf("Nx %d\n", Nx);
 		printf("Ny %d\n", Ny);
 		printf("Nz %d\n", Nz);

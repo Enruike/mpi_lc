@@ -324,7 +324,14 @@ void energy_surf(double* ans){
 	double Wstr = 0;
 	double dA = 0;
 	bool npboundary = true;
-	int traced_channel = 0;
+#if DEBUG_CHANNEL_SURF_TRACE
+	double best_contrib = -1.;
+	int best_i = -1, best_nb = -1, best_sig = -1, best_degen = -1;
+	double best_W = 0., best_trqq = 0.;
+	double best_nu[3] = {0.};
+	double best_Qin[6] = {0.};
+	double best_Qdiff[6] = {0.};
+#endif
 	nb = 0;
 	for (i = 0; i < length; i++){
 		if(sign[i] >= 2 && sign[i] <= 8 || sign[i] == 12 || sign[i] == 13 || (sign[i] >= 20 && sign[i] <= 23)){
@@ -394,16 +401,22 @@ void energy_surf(double* ans){
 						ans[1] += Wstr * trqq(Qdiff) * dApart;
 					}	
 					else{
-						ans[0] += Wstr * trqq(Qdiff) * dAdrop;
+						const double contrib = Wstr * trqq(Qdiff) * dAdrop;
+						ans[0] += contrib;
 #if DEBUG_CHANNEL_SURF_TRACE
-						if(!traced_channel && myid == root && cycle % check_every == 0){
-							printf("[surf trace mpi] cycle %d i=%d nb=%d sig=%d degen=%d W=%0.12lf trqq=%0.12lf contrib=%0.12lf\n",
-								cycle, i, nb, sign[i], degen, Wstr, trqq(Qdiff), Wstr * trqq(Qdiff) * dAdrop);
-							printf("[surf trace mpi] nu=(%0.12lf,%0.12lf,%0.12lf) Qin=(%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf)\n",
-								loc_nu[0], loc_nu[1], loc_nu[2], Qin[0], Qin[1], Qin[2], Qin[3], Qin[4], Qin[5]);
-							printf("[surf trace mpi] Qdiff=(%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf)\n",
-								Qdiff[0], Qdiff[1], Qdiff[2], Qdiff[3], Qdiff[4], Qdiff[5]);
-							traced_channel = 1;
+						if(contrib > best_contrib){
+							best_contrib = contrib;
+							best_i = i;
+							best_nb = nb;
+							best_sig = sign[i];
+							best_degen = degen;
+							best_W = Wstr;
+							best_trqq = trqq(Qdiff);
+							for(n = 0; n < 3; n++) best_nu[n] = loc_nu[n];
+							for(n = 0; n < 6; n++){
+								best_Qin[n] = Qin[n];
+								best_Qdiff[n] = Qdiff[n];
+							}
 						}
 #endif
 					}
@@ -418,16 +431,25 @@ void energy_surf(double* ans){
 						ans[1] += Wstr * trqq(Qdiff) * dApart;
 					}	
 					else{
-						ans[0] += Wstr * trqq(Qdiff) * dAdrop;
+						const double contrib = Wstr * trqq(Qdiff) * dAdrop;
+						ans[0] += contrib;
 #if DEBUG_CHANNEL_SURF_TRACE
-						if(!traced_channel && myid == root && cycle % check_every == 0){
-							printf("[surf trace mpi] cycle %d i=%d nb=%d sig=%d degen=%d W=%0.12lf trqq=%0.12lf contrib=%0.12lf\n",
-								cycle, i, nb, sign[i], degen, Wstr, trqq(Qdiff), Wstr * trqq(Qdiff) * dAdrop);
-							printf("[surf trace mpi] nu=(%0.12lf,%0.12lf,%0.12lf) Qin=(%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf)\n",
-								loc_nu[0], loc_nu[1], loc_nu[2], q[i * 6 + 0], q[i * 6 + 1], q[i * 6 + 2], q[i * 6 + 3], q[i * 6 + 4], q[i * 6 + 5]);
-							printf("[surf trace mpi] Qdiff=(%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf)\n",
-								Qdiff[0], Qdiff[1], Qdiff[2], Qdiff[3], Qdiff[4], Qdiff[5]);
-							traced_channel = 1;
+						if(contrib > best_contrib){
+							best_contrib = contrib;
+							best_i = i;
+							best_nb = nb;
+							best_sig = sign[i];
+							best_degen = degen;
+							best_W = Wstr;
+							best_trqq = trqq(Qdiff);
+							for(n = 0; n < 3; n++) best_nu[n] = loc_nu[n];
+							best_Qin[0] = q[i * 6 + 0];
+							best_Qin[1] = q[i * 6 + 1];
+							best_Qin[2] = q[i * 6 + 2];
+							best_Qin[3] = q[i * 6 + 3];
+							best_Qin[4] = q[i * 6 + 4];
+							best_Qin[5] = q[i * 6 + 5];
+							for(n = 0; n < 6; n++) best_Qdiff[n] = Qdiff[n];
 						}
 #endif
 					}
@@ -436,6 +458,16 @@ void energy_surf(double* ans){
 			nb ++;
 		}
 	}
+#if DEBUG_CHANNEL_SURF_TRACE
+	if(myid == root && cycle % check_every == 0 && best_i >= 0){
+		printf("[surf trace mpi] cycle %d i=%d nb=%d sig=%d degen=%d W=%0.12lf trqq=%0.12lf contrib=%0.12lf\n",
+			cycle, best_i, best_nb, best_sig, best_degen, best_W, best_trqq, best_contrib);
+		printf("[surf trace mpi] nu=(%0.12lf,%0.12lf,%0.12lf) Qin=(%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf)\n",
+			best_nu[0], best_nu[1], best_nu[2], best_Qin[0], best_Qin[1], best_Qin[2], best_Qin[3], best_Qin[4], best_Qin[5]);
+		printf("[surf trace mpi] Qdiff=(%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf)\n",
+			best_Qdiff[0], best_Qdiff[1], best_Qdiff[2], best_Qdiff[3], best_Qdiff[4], best_Qdiff[5]);
+	}
+#endif
 }
 
 void en_degen(double* Qin, double* loc_nu, double* Qdiff){

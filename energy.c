@@ -419,6 +419,17 @@ void energy_surf(double* ans){
 					}	
 					else{
 						ans[0] += Wstr * trqq(Qdiff) * dAdrop;
+#if DEBUG_CHANNEL_SURF_TRACE
+						if(!traced_channel && myid == root && cycle % check_every == 0){
+							printf("[surf trace mpi] cycle %d i=%d nb=%d sig=%d degen=%d W=%0.12lf trqq=%0.12lf contrib=%0.12lf\n",
+								cycle, i, nb, sign[i], degen, Wstr, trqq(Qdiff), Wstr * trqq(Qdiff) * dAdrop);
+							printf("[surf trace mpi] nu=(%0.12lf,%0.12lf,%0.12lf) Qin=(%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf)\n",
+								loc_nu[0], loc_nu[1], loc_nu[2], q[i * 6 + 0], q[i * 6 + 1], q[i * 6 + 2], q[i * 6 + 3], q[i * 6 + 4], q[i * 6 + 5]);
+							printf("[surf trace mpi] Qdiff=(%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf)\n",
+								Qdiff[0], Qdiff[1], Qdiff[2], Qdiff[3], Qdiff[4], Qdiff[5]);
+							traced_channel = 1;
+						}
+#endif
 					}
 				}
 			}

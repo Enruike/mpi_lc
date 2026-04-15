@@ -1,5 +1,9 @@
 #include "finite.h"
 
+#ifndef DEBUG_CHANNEL_SURF_TRACE
+#define DEBUG_CHANNEL_SURF_TRACE 0
+#endif
+
 static inline double surface_order_parameter(void){
 	double surfS = S;
 	if(DoubleU && geo == 4){
@@ -320,6 +324,7 @@ void energy_surf(double* ans){
 	double Wstr = 0;
 	double dA = 0;
 	bool npboundary = true;
+	int traced_channel = 0;
 	nb = 0;
 	for (i = 0; i < length; i++){
 		if(sign[i] >= 2 && sign[i] <= 8 || sign[i] == 12 || sign[i] == 13 || (sign[i] >= 20 && sign[i] <= 23)){
@@ -390,6 +395,17 @@ void energy_surf(double* ans){
 					}	
 					else{
 						ans[0] += Wstr * trqq(Qdiff) * dAdrop;
+#if DEBUG_CHANNEL_SURF_TRACE
+						if(!traced_channel && myid == root && cycle % check_every == 0){
+							printf("[surf trace mpi] cycle %d i=%d nb=%d sig=%d degen=%d W=%0.12lf trqq=%0.12lf contrib=%0.12lf\n",
+								cycle, i, nb, sign[i], degen, Wstr, trqq(Qdiff), Wstr * trqq(Qdiff) * dAdrop);
+							printf("[surf trace mpi] nu=(%0.12lf,%0.12lf,%0.12lf) Qin=(%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf)\n",
+								loc_nu[0], loc_nu[1], loc_nu[2], Qin[0], Qin[1], Qin[2], Qin[3], Qin[4], Qin[5]);
+							printf("[surf trace mpi] Qdiff=(%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf,%0.12lf)\n",
+								Qdiff[0], Qdiff[1], Qdiff[2], Qdiff[3], Qdiff[4], Qdiff[5]);
+							traced_channel = 1;
+						}
+#endif
 					}
 					
 				}

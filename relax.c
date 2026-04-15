@@ -8,6 +8,16 @@ static inline double surface_order_parameter(void){
 	return surfS;
 }
 
+static inline double surface_derivative_component_cpu(const double* q, int minus_idx, int plus_idx, double q_center, int comp, double inv_d){
+	if(minus_idx == -1){
+		return 0.;
+	}
+	if(plus_idx == -1){
+		return (q[minus_idx * 6 + comp] - q_center) * inv_d;
+	}
+	return (-q[plus_idx * 6 + comp] + 4. * q[minus_idx * 6 + comp] - 3. * q_center) * 0.5 * inv_d;
+}
+
 double third = 1.0 / 3.0;
 double trQQ = 0;
 double dQ[3][6] = {{0}};
@@ -264,46 +274,11 @@ void relax_surf(){
 				zm = neigb[i * 6 + 4] - ref;
 				zp = neigb[i * 6 + 5] - ref;
 				
-				if((sign[i] % 2) == 0){
-					for (int n = 0; n < 6; n++) {
-						dQ[0][n] = (-q[xp * 6 + n]+4*q[xm * 6 + n]-3*Qin[n])*0.5*idx;
-						dQ[1][n] = (-q[yp * 6 + n]+4*q[ym * 6 + n]-3*Qin[n])*0.5*idy;
-						dQ[2][n] = (-q[zp * 6 + n]+4*q[zm * 6 + n]-3*Qin[n])*0.5*idz;
-						Qelas[n] = dQ[0][n] * fabs(loc_nu[0]) + dQ[1][n] * fabs(loc_nu[1]) + dQ[2][n] * fabs(loc_nu[2]);
-					}
-				}
-
-				else if((sign[i] % 2) == 1){
-					for (int n = 0; n < 6; n++) {
-						if((xm + ref) == -1){
-							dQ[0][n] = 0;
-						}
-						else if((xp + ref) == -1){
-							dQ[0][n] = (q[xm * 6 + n]-Qin[n])*idx;
-						}
-						else{
-							dQ[0][n] = (-q[xp * 6 + n]+4*q[xm * 6 + n]-3*Qin[n])*0.5*idx;
-						}
-						if((ym + ref) == -1){
-							dQ[1][n] = 0;
-						}
-						else if((yp + ref) == -1){
-							dQ[1][n] = (q[ym * 6 + n]-Qin[n])*idy;
-						}
-						else{
-							dQ[1][n] = (-q[yp * 6 + n]+4*q[ym * 6 + n]-3*Qin[n])*0.5*idy;
-						}
-						if((zm + ref) == -1){
-							dQ[2][n] = 0;
-						}
-						else if((zp + ref) == -1){
-							dQ[2][n] = (q[zm * 6 + n]-Qin[n])*idz;
-						}
-						else{
-							dQ[2][n] = (-q[zp * 6 + n]+4*q[zm * 6 + n]-3*Qin[n])*0.5*idz;
-						}
-						Qelas[n] = dQ[0][n] * fabs(loc_nu[0]) + dQ[1][n] * fabs(loc_nu[1]) + dQ[2][n] * fabs(loc_nu[2]);
-					}
+				for (int n = 0; n < 6; n++) {
+					dQ[0][n] = surface_derivative_component_cpu(q, (xm + ref == -1) ? -1 : xm, (xp + ref == -1) ? -1 : xp, Qin[n], n, idx);
+					dQ[1][n] = surface_derivative_component_cpu(q, (ym + ref == -1) ? -1 : ym, (yp + ref == -1) ? -1 : yp, Qin[n], n, idy);
+					dQ[2][n] = surface_derivative_component_cpu(q, (zm + ref == -1) ? -1 : zm, (zp + ref == -1) ? -1 : zp, Qin[n], n, idz);
+					Qelas[n] = dQ[0][n] * fabs(loc_nu[0]) + dQ[1][n] * fabs(loc_nu[1]) + dQ[2][n] * fabs(loc_nu[2]);
 				}
 
 				if(L2 != 0 || L3 != 0 || L4 != 0){
@@ -717,46 +692,11 @@ void relax_evolving_surf(){
 				zm = neigb[i * 6 + 4] - ref;
 				zp = neigb[i * 6 + 5] - ref;
 				
-				if((sign[i] % 2) == 0){
-					for (int n = 0; n < 6; n++) {
-						dQ[0][n] = (-q[xp * 6 + n]+4*q[xm * 6 + n]-3*Qin[n])*0.5*idx;
-						dQ[1][n] = (-q[yp * 6 + n]+4*q[ym * 6 + n]-3*Qin[n])*0.5*idy;
-						dQ[2][n] = (-q[zp * 6 + n]+4*q[zm * 6 + n]-3*Qin[n])*0.5*idz;
-						Qelas[n] = dQ[0][n] * fabs(loc_nu[0]) + dQ[1][n] * fabs(loc_nu[1]) + dQ[2][n] * fabs(loc_nu[2]);
-					}
-				}
-
-				else if((sign[i] % 2) == 1){
-					for (int n = 0; n < 6; n++) {
-						if((xm + ref) == -1){
-							dQ[0][n] = 0;
-						}
-						else if((xp + ref) == -1){
-							dQ[0][n] = (q[xm * 6 + n]-Qin[n])*idx;
-						}
-						else{
-							dQ[0][n] = (-q[xp * 6 + n]+4*q[xm * 6 + n]-3*Qin[n])*0.5*idx;
-						}
-						if((ym + ref) == -1){
-							dQ[1][n] = 0;
-						}
-						else if((yp + ref) == -1){
-							dQ[1][n] = (q[ym * 6 + n]-Qin[n])*idy;
-						}
-						else{
-							dQ[1][n] = (-q[yp * 6 + n]+4*q[ym * 6 + n]-3*Qin[n])*0.5*idy;
-						}
-						if((zm + ref) == -1){
-							dQ[2][n] = 0;
-						}
-						else if((zp + ref) == -1){
-							dQ[2][n] = (q[zm * 6 + n]-Qin[n])*idz;
-						}
-						else{
-							dQ[2][n] = (-q[zp * 6 + n]+4*q[zm * 6 + n]-3*Qin[n])*0.5*idz;
-						}
-						Qelas[n] = dQ[0][n] * fabs(loc_nu[0]) + dQ[1][n] * fabs(loc_nu[1]) + dQ[2][n] * fabs(loc_nu[2]);
-					}
+				for (int n = 0; n < 6; n++) {
+					dQ[0][n] = surface_derivative_component_cpu(q, (xm + ref == -1) ? -1 : xm, (xp + ref == -1) ? -1 : xp, Qin[n], n, idx);
+					dQ[1][n] = surface_derivative_component_cpu(q, (ym + ref == -1) ? -1 : ym, (yp + ref == -1) ? -1 : yp, Qin[n], n, idy);
+					dQ[2][n] = surface_derivative_component_cpu(q, (zm + ref == -1) ? -1 : zm, (zp + ref == -1) ? -1 : zp, Qin[n], n, idz);
+					Qelas[n] = dQ[0][n] * fabs(loc_nu[0]) + dQ[1][n] * fabs(loc_nu[1]) + dQ[2][n] * fabs(loc_nu[2]);
 				}
 
 				if(L2 != 0 || L3 != 0 || L4 != 0){

@@ -1,5 +1,7 @@
 all: lc_mpi.x
 GCC = gcc-9#gcc working version
+DEBUG_CHANNEL_SURF_TRACE ?= 0
+CDEFS = -DDEBUG_CHANNEL_SURF_TRACE=$(DEBUG_CHANNEL_SURF_TRACE)
 SRC_DIR := src
 SRC := $(wildcard $(SRC_DIR)/*.c)
 OBJ := $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
@@ -16,13 +18,13 @@ OBJS = read_param.o
 WARNS = -diag-disable=10441
 
 lc_mpi.x: $(FILES) $(HEADERS) read_param.o
-	mpiicc -gcc-name=$(GCC) -O2 $(FILES) $(OBJS) $(HEADERS) -o lc_mpi.x $(WARNS)
+	mpiicc -gcc-name=$(GCC) -O2 $(CDEFS) $(FILES) $(OBJS) $(HEADERS) -o lc_mpi.x $(WARNS)
 	
 debug: $(FILES) $(HEADERS) read_param.o
-	mpiicc -gcc-name=$(GCC) -O2 $(FILES) $(OBJS) $(HEADERS) -o lc_mpi.x $(WARNS) -g
+	mpiicc -gcc-name=$(GCC) -O2 $(CDEFS) $(FILES) $(OBJS) $(HEADERS) -o lc_mpi.x $(WARNS) -g
 
 read_param.o: read_param.c read_param.h
-	icc -gcc-name=$(GCC) -c read_param.c $(WARNS)
+	icc -gcc-name=$(GCC) $(CDEFS) -c read_param.c $(WARNS)
 
 move: 
 	mv lc_mpi.x ~/Oblates/nanochannel/
